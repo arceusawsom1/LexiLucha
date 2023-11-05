@@ -1,11 +1,14 @@
 import { Button, Chip, Container, Typography } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import createQuestion from "../utils.tsx/QuestionCreator";
 
 const BasicPhraseQuestion = () => {
   const [question, setQuestion] = useState<IPhraseData>(createQuestion("Hola, me llamo ryan", "Hello my name is ryan", "some other words so its not clear"))
   const [selected, setSelected] = useState<string[]>([]);
-
+  // const [currentSearch, setCurrentSearch] = useState<string>();
+  useEffect(()=>{
+    document.addEventListener("keydown",handleKeypress)
+  })
   const onSelect = (wordIndex : number) => {
     console.log("word index");
     question.options[wordIndex].selected=true
@@ -21,6 +24,9 @@ const BasicPhraseQuestion = () => {
     setSelected([])
 
   }
+  const handleKeypress = (e: KeyboardEvent) => {
+    console.log(e);
+  }
   return (
     <Container>
       <Typography>{question.phrase}</Typography>
@@ -29,9 +35,9 @@ const BasicPhraseQuestion = () => {
           <Chip sx={{ml:0,m:0.5}} key={wordIndex} label={word} onClick={()=>onUnselect(wordIndex)}/>
         )}
       </Container>
-      <Container>
+      <Container sx={{my:2}}>
         {question.options.map((word, wordIndex)=>
-          <Chip sx={{my:1, mt:2}} disabled={word.selected} key={wordIndex} label={word.value} onClick={()=>onSelect(wordIndex)}/>
+          <Chip sx={{mt:0.5,mx:0.2}} disabled={word.selected} key={wordIndex} label={word.value} onClick={()=>onSelect(wordIndex)}/>
         )}
       </Container>
       <Button variant="contained" onClick={()=>{console.log("clicked")}}>Submit</Button>
