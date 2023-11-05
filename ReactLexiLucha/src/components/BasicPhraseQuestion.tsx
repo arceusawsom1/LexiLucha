@@ -14,7 +14,7 @@ const BasicPhraseQuestion = () => {
   }
   const onUnselect = (wordIndex: number) => {
     setQuestion({...question, options: question.options.map(wordValue=>{if (wordValue.value===selected[wordIndex]) wordValue.selected=false; return wordValue})})
-    setSelected([...selected.filter((unused,index)=>wordIndex!==index)])
+    setSelected([...selected.filter((_unused,index)=>wordIndex!==index)])
   }
   const clearSelected = () => {
     setQuestion({...question, options: question.options.map(wordValue=>{wordValue.selected=false; return wordValue})})
@@ -31,7 +31,7 @@ const BasicPhraseQuestion = () => {
       </Container>
       <Container>
         {question.options.map((word, wordIndex)=>
-          <Chip sx={{m:0.5, mt:2}} disabled={word.selected} key={wordIndex} label={word.value} onClick={()=>onSelect(wordIndex)}/>
+          <Chip sx={{my:1, mt:2}} disabled={word.selected} key={wordIndex} label={word.value} onClick={()=>onSelect(wordIndex)}/>
         )}
       </Container>
       <Button variant="contained" onClick={()=>{console.log("clicked")}}>Submit</Button>
