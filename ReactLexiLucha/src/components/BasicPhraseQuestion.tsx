@@ -1,4 +1,4 @@
-import { Button, Chip, Container, Typography } from "@mui/material"
+import { Button, Chip, Container, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import questions from "../assets/questions";
 import StatView from "./StatView";
@@ -14,6 +14,8 @@ interface IProps {
 const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   const [question, setQuestion] = useState<IPhraseData>()
   const [selected, setSelected] = useState<string[]>([]);
+  const mobileDevice = useMediaQuery('(max-width:600px)');
+
   
   const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0})
   useEffect(()=>{
@@ -62,12 +64,13 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
     }
     setStats({...newStats});
   }
-  
+
   const loadNewQuestion = (index ?: number) => {
     let question = fetchQuestion(index);
     console.log(question.answer)
     setSelected([])
     setQuestion(question)
+    console.log(mobileDevice)
   }
   
   return (
@@ -87,7 +90,7 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
           </Container>
           <Button variant="contained" onClick={onSubmit}>Submit</Button>
           <Button onClick={clearSelected}>Clear</Button>
-          <SearchBar question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>
+          {mobileDevice || <SearchBar question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
           <StatView stats={stats}/>
         </>
       }
