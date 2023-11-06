@@ -1,4 +1,4 @@
-import { IPhraseData } from "../components/BasicPhraseQuestion";
+import { IPhraseData } from "../types"
 
 const createQuestion= (phrase: string, answer: string, otherOptions: string="") : IPhraseData => {
     const question : IPhraseData = {

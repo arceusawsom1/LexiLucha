@@ -1,5 +1,5 @@
 import { Card, Grid, Typography } from "@mui/material";
-import { IStats } from "./BasicPhraseQuestion";
+import { IStats } from "../types";
 
 interface IProps {
     stats: IStats
