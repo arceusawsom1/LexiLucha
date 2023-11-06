@@ -1,5 +1,5 @@
 import './App.css'
-import { Container, ThemeProvider, createTheme, Snackbar, Alert } from '@mui/material'
+import { Container, ThemeProvider, createTheme, Snackbar, Alert, Typography } from '@mui/material'
 import BasicPhraseQuestion from './components/BasicPhraseQuestion'
 import { useEffect,useState } from 'react';
 
@@ -34,6 +34,7 @@ function App() {
 
   return (
     <ThemeProvider theme = {theme}>
+      <Typography variant="h1">Lexi Lucha</Typography>
       <Container>
         <BasicPhraseQuestion correctHandler={setSuccessMessage} failHandler={setFailMessage}/>
       </Container>

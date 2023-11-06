@@ -124,7 +124,6 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   }
   return (
     <Container sx={{height:"100%"}}>
-      <Typography variant="h1">Lexi Lucha - with changes made</Typography>
       {question !==undefined && 
         <>
           <Typography variant="h3" sx={{mb:3,mt:10}}>{question.phrase}</Typography>
