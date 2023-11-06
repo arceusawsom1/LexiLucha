@@ -17,7 +17,13 @@ jobs:
 
     - name: Set up Docker
       uses: docker/setup-buildx-action@v1
+      
+    - name: Stop and remove previous container (if it exists)
+      run: docker stop my-react-container || true && docker rm my-react-container || true
 
+    - name: Remove previous Docker image (if it exists)
+      run: docker rmi my-react-app:latest || true
+      
     - name: Build Docker image
       run: docker build -t my-react-app .
 
