@@ -1,4 +1,4 @@
-import { Card, Container, Grid, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 import { IStats } from "./BasicPhraseQuestion";
 
 interface IProps {

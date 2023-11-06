@@ -1,6 +1,5 @@
 import { Button, Chip, Container, Typography } from "@mui/material"
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
-import createQuestion from "../utils.tsx/QuestionCreator";
+import { useCallback, useEffect, useRef, useState } from "react"
 import questions from "../assets/questions";
 import StatView from "./StatView";
 
