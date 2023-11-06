@@ -21,6 +21,5 @@ const questions = [
     createQuestion("Me encanta la música clásica", "I love classical music", "It's so soothing."),
     createQuestion("¿Tienes alguna mascota?", "Do you have any pets?", "I adore animals."),
     createQuestion("Voy a visitar a mis abuelos este fin de semana", "I'm going to visit my grandparents this weekend", "Family is important to me."),
-
 ]
 export default questions;
