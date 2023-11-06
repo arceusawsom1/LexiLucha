@@ -4,14 +4,10 @@ on:
   push:
     branches:
       - main
-env:
-  FE_NAME: react-app
+      
 jobs:
   build-and-run:
     runs-on: self-hosted
-    env:
-      DOCKER_CONTAINER_NAME: my-react-container
-      DOCKER_IMAGE_NAME: my-react-app
     defaults:
       run:
          working-directory: ./ReactLexiLucha/
@@ -19,18 +15,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Display DOCKER_IMAGE_NAME
-      run: echo "DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME"
-      
-    - name: Debug Environment Variables
-      run: Get-ChildItem Env
-
-
     - name: Set up Docker
       uses: docker/setup-buildx-action@v1
       
     - name: Build Docker image
-      run: docker build .
+      run: docker build . -t react-app
 
     - name: Run Docker container
-      run: docker run -d -p 4000:3000 $DOCKER_IMAGE_NAME
+      run: docker run -d -p 4000:3000 react-app
