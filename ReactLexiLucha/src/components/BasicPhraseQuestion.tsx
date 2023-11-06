@@ -1,6 +1,5 @@
 import { Button, Chip, Container, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import questions from "../assets/questions";
 import StatView from "./StatView";
 import SearchBar from "./SearchBar";
 import { IPhraseData, IStats } from "../types";
