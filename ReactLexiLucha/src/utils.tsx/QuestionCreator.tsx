@@ -1,12 +1,13 @@
 import { IPhraseData } from "../components/BasicPhraseQuestion";
 
-const createQuestion= (phrase: string, options: string, otherOptions?: string) : IPhraseData => {
+const createQuestion= (phrase: string, answer: string, otherOptions?: string) : IPhraseData => {
     const question : IPhraseData = {
         phrase: phrase,
+        answer: answer,
         options: []
     }
     const arr: string[] = [
-        ...options.split(" "),
+        ...answer.split(" "),
         ...(otherOptions || "").split(" "),
     ]
     shuffle(arr)
