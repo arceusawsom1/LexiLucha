@@ -19,6 +19,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Display DOCKER_IMAGE_NAME
+      run: echo "DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME"
+
     - name: Set up Docker
       uses: docker/setup-buildx-action@v1
       
