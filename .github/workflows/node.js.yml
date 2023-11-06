@@ -26,4 +26,4 @@ jobs:
       run: docker build .
 
     - name: Run Docker container
-      run: docker run -d -p 4000:3000 $DOCKER_CONTAINER_NAME
+      run: docker run -d -p 4000:3000 $DOCKER_IMAGE_NAME
