@@ -1,6 +1,6 @@
 import { IPhraseData } from "../components/BasicPhraseQuestion";
 
-const createQuestion= (phrase: string, answer: string, otherOptions?: string) : IPhraseData => {
+const createQuestion= (phrase: string, answer: string, otherOptions: string="") : IPhraseData => {
     const question : IPhraseData = {
         phrase: phrase,
         answer: answer,
@@ -8,7 +8,7 @@ const createQuestion= (phrase: string, answer: string, otherOptions?: string) : 
     }
     const arr: string[] = [
         ...answer.split(" "),
-        ...(otherOptions || "").split(" "),
+        ...otherOptions.split(" "),
     ]
     shuffle(arr)
     arr.forEach(item=>question.options.push({value: item, selected: false}))
