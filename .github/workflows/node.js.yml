@@ -20,11 +20,11 @@ jobs:
 
       - name: Stop and remove existing container
         run: |
-          CONTAINER_ID=$(docker ps -q -f "ancestor=react-app")
-          if [ -n "$CONTAINER_ID" ]; then
+          $CONTAINER_ID = docker ps -q -f "ancestor=react-app"
+          if ($CONTAINER_ID) {
             docker stop $CONTAINER_ID
             docker rm $CONTAINER_ID
-          fi
+          }
 
       - name: Build Docker image
         run: docker build . -t react-app
