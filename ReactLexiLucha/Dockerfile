@@ -1,6 +1,9 @@
 # Use an official Node.js runtime as the base image
 FROM node:16 as builder
 
+# Set the image name
+LABEL org.opencontainers.image.title="$DOCKER_IMAGE_NAME"
+
 # Set the working directory in the container
 WORKDIR /app
 
