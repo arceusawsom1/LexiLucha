@@ -4,6 +4,7 @@ import questions from "../assets/questions";
 import StatView from "./StatView";
 import SearchBar from "./SearchBar";
 import { IPhraseData, IStats } from "../types";
+import { fetchQuestion } from "../utils/mockdb";
 
 interface IProps {
   correctHandler: (message: string)=>void,
@@ -61,23 +62,14 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
     }
     setStats({...newStats});
   }
+  
   const loadNewQuestion = (index ?: number) => {
     let question = fetchQuestion(index);
     console.log(question.answer)
     setSelected([])
     setQuestion(question)
   }
-
-  const fetchQuestion = (index ?: number) : IPhraseData => {
-    let newQuestion;
-    if (index===undefined){
-      newQuestion=questions[Math.floor(Math.random()*questions.length)]
-    } else {
-      newQuestion =questions[index]
-    }
-    newQuestion.options = newQuestion.options.map(item=>{item.selected=false;return item})
-    return newQuestion;
-  }
+  
   return (
     <Container sx={{height:"100%"}}>
       {question !==undefined && 

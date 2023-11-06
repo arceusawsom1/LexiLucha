@@ -1,4 +1,4 @@
-import createQuestion from "../utils.tsx/QuestionCreator";
+import createQuestion from "../utils/QuestionCreator";
 
 const questions = [
     createQuestion("¿Dónde está la biblioteca?", "Where is the library?", "I need to study."),
