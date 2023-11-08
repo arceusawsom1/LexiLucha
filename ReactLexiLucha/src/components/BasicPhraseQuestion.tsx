@@ -1,24 +1,21 @@
-import { Button, Chip, Container, Typography } from "@mui/material"
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react"
-import createQuestion from "../utils.tsx/QuestionCreator";
-import questions from "../assets/questions";
+import { Button, Chip, Container, Typography, useMediaQuery } from "@mui/material"
+import { useCallback, useEffect, useState } from "react"
 import StatView from "./StatView";
+import SearchBar from "./SearchBar";
+import { IPhraseData, IStats } from "../types";
+import { fetchQuestion } from "../utils/mockdb";
 
 interface IProps {
   correctHandler: (message: string)=>void,
   failHandler: (message: string)=>void,
 }
-type IStats = {
-  totalAttempts: number,
-  correct: number,
-  incorrect: number,
-  streak: number,
-}
+
 const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   const [question, setQuestion] = useState<IPhraseData>()
   const [selected, setSelected] = useState<string[]>([]);
-  const [currentSearch, setCurrentSearch] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const mobileDevice = useMediaQuery('(max-width:600px)');
+
+  
   const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0})
   const [timeWordPicked, setTimeWordPicked] = useState<Number>(Date.now())
   
@@ -51,47 +48,7 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
 
   }
 
-  //This is where we handle the "smart autocomplete" feature
-  const handleKeypress = (e: { target: { value: string; }; }) => {
-    // get the most up to date search
-    let newSearch = e.target.value
-    
-    //We are going to find out if the last character was a space (which is the user's way of saying "ive finished typing my word")
-    let spacePushed = false;
-    if (newSearch.charAt(newSearch.length-1)===' '){
-      newSearch = newSearch.substring(0,newSearch.length-1) //remove the space from the end of the search, since we don't actually want it
-      spacePushed=true;
-    }
-    
-    //A condition for comparing the search against he start of all the options
-    const matches = (search : string, item : IOption) => item.value.substring(0, search.length).toLowerCase()===search.toLowerCase() && !item.selected
-    
-    //Get a list of all of the words that match
-    const arrMatches = new Set(question!.options
-      .map(option=> {if (matches(newSearch, option)) return option.value})
-      .filter(item=>item!==undefined) //Filter out undefined
-    )
-    
-    //If there is only one option left (duplicates are ok), or the spacebar was pushed
-    if (arrMatches.size===1 || spacePushed){
-      question!.options.some((option, optionIndex)=>{
-        if (matches(newSearch, option) && (newSearch.length===option.value.length || !spacePushed)){
-          onSelect(optionIndex);
-          newSearch="" //This means that a search was found
-          return true; //Make sure it only effects the first matching word
-        }
-      })
-    }
-    setCurrentSearch(newSearch)
-  }
-  const handleKeydown = (e:any )=>{
-    if (e.code==="Enter"){
-      onSubmit();
-    }
-    if (e.code==="Backspace" && e.target.value.length===0){
-      onUnselect(selected.length-1)
-    }
-  }
+  
   const onSubmit = () => {
     const attempt = selected.join(" ");
     let newStats = stats;
@@ -108,26 +65,17 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
     }
     setStats({...newStats});
   }
+
   const loadNewQuestion = (index ?: number) => {
     let question = fetchQuestion(index);
     console.log(question.answer)
     setSelected([])
     setQuestion(question)
+    console.log(mobileDevice)
   }
-
-  const fetchQuestion = (index ?: number) : IPhraseData => {
-    let newQuestion;
-    if (index===undefined){
-      newQuestion=questions[Math.floor(Math.random()*questions.length)]
-    } else {
-      newQuestion =questions[index]
-    }
-    newQuestion.options = newQuestion.options.map(item=>{item.selected=false;return item})
-    return newQuestion;
-  }
+  
   return (
     <Container sx={{height:"100%"}}>
-      <Typography variant="h1">Lexi Lucha</Typography>
       {question !==undefined && 
         <>
           <Typography variant="h3" sx={{mb:3,mt:10}}>{question.phrase}</Typography>
@@ -143,23 +91,12 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
           </Container>
           <Button variant="contained" onClick={onSubmit}>Submit</Button>
           <Button onClick={clearSelected}>Clear</Button>
-          <input ref={inputRef} onBlur={()=>{if (inputRef.current!==null) inputRef.current.focus()}}  autoFocus value={currentSearch} onChange={handleKeypress} onKeyDown={handleKeydown}/>
-          
+          {mobileDevice || <SearchBar question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
           <StatView stats={stats}/>
         </>
       }
       </Container>
   )
 }
-type IOption = {
-  value: string,
-  selected: boolean
-}
-type IPhraseData = {
-  phrase : string,
-  options: IOption[],
-  answer: string,
-}
 
 export default BasicPhraseQuestion
-export type {IPhraseData, IStats}

@@ -1,49 +1,33 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Build and Run Docker Image
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
-  
+  build-and-run:
     runs-on: self-hosted
-    # runs-on: ubuntu-latest
-    
     defaults:
-       run:
-         working-directory: ./ReactLexiLucha/
-         
-    strategy:
-      matrix:
-        node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+      run:
+        working-directory: ./ReactLexiLucha/
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: './ReactLexiLucha/pnpm-lock.yaml'
-    - run: npm install
-    - run: npm ci
-    - run: npm run build --if-present
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  serve:
-    needs: build
-    runs-on: self-hosted
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
 
-    defaults:
-       run:
-         working-directory: ./ReactLexiLucha/
+      - name: Stop and remove existing container
+        run: |
+          $CONTAINER_ID = docker ps -q -f "ancestor=react-app"
+          if ($CONTAINER_ID) {
+            docker stop $CONTAINER_ID
+            docker rm $CONTAINER_ID
+          }
 
-    steps:
-    - name: Serve React app
-      run: npm run serve
+      - name: Build Docker image
+        run: docker build . -t react-app
+
+      - name: Run Docker container
+        run: docker run -d -p 4000:3000 react-app
