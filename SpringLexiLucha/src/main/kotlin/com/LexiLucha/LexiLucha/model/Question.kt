@@ -4,6 +4,9 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 
-data class Player (val name: String, val stat:Stat) {
-
+@Entity
+data class Question(val phrase:String, val answer: String, val noiseWords:String="") {
+    @Id
+    @GeneratedValue
+    val id: Int = 0
 }
