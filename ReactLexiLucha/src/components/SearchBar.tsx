@@ -1,21 +1,28 @@
 import { useRef, useState } from "react";
 import { IOption, IPhraseData } from "../types";
+import { SMART_WORD_INPUT_DELAY } from "../assets/settings";
 
 interface IProps{
     question: IPhraseData,
     selected: string[],
+    timeWordPicked: number,
     onSelect: (index: number)=>void,
     onUnselect: (index: number)=>void,
     onSubmit: ()=>void,
 }
-const SearchBar = ({question,selected, onSelect, onUnselect, onSubmit}: IProps) => {
+const SearchBar = ({question,selected, timeWordPicked, onSelect, onUnselect, onSubmit}: IProps) => {
     const [currentSearch, setCurrentSearch] = useState<string>("");
     const inputRef = useRef<HTMLInputElement>(null);
 //This is where we handle the "smart autocomplete" feature
 const handleKeypress = (e: { target: { value: string; }; }) => {
+    const timeSinceLastInput = Date.now()- timeWordPicked
+
+    if (timeSinceLastInput < SMART_WORD_INPUT_DELAY){
+      return;
+    }
     // get the most up to date search
     let newSearch = e.target.value
-    
+
     //We are going to find out if the last character was a space (which is the user's way of saying "ive finished typing my word")
     let spacePushed = false;
     if (newSearch.charAt(newSearch.length-1)===' '){

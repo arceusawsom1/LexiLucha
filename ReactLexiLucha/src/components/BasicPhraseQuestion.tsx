@@ -15,9 +15,8 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   const [selected, setSelected] = useState<string[]>([]);
   const mobileDevice = useMediaQuery('(max-width:600px)');
 
-  
   const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0})
-  const [timeWordPicked, setTimeWordPicked] = useState<Number>(Date.now())
+  const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
   
   useEffect(()=>{
     loadNewQuestion(5);
@@ -34,6 +33,7 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
       question.options[wordIndex].selected=true
       setQuestion({...question})
       setSelected([...selected, question.options[wordIndex].value])
+      setTimeWordPicked(Date.now())
     }
   },[selected, question])
 
@@ -91,8 +91,9 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
           </Container>
           <Button variant="contained" onClick={onSubmit}>Submit</Button>
           <Button onClick={clearSelected}>Clear</Button>
-          {mobileDevice || <SearchBar question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
+          {mobileDevice || <SearchBar timeWordPicked={timeWordPicked} question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
           <StatView stats={stats}/>
+          <Typography></Typography>
         </>
       }
       </Container>
