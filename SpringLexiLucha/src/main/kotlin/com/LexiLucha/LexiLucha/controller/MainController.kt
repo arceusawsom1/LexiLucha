@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 class MainController {
 
     @GetMapping
-    fun testEndpoint() : Player{
-        return Player("Dummy");
+    fun testEndpoint() : String{
+        return "Hellloooo"
     }
 }
