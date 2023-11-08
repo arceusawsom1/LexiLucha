@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react"
 import StatView from "./StatView";
 import SearchBar from "./SearchBar";
 import { IPhraseData, IStats } from "../types";
-import { fetchQuestion } from "../utils/mockdb";
+import { useQuestions } from "../utils/mockdb";
 
 interface IProps {
   correctHandler: (message: string)=>void,
@@ -14,6 +14,7 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   const [question, setQuestion] = useState<IPhraseData>()
   const [selected, setSelected] = useState<string[]>([]);
   const mobileDevice = useMediaQuery('(max-width:600px)');
+  const { popQuestion, questionsRemaining } = useQuestions();
 
   const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
   const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
@@ -71,7 +72,7 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   }
 
   const loadNewQuestion = (index ?: number) => {
-    let question = fetchQuestion(index);
+    let question = popQuestion(index);
     console.log(question.answer)
     setSelected([])
     setQuestion(question)
@@ -97,7 +98,7 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
           <Button onClick={clearSelected}>Clear</Button>
           {mobileDevice || <SearchBar timeWordPicked={timeWordPicked} question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
           <StatView stats={stats}/>
-          <Typography></Typography>
+          <Typography>{questionsRemaining}</Typography>
         </>
       }
       </Container>
