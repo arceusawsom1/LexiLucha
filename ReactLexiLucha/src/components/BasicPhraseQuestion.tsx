@@ -15,16 +15,17 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   const [selected, setSelected] = useState<string[]>([]);
   const mobileDevice = useMediaQuery('(max-width:600px)');
 
-  const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0})
+  const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
   const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
   
   useEffect(()=>{
-    loadNewQuestion(5);
+    loadNewQuestion();
     setStats({
       totalAttempts:0,
       correct:0,
       incorrect:0,
       streak:0,
+      maxStreak:0,
     })
   },[])
 
@@ -58,6 +59,9 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
       loadNewQuestion();
       correctHandler("Correct!")
       newStats.correct+=1
+      if (newStats.streak > newStats.maxStreak){
+        newStats.maxStreak = newStats.streak;
+      }
     } else {
       newStats.streak=0
       newStats.incorrect+=1

@@ -11,6 +11,7 @@ const StatView = ({stats}:IProps) => {
             <Grid item xs={3}>
                 <Card sx={{mt:2,width:"200px", textAlign:"left",pl:2,py:1}}>
                     <Typography variant="h4">Stats</Typography>
+                    <Typography>Best Streak: {stats.maxStreak}</Typography>
                     <Typography>Streak: {stats.streak}</Typography>
                     <Typography>Total Correct: {stats.correct}</Typography>
                 </Card>

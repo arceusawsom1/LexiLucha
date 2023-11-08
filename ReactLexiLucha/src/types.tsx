@@ -12,5 +12,6 @@ type IStats = {
     correct: number,
     incorrect: number,
     streak: number,
+    maxStreak: number,
 }
 export type {IPhraseData, IStats, IOption}
