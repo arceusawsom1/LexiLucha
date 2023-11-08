@@ -20,6 +20,8 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
   const [currentSearch, setCurrentSearch] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0})
+  const [timeWordPicked, setTimeWordPicked] = useState<Number>(Date.now())
+  
   useEffect(()=>{
     loadNewQuestion(5);
     setStats({
