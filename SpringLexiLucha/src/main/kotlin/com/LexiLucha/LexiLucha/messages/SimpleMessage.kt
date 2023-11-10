@@ -1,4 +1,4 @@
 package com.LexiLucha.LexiLucha.messages
 
-data class SimpleMessage(final val data: String = "Default name") {
+data class SimpleMessage(final val data: String = "Default message") {
 }
