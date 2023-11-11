@@ -1,4 +1,4 @@
 package com.LexiLucha.LexiLucha.model
 
-data class Stat(val score: Int, val completions: Array<CompletedQuestion>) {
+data class Stat(var score: Int = 0 , val completions: ArrayList<CompletedQuestion> = ArrayList()) {
 }

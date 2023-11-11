@@ -16,7 +16,6 @@ const useQuestions = () => {
         return newQuestion;
     }
     const questionsRemaining = useMemo((): number => {
-        console.log(questionPool)
         return questionPool.length;
     }, [questionPool])
 

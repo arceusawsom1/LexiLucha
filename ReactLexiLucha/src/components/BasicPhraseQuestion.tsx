@@ -1,26 +1,35 @@
-import { Button, Chip, Container, Typography, useMediaQuery } from "@mui/material"
+import { Button, Chip, CircularProgress, Container, Table, TableCell, TableRow, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import StatView from "./StatView";
 import SearchBar from "./SearchBar";
-import { IPhraseData, IStats } from "../types";
+import { IGamestate, IPhraseData, ISimpleQuestion, IStats } from "../types";
 import { useQuestions } from "../utils/mockdb";
+import createQuestion from "../utils/QuestionCreator";
+import { socket } from "../utils/socket";
 
 interface IProps {
   correctHandler: (message: string)=>void,
   failHandler: (message: string)=>void,
+  currentQuestion: ISimpleQuestion,
+  gamestate: IGamestate
 }
 
-const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
+const BasicPhraseQuestion = ({correctHandler, failHandler, currentQuestion, gamestate} : IProps) => {
   const [question, setQuestion] = useState<IPhraseData>()
   const [selected, setSelected] = useState<string[]>([]);
   const mobileDevice = useMediaQuery('(max-width:600px)');
   const { popQuestion, questionsRemaining } = useQuestions();
-
+  const [stage, setStage] = useState<string>("question");
   const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
   const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
-  
+
   useEffect(()=>{
-    loadNewQuestion();
+    setSelected([])
+    setStage("question")
+    setQuestion(createQuestion(currentQuestion.phrase, currentQuestion.options))
+  },[currentQuestion.id])
+
+  useEffect(()=>{
     setStats({
       totalAttempts:0,
       correct:0,
@@ -52,53 +61,53 @@ const BasicPhraseQuestion = ({correctHandler, failHandler} : IProps) => {
 
   
   const onSubmit = () => {
-    const attempt = selected.join(" ");
-    let newStats = stats;
-    newStats.totalAttempts+=0
-    newStats.streak+=1
-    if (attempt.toLowerCase()===question!.answer.toLowerCase()){
-      loadNewQuestion();
-      correctHandler("Correct!")
-      newStats.correct+=1
-      if (newStats.streak > newStats.maxStreak){
-        newStats.maxStreak = newStats.streak;
-      }
-    } else {
-      newStats.streak=0
-      newStats.incorrect+=1
-      failHandler("Incorrect answer!")
-    }
-    setStats({...newStats});
+    setStage("submitted")
+    socket.emit("submitAttempt", {data:selected.join(" ")})
   }
 
-  const loadNewQuestion = (index ?: number) => {
-    let question = popQuestion(index);
-    console.log(question.answer)
-    setSelected([])
-    setQuestion(question)
-    console.log(mobileDevice)
-  }
+  // const loadNewQuestion = (index ?: number) => {
+  //   let question = popQuestion(index);
+  //   setSelected([])
+  //   setQuestion(question)
+  // }
   
   return (
     <Container sx={{height:"100%"}}>
       {question !==undefined && 
         <>
-          <Typography variant="h3" sx={{mb:3,mt:10}}>{question.phrase}</Typography>
-          <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}>
-            {selected.map((word, wordIndex)=>
-              <Chip sx={{ml:0,m:0.5}} key={wordIndex} label={word} onClick={()=>onUnselect(wordIndex)}/>
+          {stage==="question" && 
+            <>
+              <Typography variant="h3" sx={{mb:3,mt:10}}>{question.phrase}</Typography>
+              <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}>
+                {selected.map((word, wordIndex)=>
+                  <Chip sx={{ml:0,m:0.5}} key={wordIndex} label={word} onClick={()=>onUnselect(wordIndex)}/>
+                )}
+              </Container>
+              <Container sx={{my:2}}>
+                {question.options.map((word, wordIndex)=>
+                  <Chip sx={{mt:0.5,mx:0.2}} disabled={word.selected} key={wordIndex} label={word.value} onClick={()=>onSelect(wordIndex)}/>
+                )}
+              </Container>
+              <Button variant="contained" onClick={onSubmit}>Submit</Button>
+              <Button onClick={clearSelected}>Clear</Button>
+              {mobileDevice || <SearchBar timeWordPicked={timeWordPicked} question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
+              {/* <StatView stats={stats}/> */}
+            </>
+          }
+          {stage==="submitted" &&
+            <>
+              <Typography variant="h2">Waiting for other player to submit</Typography>
+              <CircularProgress />
+            </>
+          }
+          <Table>
+            {gamestate.players.map((player, index)=>
+              <TableRow key={index}>
+                  <TableCell>{player.name}</TableCell>
+                  <TableCell>{player.stat.score}</TableCell>
+              </TableRow>
             )}
-          </Container>
-          <Container sx={{my:2}}>
-            {question.options.map((word, wordIndex)=>
-              <Chip sx={{mt:0.5,mx:0.2}} disabled={word.selected} key={wordIndex} label={word.value} onClick={()=>onSelect(wordIndex)}/>
-            )}
-          </Container>
-          <Button variant="contained" onClick={onSubmit}>Submit</Button>
-          <Button onClick={clearSelected}>Clear</Button>
-          {mobileDevice || <SearchBar timeWordPicked={timeWordPicked} question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
-          <StatView stats={stats}/>
-          <Typography>{questionsRemaining}</Typography>
+          </Table>
         </>
       }
       </Container>

@@ -1,5 +1,37 @@
 package com.LexiLucha.LexiLucha.model
 
-data class GameState (val players: Array<Player>, val language: String, val currentQuestion: Question,
-    val finishedQuestions: Array<Int>, val startTime: Int){
+import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
+import com.fasterxml.jackson.annotation.JsonIgnore
+import java.util.*
+import kotlin.collections.ArrayList
+
+data class GameState(
+        val players: ArrayList<Player> = ArrayList(),
+        val language: String = "Spanish",
+        @JsonIgnore var currentQuestion: Question? = null,
+        val finishedQuestions: ArrayList<Int> = ArrayList(),
+        var startTime: Long = 0,
+        var phase: Int = 0,
+        var currentQuestionSimple : SimpleQuestion?= null){
+    fun sendUpdate() {
+        println("Sending update")
+        println(this)
+        for (player in players){
+            player.client.sendEvent("gameUpdate", this)
+        }
+    }
+
+    fun start() {
+        println("Starting Game")
+    }
+    fun getPlayerBySessionId(sessionID: UUID) : Player{
+        return players.find { player -> player.client.sessionId === sessionID } ?: throw RuntimeException("Invalid session ID");
+    }
+
+    fun nextQuestion(question: Question) {
+        //if current question exists, add its ID to finished Questions
+        currentQuestion?.id?.let { finishedQuestions.add(it) }
+        currentQuestion = question
+    }
+
 }
