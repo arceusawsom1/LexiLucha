@@ -1,10 +1,8 @@
 import { Box, Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { socket } from "../utils/socket";
-interface IProps {
-    
-}
-const LandingForm = (props: IProps) => {
+
+const LandingForm = () => {
     const [name, setName] = useState<string>("");
     
     const joinQueue = () => {

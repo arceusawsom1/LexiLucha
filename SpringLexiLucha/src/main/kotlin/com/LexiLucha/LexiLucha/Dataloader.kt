@@ -3,12 +3,16 @@ package com.LexiLucha.LexiLucha
 import com.LexiLucha.LexiLucha.controller.MainController
 import com.LexiLucha.LexiLucha.model.Question
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Service
 
 @Service
 class Dataloader @Autowired constructor(val questionRepo: QuestionRepository): ApplicationRunner  {
+
+
+
     override fun run(args: ApplicationArguments?) {
         val questions: ArrayList<Question> = ArrayList()
         questions.add(Question("¿Dónde está la biblioteca?", "Where is the library?", "I need to study."))
