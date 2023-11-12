@@ -22,11 +22,10 @@ jobs:
 
       - name: Stop and remove existing containers
         run: |
-          CONTAINER_IDS=$(docker ps -q -f "name=react-ts" -f "name=spring-kotlin" -f "name=mysql")
-          if [ ! -z "$CONTAINER_IDS" ]; then
+          $CONTAINER_IDS = (docker ps -q -f "name=react-ts" -f "name=spring-kotlin" -f "name=mysql")
+          if ($CONTAINER_IDS) {
             docker stop $CONTAINER_IDS
             docker rm $CONTAINER_IDS
-          }
 
       - name: Build and run Docker Compose
         run: docker compose up -d
