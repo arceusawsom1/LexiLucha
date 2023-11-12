@@ -1,4 +1,4 @@
-name: Build and Run Docker Image
+name: Build and Run Docker Compose
 
 on:
   push:
@@ -10,24 +10,23 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ./ReactLexiLucha/
+        working-directory: ./
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Compose
+        uses: docker/compose-cli@v0.1.1
+        with:
+          compose-file: docker-compose.yml
 
-      - name: Stop and remove existing container
+      - name: Stop and remove existing containers
         run: |
-          $CONTAINER_ID = docker ps -q -f "ancestor=react-app"
-          if ($CONTAINER_ID) {
-            docker stop $CONTAINER_ID
-            docker rm $CONTAINER_ID
+          CONTAINER_IDS=$(docker ps -q -f "name=react-ts" -f "name=spring-kotlin" -f "name=mysql")
+          if [ ! -z "$CONTAINER_IDS" ]; then
+            docker stop $CONTAINER_IDS
+            docker rm $CONTAINER_IDS
           }
 
-      - name: Build Docker image
-        run: docker build . -t react-app
-
-      - name: Run Docker container
-        run: docker run -d -p 4000:3000 react-app
+      - name: Build and run Docker Compose
+        run: docker compose up -d
