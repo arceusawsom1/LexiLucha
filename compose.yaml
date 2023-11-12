@@ -17,9 +17,9 @@ services:
       context: ./SpringLexiLucha
     ports:
       # Socket port
-      - "8088:8088"
+      - "4002:8088"
       # REST Port
-      - "8080:8080"
+      - "4003:8080"
     environment:
       - DB_HOST=mysql
       - DB_USER=user1
