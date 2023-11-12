@@ -1,0 +1,43 @@
+version: '1'
+name: lexi-lucha
+services:
+  react-ts:
+    container_name: react-ts
+    restart: always
+    build:
+      context: ./ReactLexiLucha
+    ports:
+      # React Port (Using 4000 externally)
+      - "4000:3000"
+
+  spring-kotlin:
+    container_name: spring-kotlin
+    restart: always
+    build:
+      context: ./SpringLexiLucha
+    ports:
+      # Socket port
+      - "8088:8088"
+      # REST Port
+      - "8080:8080"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=user1
+      - DB_PASS=password123
+      - DB_DDL=create
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    restart: always
+    image: mysql:latest
+    volumes:
+      - lexi-lucha-volume:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: password123
+volumes:
+  lexi-lucha-volume: 

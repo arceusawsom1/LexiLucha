@@ -1,9 +1,7 @@
 import { Button, Chip, CircularProgress, Container, Table, TableCell, TableRow, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
-import StatView from "./StatView";
 import SearchBar from "./SearchBar";
 import { IGamestate, IPhraseData, ISimpleQuestion, IStats } from "../types";
-import { useQuestions } from "../utils/mockdb";
 import createQuestion from "../utils/QuestionCreator";
 import { socket } from "../utils/socket";
 
@@ -14,13 +12,12 @@ interface IProps {
   gamestate: IGamestate
 }
 
-const BasicPhraseQuestion = ({correctHandler, failHandler, currentQuestion, gamestate} : IProps) => {
+const BasicPhraseQuestion = ({ currentQuestion, gamestate} : IProps) => {
   const [question, setQuestion] = useState<IPhraseData>()
   const [selected, setSelected] = useState<string[]>([]);
   const mobileDevice = useMediaQuery('(max-width:600px)');
-  const { popQuestion, questionsRemaining } = useQuestions();
   const [stage, setStage] = useState<string>("question");
-  const [stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
+  const [_stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
   const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
 
   useEffect(()=>{
