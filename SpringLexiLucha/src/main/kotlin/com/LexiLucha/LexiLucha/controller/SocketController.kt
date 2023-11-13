@@ -95,16 +95,24 @@ class SocketController @Autowired constructor(
     private fun submitAttempt(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
             var attempt : String = data?.data ?: throw RuntimeException("gameState null")
-            println("${client.sessionId} submitted ${attempt}")
             val gamestate = games[connections[client.sessionId]] ?: throw RuntimeException("gameState null")
             gamestate.currentQuestion ?: throw RuntimeException("currentQuestion null")
             var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
-            println(gamestate.currentQuestion!!.answer)
-            var correct = false;
-            if (attempt.equals(gamestate.currentQuestion?.answer)){
-                println("  They got it right")
-                player.stat?.score = player.stat?.score?.plus(1) ?: 1
-                correct = true
+            val correct = attempt.equals(gamestate.currentQuestion?.answer);
+            if ( correct  ){
+                if (!gamestate.players.any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
+                    client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
+                    println("right fast")
+                    player.stat?.score = player.stat?.score?.plus(1) ?: 1
+                } else {
+                    println("right slow")
+
+                    client.sendEvent("warningMessage",SimpleMessage("You got the question right, but not the fastest"))
+                }
+            } else {
+                println("wrong")
+
+                client.sendEvent("failMessage",SimpleMessage("You got the question wrong!"))
             }
             val questionId: Int = gamestate.currentQuestion!!.id ?:1
             val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime

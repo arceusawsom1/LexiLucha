@@ -15,7 +15,6 @@ data class GameState(
         var currentQuestionSimple : SimpleQuestion?= null){
     fun sendUpdate() {
         println("Sending update")
-        println(this)
         for (player in players){
             player.client.sendEvent("gameUpdate", this)
         }
