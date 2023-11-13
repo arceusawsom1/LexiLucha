@@ -7,6 +7,7 @@ import com.LexiLucha.LexiLucha.model.GameState
 import com.LexiLucha.LexiLucha.model.Player
 import com.LexiLucha.LexiLucha.model.Question
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
+import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
 import com.corundumstudio.socketio.SocketIONamespace
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.lang.RuntimeException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Component
@@ -26,9 +28,10 @@ class SocketController @Autowired constructor(
         private final val questionRepo: QuestionRepository
 ) {
     val queue: List<Player> = ArrayList()
-    val connections : MutableMap<UUID, Int> = HashMap()
-    val games : MutableMap<Int, GameState> = HashMap()
-    final val namespace:SocketIONamespace = server.addNamespace("/main");
+    val connections : MutableMap<UUID, GameState> = HashMap()
+    val games : ArrayList<GameState> = ArrayList()
+    private final val MIN_PLAYERS_IN_LOBBY = 2
+    private final val namespace:SocketIONamespace = server.addNamespace("/main");
     init{
 
         println("setup socketio controller")
@@ -54,27 +57,35 @@ class SocketController @Autowired constructor(
     private fun onJoinQueue(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
             println("Message Recieved ${data?.data}")
-//            namespace.getBroadcastOperations().sendEvent("chat", data)
-            connections[client.sessionId] = 1
-            if (!games.containsKey(1)){
-                games[1] = GameState(phase=1)
+            val newPlayer = Player(data?.data ?: "default name", client=client)
+            val language : LANGUAGE = LANGUAGE.SPANISH
+            // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
+            val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1)
+
+            // Point the user to the game
+            connections[client.sessionId] = selectedGame
+
+            // Add the player to the game
+            selectedGame.players.add(newPlayer)
+
+            // If the lobby now has the correct number of players, then start waiting for ready ups
+            if (selectedGame.players.size >= MIN_PLAYERS_IN_LOBBY){
+                selectedGame.phase=2
             }
-            var name = "Default Name"
-            if (data != null) {
-                name = data.data
-            }
-            games[1]?.players?.add(Player(name=name, client=client))
-            if (games[1]?.players?.size==2){
-                games[1]?.phase=2
-            }
-            games[1]?.sendUpdate();
+            selectedGame.sendUpdate();
+
+            // This line COULD cause issues in the future
+            // We need to know whether the game needs to be added to 'games'
+            // We are going to assume that if a game only has one player at this point, then it is new, and thus needs to be added
+            if (selectedGame.players.size == 1)
+                games.add(selectedGame)
         }
     }
     private fun onReady(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
             println("${client.sessionId} is ready")
-            val gamestate = games[connections[client.sessionId]] ?: throw RuntimeException("gameState null")
-            gamestate.getPlayerBySessionId(client.sessionId)?.ready = true
+            val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
+            gamestate.getPlayerBySessionId(client.sessionId).ready = true
             if (gamestate.players.all{ it.ready}){
                 gamestate.phase=3
                 stepQuestion(gamestate)
@@ -95,7 +106,7 @@ class SocketController @Autowired constructor(
     private fun submitAttempt(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
             var attempt : String = data?.data ?: throw RuntimeException("gameState null")
-            val gamestate = games[connections[client.sessionId]] ?: throw RuntimeException("gameState null")
+            val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
             gamestate.currentQuestion ?: throw RuntimeException("currentQuestion null")
             var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
             val correct = attempt.equals(gamestate.currentQuestion?.answer);
@@ -103,7 +114,7 @@ class SocketController @Autowired constructor(
                 if (!gamestate.players.any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
                     client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
                     println("right fast")
-                    player.stat?.score = player.stat?.score?.plus(1) ?: 1
+                    player.stat.score = player.stat.score.plus(1) ?: 1
                 } else {
                     println("right slow")
 
@@ -116,8 +127,8 @@ class SocketController @Autowired constructor(
             }
             val questionId: Int = gamestate.currentQuestion!!.id ?:1
             val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
-            player.stat?.completions?.add(CompletedQuestion(questionId, timeTaken, correct))
-            if (gamestate.players.all{ p -> p.stat?.completions!!.any {it.questionId==questionId}}) {
+            player.stat.completions.add(CompletedQuestion(questionId, timeTaken, correct))
+            if (gamestate.players.all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
                 stepQuestion(gamestate)
             }
             gamestate.sendUpdate()
