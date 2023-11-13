@@ -25,6 +25,7 @@ services:
       - DB_USER=user1
       - DB_PASS=password123
       - DB_DDL=create
+      - CONTEXT_PATH=/api/rest
     depends_on:
       - mysql
 

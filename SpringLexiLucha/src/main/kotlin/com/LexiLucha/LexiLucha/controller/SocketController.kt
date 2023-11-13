@@ -16,6 +16,7 @@ import com.corundumstudio.socketio.listener.ConnectListener
 import com.corundumstudio.socketio.listener.DataListener
 import com.corundumstudio.socketio.listener.DisconnectListener
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.lang.RuntimeException
 import java.util.*
@@ -27,13 +28,16 @@ class SocketController @Autowired constructor(
         private final val server: SocketIOServer,
         private final val questionRepo: QuestionRepository
 ) {
+    @Value("\${server.servlet.context-path}")
+    val context_path : String = ""
+
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
     val games : ArrayList<GameState> = ArrayList()
     private final val MIN_PLAYERS_IN_LOBBY = 2
-    private final val namespace:SocketIONamespace = server.addNamespace("/main");
-    init{
 
+    init{
+        val namespace:SocketIONamespace = server.addNamespace("$context_path/main");
         println("setup socketio controller")
         namespace.addConnectListener(onConnected())
         namespace.addDisconnectListener(onDisconnected())
