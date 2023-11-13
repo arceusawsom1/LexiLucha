@@ -14,7 +14,7 @@ class SocketConfig {
     @Value("\${socketio.port}")
     lateinit var port: String
 
-    @Value("\${server.servlet.context-path}")
+    @Value("\${socketio.context-path}")
     lateinit var context: String
 
     @Bean
