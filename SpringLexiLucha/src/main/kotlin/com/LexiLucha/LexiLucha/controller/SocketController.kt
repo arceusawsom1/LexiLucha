@@ -28,17 +28,13 @@ class SocketController @Autowired constructor(
         private final val server: SocketIOServer,
         private final val questionRepo: QuestionRepository
 ) {
-    @Value("\${server.servlet.context-path}")
-    val context_path : String = ""
-
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
     val games : ArrayList<GameState> = ArrayList()
     private final val MIN_PLAYERS_IN_LOBBY = 2
 
     init{
-        val namespace:SocketIONamespace = server.addNamespace("/api/socket/main");
-        println("setup socketio controller")
+        val namespace:SocketIONamespace = server.addNamespace("/main");
         namespace.addConnectListener(onConnected())
         namespace.addDisconnectListener(onDisconnected())
 
