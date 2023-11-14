@@ -1,4 +1,4 @@
-import { Button, Chip, CircularProgress, Container, Table, TableCell, TableRow, Typography, useMediaQuery } from "@mui/material"
+import { Button, Chip, CircularProgress, Container, Table, TableBody, TableCell, TableRow, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import SearchBar from "./SearchBar";
 import { IGamestate, IPhraseData, ISimpleQuestion, IStats } from "../types";
@@ -98,12 +98,14 @@ const BasicPhraseQuestion = ({ currentQuestion, gamestate} : IProps) => {
             </>
           }
           <Table>
-            {gamestate.players.map((player, index)=>
-              <TableRow key={index}>
-                  <TableCell>{player.name}</TableCell>
-                  <TableCell>{player.stat.score}</TableCell>
-              </TableRow>
-            )}
+            <TableBody>
+              {gamestate.players.map((player, index)=>
+                <TableRow key={index}>
+                    <TableCell>{player.name}</TableCell>
+                    <TableCell>{player.stat.score}</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
           </Table>
         </>
       }

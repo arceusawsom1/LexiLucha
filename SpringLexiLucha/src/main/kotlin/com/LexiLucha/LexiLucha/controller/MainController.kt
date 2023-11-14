@@ -1,7 +1,6 @@
 package com.LexiLucha.LexiLucha.controller
 
-import com.LexiLucha.LexiLucha.QuestionRepository
-import com.LexiLucha.LexiLucha.model.Player
+import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

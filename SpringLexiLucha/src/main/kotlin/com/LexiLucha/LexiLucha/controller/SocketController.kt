@@ -1,11 +1,11 @@
 package com.LexiLucha.LexiLucha.controller
 
-import com.LexiLucha.LexiLucha.QuestionRepository
+import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.messages.SimpleMessage
 import com.LexiLucha.LexiLucha.model.CompletedQuestion
 import com.LexiLucha.LexiLucha.model.GameState
 import com.LexiLucha.LexiLucha.model.Player
-import com.LexiLucha.LexiLucha.model.Question
+import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.corundumstudio.socketio.AckRequest
@@ -25,9 +25,9 @@ import kotlin.collections.ArrayList
 
 @Component
 class SocketController @Autowired constructor(
-        private final val server: SocketIOServer,
-        private final val questionRepo: QuestionRepository,
-        @Value("\${socketio.context-path}") private final val contextPath : String
+    private final val server: SocketIOServer,
+    private final val questionRepo: QuestionRepository,
+    @Value("\${socketio.context-path}") private final val contextPath : String
 ) {
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
@@ -39,7 +39,7 @@ class SocketController @Autowired constructor(
         namespace.addConnectListener(onConnected())
         namespace.addDisconnectListener(onDisconnected())
 
-        namespace.addEventListener("joinQueue", SimpleMessage::class.java, onJoinQueue())
+        namespace.addEventListener("joinQueue", JoinQueueMessage::class.java, onJoinQueue())
         namespace.addEventListener("ready", SimpleMessage::class.java, onReady())
         namespace.addEventListener("submitAttempt", SimpleMessage::class.java, submitAttempt())
 
@@ -53,17 +53,20 @@ class SocketController @Autowired constructor(
     }
     private fun onDisconnected(): DisconnectListener {
         return DisconnectListener { client: SocketIOClient ->
-            val currentGame : GameState = games.find{it.players.any{it.client==client}} ?: throw Exception("Game not found")
-            currentGame.players = ArrayList(currentGame.players.filter { it.client != client })
-            currentGame.sendUpdate()
+            if (connections.containsKey(client.sessionId)){
+                val currentGame : GameState = games.find{it.players.any{it.client==client}} ?: throw Exception("Game not found")
+                currentGame.players = ArrayList(currentGame.players.filter { it.client != client })
+                connections.remove(client.sessionId)
+                currentGame.sendUpdate()
+            }
         }
     }
 
-    private fun onJoinQueue(): DataListener<SimpleMessage> {
-        return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
-            println("Message Recieved ${data?.data}")
-            val newPlayer = Player(data?.data ?: "default name", client=client)
-            val language : LANGUAGE = LANGUAGE.SPANISH
+    private fun onJoinQueue(): DataListener<JoinQueueMessage> {
+        return DataListener<JoinQueueMessage> { client: SocketIOClient, data: JoinQueueMessage, ackSender: AckRequest? ->
+            println("Player joining queue ${data}")
+            val newPlayer = Player(data.name ?: "default name", client=client)
+            val language : LANGUAGE = data.language
             // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
             val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1)
 
@@ -99,14 +102,16 @@ class SocketController @Autowired constructor(
         }
     }
     private fun stepQuestion(gamestate: GameState){
-        val maxQuestion : Int = questionRepo.count().toInt()
-        val allQuestionIds : List<Int> = (1..maxQuestion).toList()
+        val maxQuestion : Int = questionRepo.count().toInt()  // CHANGE IT to just count gamestate.language questions
+        val allQuestionIds = questionRepo.findIdsByLanguage(gamestate.language)
         val unusedQuestions = allQuestionIds.filter{!gamestate.finishedQuestions.contains(it)}
         val newQuestionID = unusedQuestions.random()
         val newQuestion = questionRepo.findById(newQuestionID).orElseThrow { RuntimeException("can't find question: $newQuestionID") }
+
+
         gamestate.currentQuestion = newQuestion
         gamestate.currentQuestionSimple = SimpleQuestion(newQuestion)
-        gamestate.startTime = System.currentTimeMillis()
+        gamestate.startTime = System.currentTimeMillis()  //this is fine
     }
     private fun submitAttempt(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
