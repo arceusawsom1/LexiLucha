@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { FormEvent, FormEventHandler, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { socket } from "../utils/socket";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
