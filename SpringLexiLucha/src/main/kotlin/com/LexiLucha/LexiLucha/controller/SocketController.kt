@@ -102,9 +102,11 @@ class SocketController @Autowired constructor(
         }
     }
     private fun stepQuestion(gamestate: GameState){
-        val maxQuestion : Int = questionRepo.count().toInt()  // CHANGE IT to just count gamestate.language questions
+        // Get all questions for the correct language
         val allQuestionIds = questionRepo.findIdsByLanguage(gamestate.language)
+        // Remove questions that have allready been done
         val unusedQuestions = allQuestionIds.filter{!gamestate.finishedQuestions.contains(it)}
+        // Get a random question ID
         val newQuestionID = unusedQuestions.random()
         val newQuestion = questionRepo.findById(newQuestionID).orElseThrow { RuntimeException("can't find question: $newQuestionID") }
 
