@@ -26,7 +26,7 @@ services:
       - DB_PASS=password123
       - DB_DDL=create
       - REST_CONTEXT_PATH=/api/rest
-      - SOCKETIO_CONTEXT_PATH=/api/socket
+      - SOCKETIO_CONTEXT_PATH=/api/socket/socket.io
     depends_on:
       - mysql
 

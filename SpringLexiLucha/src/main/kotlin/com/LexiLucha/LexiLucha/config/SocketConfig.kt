@@ -23,7 +23,7 @@ class SocketConfig {
         config.port = port.toInt()
         config.context = context
         val server = SocketIOServer(config)
-        log.info("Started socketio server on port: $port with context path: '$context'")
+        log.info("Started socketio server on port: $port with context path: '${config.context}'")
         server.start()
         return server;
     }
