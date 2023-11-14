@@ -15,6 +15,7 @@ import com.corundumstudio.socketio.SocketIOServer
 import com.corundumstudio.socketio.listener.ConnectListener
 import com.corundumstudio.socketio.listener.DataListener
 import com.corundumstudio.socketio.listener.DisconnectListener
+import jakarta.annotation.PreDestroy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -45,7 +46,11 @@ class SocketController @Autowired constructor(
         namespace.addEventListener("submitAttempt", SimpleMessage::class.java, submitAttempt())
 
     }
-
+    @PreDestroy
+    fun destroy(){
+        println("Killing server")
+        server.stop()
+    }
     private fun onConnected(): ConnectListener {
         return ConnectListener { client: SocketIOClient ->
             val handshakeData = client.handshakeData
@@ -109,12 +114,16 @@ class SocketController @Autowired constructor(
         val unusedQuestions = allQuestionIds.filter{!gamestate.finishedQuestions.contains(it)}
         // Get a random question ID
         val newQuestionID = unusedQuestions.random()
+        // Get that question
         val newQuestion = questionRepo.findById(newQuestionID).orElseThrow { RuntimeException("can't find question: $newQuestionID") }
 
+        // Add the new question to the finished questions array, so it doesnt get repeated
         gamestate.finishedQuestions.add(newQuestionID)
+        // Set the current question to the new question
         gamestate.currentQuestion = newQuestion
         gamestate.currentQuestionSimple = SimpleQuestion(newQuestion)
-        gamestate.startTime = System.currentTimeMillis()  //this is fine
+        // Reset the startTime
+        gamestate.startTime = System.currentTimeMillis()
     }
     private fun submitAttempt(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
