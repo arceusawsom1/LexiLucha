@@ -17,6 +17,7 @@ const WaitingForPlayers = ({gamestate} : IProps) => {
                     </ListItem>
                 )}
             </List>
+            <Typography variant="body1">Language: {gamestate.language}</Typography>
 
         </>
     )
