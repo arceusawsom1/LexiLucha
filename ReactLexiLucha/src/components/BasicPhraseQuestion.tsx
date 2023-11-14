@@ -4,6 +4,7 @@ import SearchBar from "./SearchBar";
 import { IGamestate, IPhraseData, ISimpleQuestion, IStats } from "../types";
 import createQuestion from "../utils/QuestionCreator";
 import { socket } from "../utils/socket";
+import SmallLeaderboard from "./SmallLeaderboard";
 
 interface IProps {
   correctHandler: (message: string)=>void,
@@ -97,16 +98,7 @@ const BasicPhraseQuestion = ({ currentQuestion, gamestate} : IProps) => {
               <CircularProgress />
             </>
           }
-          <Table>
-            <TableBody>
-              {gamestate.players.map((player, index)=>
-                <TableRow key={index}>
-                    <TableCell>{player.name}</TableCell>
-                    <TableCell>{player.stat.score}</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <SmallLeaderboard players={gamestate.players} />
         </>
       }
       </Container>
