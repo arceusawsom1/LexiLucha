@@ -124,10 +124,10 @@ class SocketController @Autowired constructor(
                 if (!gamestate.players.any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
                     client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
                     println("right fast")
-                    player.stat.score = player.stat.score.plus(1) ?: 1
+                    player.stat.score = player.stat.score.plus(gamestate.players.size-1-gamestate.players.filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
                 } else {
                     println("right slow")
-
+                    player.stat.score = player.stat.score.plus(gamestate.players.size-1-gamestate.players.filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
                     client.sendEvent("warningMessage",SimpleMessage("You got the question right, but not the fastest"))
                 }
             } else {
