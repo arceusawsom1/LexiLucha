@@ -33,6 +33,7 @@ class SocketController @Autowired constructor(
     val connections : MutableMap<UUID, GameState> = HashMap()
     var games : ArrayList<GameState> = ArrayList()
     private final val MIN_PLAYERS_IN_LOBBY = 2
+    private final val QUESTIONS_IN_ROUND = 10
 
     init{
         val namespace:SocketIONamespace = server.addNamespace("$contextPath/main");
@@ -104,13 +105,13 @@ class SocketController @Autowired constructor(
     private fun stepQuestion(gamestate: GameState){
         // Get all questions for the correct language
         val allQuestionIds = questionRepo.findIdsByLanguage(gamestate.language)
-        // Remove questions that have allready been done
+        // Remove questions that have already been done
         val unusedQuestions = allQuestionIds.filter{!gamestate.finishedQuestions.contains(it)}
         // Get a random question ID
         val newQuestionID = unusedQuestions.random()
         val newQuestion = questionRepo.findById(newQuestionID).orElseThrow { RuntimeException("can't find question: $newQuestionID") }
 
-
+        gamestate.finishedQuestions.add(newQuestionID)
         gamestate.currentQuestion = newQuestion
         gamestate.currentQuestionSimple = SimpleQuestion(newQuestion)
         gamestate.startTime = System.currentTimeMillis()  //this is fine
@@ -143,6 +144,8 @@ class SocketController @Autowired constructor(
             if (gamestate.players.all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
                 stepQuestion(gamestate)
             }
+            if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND)
+                gamestate.phase=4
             gamestate.sendUpdate()
         }
     }
