@@ -1,16 +1,24 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { FormEvent, FormEventHandler, useState } from "react";
+import { FormEvent, FormEventHandler, useEffect, useState } from "react";
 import { socket } from "../utils/socket";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
 const LandingForm = () => {
     const [name, setName] = useState<string>("");
     const [language, setLanguage] = useState<string>("");
-    const [languages] = useState<Array<string>>(["Spanish","Greek"]);
+    const [languages, setLanguages] = useState<Array<string>>(["Spanish","Greek"]);
     const joinQueue = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         socket.emit("joinQueue", {name, language})
     }
 
+    useEffect(()=>{
+        const endpoint = BASE_URL + "language"
+        console.log(endpoint)
+        axios.get(endpoint)
+            .then((response : {data: Array<string>})=>setLanguages(response.data))
+    },[])
     return(
         <>
             <form onSubmit={joinQueue}>
@@ -28,7 +36,7 @@ const LandingForm = () => {
                         onChange={(e: {target: {value: string}})=>setLanguage(e.target.value)}
                     >
                         {languages.map(((language, languageIndex)=>
-                            <MenuItem key={languageIndex} value={language.toUpperCase()}>{language}</MenuItem>
+                            <MenuItem key={languageIndex} value={language.toUpperCase()}>{language.charAt(0).toUpperCase() + language.substring(1).toLowerCase()}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>

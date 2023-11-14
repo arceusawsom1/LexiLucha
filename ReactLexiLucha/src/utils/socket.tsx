@@ -1,8 +1,9 @@
 import { io } from 'socket.io-client';
+import { SOCKET_PATH, SOCKET_URL } from './constants';
 
-const URL = import.meta.env.VITE_SOCKET_BUILD; 
-const PATH = import.meta.env.VITE_PATH;
+const URL = SOCKET_URL;
+const PATH = SOCKET_PATH;
 console.log(URL)
 export const socket = io(URL,{
-    path:PATH  //Change this to only be used in prod
+    path:PATH  //This sets the handshake url (which is used to setup the duplex connection)
 });
