@@ -21,7 +21,7 @@ class SocketConfig {
     fun socketIOServer(): SocketIOServer {
         val config = Configuration()
         config.port = port.toInt()
-        config.context = context
+        config.context = "$context/socket.io"
         val server = SocketIOServer(config)
         log.info("Started socketio server on port: $port with context path: '${config.context}'")
         server.start()

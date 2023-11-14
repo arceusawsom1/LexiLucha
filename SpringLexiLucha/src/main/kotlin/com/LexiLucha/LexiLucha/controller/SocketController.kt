@@ -36,7 +36,6 @@ class SocketController @Autowired constructor(
 
     init{
         val namespace:SocketIONamespace = server.addNamespace("$contextPath/main");
-        println("setup socketio controller, using context path: $contextPath")
         namespace.addConnectListener(onConnected())
         namespace.addDisconnectListener(onDisconnected())
 
