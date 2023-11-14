@@ -7,13 +7,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class GameState(
-        val players: ArrayList<Player> = ArrayList(),
-        val language: LANGUAGE = LANGUAGE.SPANISH,  //default language is spanish
-        @JsonIgnore var currentQuestion: Question? = null,
-        val finishedQuestions: ArrayList<Int> = ArrayList(),
-        var startTime: Long = 0,
-        var phase: Int = 0,
-        var currentQuestionSimple : SimpleQuestion?= null){
+    var players: ArrayList<Player> = ArrayList(),
+    val language: LANGUAGE = LANGUAGE.SPANISH,  //default language is spanish
+    @JsonIgnore var currentQuestion: Question? = null,
+    val finishedQuestions: ArrayList<Int> = ArrayList(),
+    var startTime: Long = 0,
+    var phase: Int = 0,
+    var currentQuestionSimple : SimpleQuestion?= null){
     fun sendUpdate() {
         println("Sending update")
         for (player in players){

@@ -31,7 +31,7 @@ class SocketController @Autowired constructor(
 ) {
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
-    val games : ArrayList<GameState> = ArrayList()
+    var games : ArrayList<GameState> = ArrayList()
     private final val MIN_PLAYERS_IN_LOBBY = 2
 
     init{
@@ -52,7 +52,11 @@ class SocketController @Autowired constructor(
         }
     }
     private fun onDisconnected(): DisconnectListener {
-        return DisconnectListener { client: SocketIOClient -> println("Client[${client.sessionId.toString()}] - Disconnected from game module.") }
+        return DisconnectListener { client: SocketIOClient ->
+            val currentGame : GameState = games.find{it.players.any{it.client==client}} ?: throw Exception("Game not found")
+            currentGame.players = ArrayList(currentGame.players.filter { it.client != client })
+            currentGame.sendUpdate()
+        }
     }
 
     private fun onJoinQueue(): DataListener<SimpleMessage> {
