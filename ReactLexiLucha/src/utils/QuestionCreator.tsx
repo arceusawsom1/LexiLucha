@@ -1,11 +1,12 @@
 import { IPhraseData } from "../types"
 
-const createQuestion= (phrase: string, answer: string, otherOptions: string="") : IPhraseData => {
+const createQuestion= (phrase: string, answer: string) : IPhraseData => {
     const question : IPhraseData = {
         phrase: phrase,
         answer: answer,
         options: []
     }
+    console.log(answer.split(" "))
     const arr: string[] = [
         ...answer.split(" "),
     ]
