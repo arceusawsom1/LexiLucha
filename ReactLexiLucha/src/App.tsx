@@ -7,7 +7,6 @@ import LandingForm from './pages/LandingForm';
 import { IGamestate } from './types';
 import WaitingForPlayers from './pages/WaitingForPlayers';
 import WaitingForReady from './pages/WaitingForReady';
-import SmallLeaderboard from './components/SmallLeaderboard';
 import RoundOver from './pages/RoundOver';
 
 function App() {

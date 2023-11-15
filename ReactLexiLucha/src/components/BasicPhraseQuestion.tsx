@@ -1,4 +1,4 @@
-import { Button, Chip, CircularProgress, Container, Table, TableBody, TableCell, TableRow, Typography, useMediaQuery } from "@mui/material"
+import { Button, Chip, CircularProgress, Container, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import SearchBar from "./SearchBar";
 import { IGamestate, IPhraseData, ISimpleQuestion, IStats } from "../types";
