@@ -33,7 +33,7 @@ class SocketController @Autowired constructor(
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
     var games : ArrayList<GameState> = ArrayList()
-    private final val MIN_PLAYERS_IN_LOBBY = 2
+    private final val MIN_PLAYERS_IN_LOBBY = 1
     private final val QUESTIONS_IN_ROUND = 10
 
     init{
