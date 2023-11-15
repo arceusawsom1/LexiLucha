@@ -4,5 +4,6 @@ enum class LANGUAGE {
     SPANISH,
     GREEK,
     JAPANESE,
-    GERMAN
+    GERMAN,
+    VIETNAMESE
 }
