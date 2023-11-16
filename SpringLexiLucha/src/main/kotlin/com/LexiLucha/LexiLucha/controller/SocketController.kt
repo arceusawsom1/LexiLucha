@@ -131,7 +131,7 @@ class SocketController @Autowired constructor(
             val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
             gamestate.currentQuestion ?: throw RuntimeException("currentQuestion null")
             var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
-            val correct = attempt.equals(gamestate.currentQuestion?.answer);
+            val correct = attempt.lowercase() == gamestate.currentQuestion?.answer?.lowercase();
             if ( correct  ){
                 if (!gamestate.players.any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
                     client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
