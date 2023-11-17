@@ -1,10 +1,12 @@
 package com.LexiLucha.LexiLucha.controller
 
+import com.LexiLucha.LexiLucha.dal.GameRepository
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.messages.SimpleMessage
 import com.LexiLucha.LexiLucha.model.CompletedQuestion
 import com.LexiLucha.LexiLucha.model.GameState
 import com.LexiLucha.LexiLucha.model.Player
+import com.LexiLucha.LexiLucha.model.Question
 import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
@@ -28,11 +30,12 @@ import kotlin.collections.ArrayList
 class SocketController @Autowired constructor(
     private final val server: SocketIOServer,
     private final val questionRepo: QuestionRepository,
+    private final val gameRepo: GameRepository,
     @Value("\${socketio.context-path}") private final val contextPath : String
 ) {
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
-    var games : ArrayList<GameState> = ArrayList()
+    val games : ArrayList<GameState> = gameRepo.findAll()
     private final val MIN_PLAYERS_IN_LOBBY = 1
     private final val QUESTIONS_IN_ROUND = 10
 
@@ -108,6 +111,10 @@ class SocketController @Autowired constructor(
         }
     }
     private fun stepQuestion(gamestate: GameState){
+        // Add the old question to the finished questions array, so it doesn't get repeated
+        if (gamestate.currentQuestion != null)
+            gamestate.finishedQuestions.add(gamestate.currentQuestion!!.id)
+
         // Get all questions for the correct language
         val allQuestionIds = questionRepo.findIdsByLanguage(gamestate.language)
         // Remove questions that have already been done
@@ -117,8 +124,7 @@ class SocketController @Autowired constructor(
         // Get that question
         val newQuestion = questionRepo.findById(newQuestionID).orElseThrow { RuntimeException("can't find question: $newQuestionID") }
 
-        // Add the new question to the finished questions array, so it doesnt get repeated
-        gamestate.finishedQuestions.add(newQuestionID)
+
         // Set the current question to the new question
         gamestate.currentQuestion = newQuestion
         gamestate.currentQuestionSimple = SimpleQuestion(newQuestion)
