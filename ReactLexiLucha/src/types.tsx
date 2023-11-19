@@ -21,6 +21,7 @@ type IGamestate = {
     currentQuestionSimple: ISimpleQuestion,
     finishedQuestions: Array<number>,
     startTime: number,
+    createdTime: number,
     phase: number,
     players: Array<IPlayer>
 }

@@ -12,6 +12,7 @@ data class GameState(
     @JsonIgnore var currentQuestion: Question? = null,
     val finishedQuestions: ArrayList<Int> = ArrayList(),
     var startTime: Long = 0,
+    var createdTime: Long = 0,
     var phase: Int = 0,
     var currentQuestionSimple : SimpleQuestion?= null){
     fun sendUpdate() {

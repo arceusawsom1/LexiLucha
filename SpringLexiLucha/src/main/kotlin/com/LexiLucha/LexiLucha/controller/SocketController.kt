@@ -77,7 +77,7 @@ class SocketController @Autowired constructor(
             val newPlayer = Player(data.name ?: "default name", client=client)
             val language : LANGUAGE = data.language
             // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
-            val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1)
+            val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1, createdTime=System.currentTimeMillis())
 
             // Point the user to the game
             connections[client.sessionId] = selectedGame
