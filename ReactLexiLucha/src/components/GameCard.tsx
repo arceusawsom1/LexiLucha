@@ -29,7 +29,7 @@ export const GameCard = (props: IProps) => {
             <Typography>Players: {game.players.length===0 ? "0":""}</Typography>
             <List>
                 {game.players.map((player, playerIndex)=>
-                    <ListItem key={playerIndex} sx={{textDecoration: (player.active ? "none" : "line-through")}}>{player.name}</ListItem>
+                    <ListItem key={playerIndex} sx={{textDecoration: (player.active ? "none" : "line-through")}}>{player.name}:{player.stat.score}</ListItem>
                 )}
             </List>
         </Card>
