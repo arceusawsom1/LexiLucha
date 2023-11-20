@@ -21,6 +21,7 @@ type IGamestate = {
     currentQuestionSimple: ISimpleQuestion,
     finishedQuestions: Array<number>,
     startTime: number,
+    createdTime: number,
     phase: number,
     players: Array<IPlayer>
 }
@@ -33,7 +34,8 @@ type ISimpleQuestion = {
 type IPlayer = {
     name: string,
     ready:boolean,
-    stat: IStat
+    stat: IStat,
+    active: boolean,
 }
 type IStat = {
     score: number

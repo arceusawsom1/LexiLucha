@@ -6,6 +6,6 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 
-data class Player (val name: String = "", val stat:Stat = Stat(), @JsonIgnore var client : SocketIOClient, var ready : Boolean = false) {
+data class Player (val name: String = "", val stat:Stat = Stat(), @JsonIgnore var client : SocketIOClient, var ready : Boolean = false, var active : Boolean = true) {
 
 }

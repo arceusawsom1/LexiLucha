@@ -1,5 +1,6 @@
 package com.LexiLucha.LexiLucha
 
+import com.LexiLucha.LexiLucha.model.GameState
 import com.corundumstudio.socketio.Configuration
 import com.corundumstudio.socketio.SocketIOServer
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -14,6 +15,12 @@ class LexiLuchaApplication
 
 fun main(args: Array<String>) {
 	runApplication<LexiLuchaApplication>(*args)
+//	@Bean
+//	fun getGamesArray(): ArrayList<GameState>{
+//		println("Creating games bean")
+//		return ArrayList<GameState>()
+//	}
+
 }
 
 

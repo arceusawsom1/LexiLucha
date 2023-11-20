@@ -1,10 +1,12 @@
 package com.LexiLucha.LexiLucha.controller
 
+import com.LexiLucha.LexiLucha.dal.GameRepository
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.messages.SimpleMessage
 import com.LexiLucha.LexiLucha.model.CompletedQuestion
 import com.LexiLucha.LexiLucha.model.GameState
 import com.LexiLucha.LexiLucha.model.Player
+import com.LexiLucha.LexiLucha.model.Question
 import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
@@ -28,11 +30,12 @@ import kotlin.collections.ArrayList
 class SocketController @Autowired constructor(
     private final val server: SocketIOServer,
     private final val questionRepo: QuestionRepository,
+    private final val gameRepo: GameRepository,
     @Value("\${socketio.context-path}") private final val contextPath : String
 ) {
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
-    var games : ArrayList<GameState> = ArrayList()
+    val games : ArrayList<GameState> = gameRepo.findAll()
     private final val MIN_PLAYERS_IN_LOBBY = 1
     private final val QUESTIONS_IN_ROUND = 10
 
@@ -60,8 +63,8 @@ class SocketController @Autowired constructor(
     private fun onDisconnected(): DisconnectListener {
         return DisconnectListener { client: SocketIOClient ->
             if (connections.containsKey(client.sessionId)){
-                val currentGame : GameState = games.find{it.players.any{it.client==client}} ?: throw Exception("Game not found")
-                currentGame.players = ArrayList(currentGame.players.filter { it.client != client })
+                val currentGame : GameState = games.find{it.activePlayers().any{it.client==client}} ?: throw Exception("Game not found")
+                currentGame.activePlayers().filter { it.client == client }.forEach{ it.active=false }
                 connections.remove(client.sessionId)
                 currentGame.sendUpdate()
             }
@@ -74,7 +77,7 @@ class SocketController @Autowired constructor(
             val newPlayer = Player(data.name ?: "default name", client=client)
             val language : LANGUAGE = data.language
             // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
-            val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1)
+            val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1, createdTime=System.currentTimeMillis())
 
             // Point the user to the game
             connections[client.sessionId] = selectedGame
@@ -83,7 +86,7 @@ class SocketController @Autowired constructor(
             selectedGame.players.add(newPlayer)
 
             // If the lobby now has the correct number of players, then start waiting for ready ups
-            if (selectedGame.players.size >= MIN_PLAYERS_IN_LOBBY){
+            if (selectedGame.activePlayers().size >= MIN_PLAYERS_IN_LOBBY){
                 selectedGame.phase=2
             }
             selectedGame.sendUpdate();
@@ -100,7 +103,7 @@ class SocketController @Autowired constructor(
             println("${client.sessionId} is ready")
             val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
             gamestate.getPlayerBySessionId(client.sessionId).ready = true
-            if (gamestate.players.all{ it.ready}){
+            if (gamestate.activePlayers().all{ it.ready }){
                 gamestate.phase=3
                 stepQuestion(gamestate)
             }
@@ -108,6 +111,10 @@ class SocketController @Autowired constructor(
         }
     }
     private fun stepQuestion(gamestate: GameState){
+        // Add the old question to the finished questions array, so it doesn't get repeated
+        if (gamestate.currentQuestion != null)
+            gamestate.finishedQuestions.add(gamestate.currentQuestion!!.id)
+
         // Get all questions for the correct language
         val allQuestionIds = questionRepo.findIdsByLanguage(gamestate.language)
         // Remove questions that have already been done
@@ -117,8 +124,7 @@ class SocketController @Autowired constructor(
         // Get that question
         val newQuestion = questionRepo.findById(newQuestionID).orElseThrow { RuntimeException("can't find question: $newQuestionID") }
 
-        // Add the new question to the finished questions array, so it doesnt get repeated
-        gamestate.finishedQuestions.add(newQuestionID)
+
         // Set the current question to the new question
         gamestate.currentQuestion = newQuestion
         gamestate.currentQuestionSimple = SimpleQuestion(newQuestion)
@@ -131,15 +137,15 @@ class SocketController @Autowired constructor(
             val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
             gamestate.currentQuestion ?: throw RuntimeException("currentQuestion null")
             var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
-            val correct = attempt.equals(gamestate.currentQuestion?.answer);
+            val correct = attempt.lowercase() == gamestate.currentQuestion?.answer?.lowercase();
             if ( correct  ){
-                if (!gamestate.players.any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
+                if (!gamestate.activePlayers().any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
                     client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
                     println("right fast")
-                    player.stat.score = player.stat.score.plus(gamestate.players.size-1-gamestate.players.filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
+                    player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-1-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
                 } else {
                     println("right slow")
-                    player.stat.score = player.stat.score.plus(gamestate.players.size-1-gamestate.players.filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
+                    player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-1-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
                     client.sendEvent("warningMessage",SimpleMessage("You got the question right, but not the fastest"))
                 }
             } else {
@@ -150,7 +156,7 @@ class SocketController @Autowired constructor(
             val questionId: Int = gamestate.currentQuestion!!.id ?:1
             val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
             player.stat.completions.add(CompletedQuestion(questionId, timeTaken, correct))
-            if (gamestate.players.all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
+            if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
                 stepQuestion(gamestate)
             }
             if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND)

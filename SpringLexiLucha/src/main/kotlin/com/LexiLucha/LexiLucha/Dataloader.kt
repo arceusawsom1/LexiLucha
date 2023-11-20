@@ -324,6 +324,8 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository): A
         questions.add(Question("Kas jums suteikia gyvenimo prasmę?", "What gives meaning to your life?", "Passion pursuer, dream chaser", language=LANGUAGE.LITHUANIAN))
         questions.add(Question("Kokie yra jūsų mėgstamiausi šeimos vakarėlių žaidimai?", "What are your favorite family game night games?", "Game night enthusiast, strategy game lover", language=LANGUAGE.LITHUANIAN))
 
+        questions.forEach{it.answer=it.answer.lowercase().trimEnd('?','.','!')}
+        questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
 
         questionRepo.saveAll(questions)
     }
