@@ -16,20 +16,11 @@
     # Build the Vite project
     RUN npm run build
 
-    # Create a new stage for serving the app
-    FROM node:16-alpine
-
-    # Set the working directory in the container
-    WORKDIR /app
-
-    # Install the `serve` package globally
-    RUN npm install -g serve
-
-    # Copy the build output from the builder stage to the current stage
-    COPY --from=builder /app/dist ./dist
-
-    # Expose a port for the serve command to listen on
-    EXPOSE 3000
-
-    # Define the command to run when the container starts
-    CMD ["serve", "dist"]
+    #Stage 2
+    FROM nginx:1.19.0
+    RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf_orig
+    COPY nginx.conf /etc/nginx/nginx.conf
+    WORKDIR /usr/share/nginx/html
+    RUN rm -rf ./*
+    COPY --from=builder /app/dist .
+    ENTRYPOINT ["nginx", "-g", "daemon off; "]
