@@ -9,7 +9,7 @@ import GamesPerDay from "../components/graphs/GamesPerDay";
 const Dashboard = () => {
     const [games, setGames] = useState<Array<IGamestate>>([]);
     const refreshData = () => {
-        const endpoint = BASE_URL + "game"
+        const endpoint = BASE_URL + "game/archive"
         console.log("Endpoint: " + endpoint)
         axios.get(endpoint)
             .then((response : {data: Array<IGamestate>})=>setGames(response.data))

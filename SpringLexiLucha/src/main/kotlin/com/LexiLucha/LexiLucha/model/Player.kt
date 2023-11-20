@@ -21,5 +21,26 @@ data class Player (
     @Transient var client : SocketIOClient,
     var ready : Boolean = false,
     var active : Boolean = true) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
+        other as Player
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (client != other.client) return false
+        if (ready != other.ready) return false
+        if (active != other.active) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + name.hashCode()
+        result = 31 * result + ready.hashCode()
+        result = 31 * result + active.hashCode()
+        return result
+    }
 }

@@ -23,6 +23,7 @@ data class GameState(
     val finishedQuestions: ArrayList<Int> = ArrayList(),
     var startTime: Long = 0,
     var createdTime: Long = 0,
+    var finishedTime: Long = 0,
     var phase: Int = 0,
     @Transient var currentQuestionSimple : SimpleQuestion?= null,
     @GeneratedValue @Id var id : Int=0){

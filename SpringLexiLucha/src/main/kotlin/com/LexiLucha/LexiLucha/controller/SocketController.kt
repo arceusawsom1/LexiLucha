@@ -163,7 +163,10 @@ class SocketController @Autowired constructor(
             }
             if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND && gamestate.phase!=4) {
                 gamestate.phase = 4
+                games.remove(gamestate)
+                gamestate.finishedTime=System.currentTimeMillis()
                 gameArchive.save(gamestate)
+                gamestate.players.forEach{connections.remove(it.client.sessionId)}
             }
             gamestate.sendUpdate()
         }
