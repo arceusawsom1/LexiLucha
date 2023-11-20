@@ -1,5 +1,6 @@
 package com.LexiLucha.LexiLucha.controller
 
+import com.LexiLucha.LexiLucha.dal.GameArchive
 import com.LexiLucha.LexiLucha.dal.GameRepository
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.messages.SimpleMessage
@@ -31,7 +32,8 @@ class SocketController @Autowired constructor(
     private final val server: SocketIOServer,
     private final val questionRepo: QuestionRepository,
     private final val gameRepo: GameRepository,
-    @Value("\${socketio.context-path}") private final val contextPath : String
+    @Value("\${socketio.context-path}") private final val contextPath : String,
+    private final val gameArchive: GameArchive
 ) {
     val queue: List<Player> = ArrayList()
     val connections : MutableMap<UUID, GameState> = HashMap()
@@ -74,7 +76,7 @@ class SocketController @Autowired constructor(
     private fun onJoinQueue(): DataListener<JoinQueueMessage> {
         return DataListener<JoinQueueMessage> { client: SocketIOClient, data: JoinQueueMessage, ackSender: AckRequest? ->
             println("Player joining queue ${data}")
-            val newPlayer = Player(data.name ?: "default name", client=client)
+            val newPlayer = Player(name=data.name ?: "default name", client=client)
             val language : LANGUAGE = data.language
             // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
             val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1, createdTime=System.currentTimeMillis())
@@ -155,12 +157,14 @@ class SocketController @Autowired constructor(
             }
             val questionId: Int = gamestate.currentQuestion!!.id ?:1
             val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
-            player.stat.completions.add(CompletedQuestion(questionId, timeTaken, correct))
+            player.stat.completions.add(CompletedQuestion(questionId=questionId,timeTaken=timeTaken,correct=correct))
             if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
                 stepQuestion(gamestate)
             }
-            if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND)
-                gamestate.phase=4
+            if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND && gamestate.phase!=4) {
+                gamestate.phase = 4
+                gameArchive.save(gamestate)
+            }
             gamestate.sendUpdate()
         }
     }
