@@ -1,5 +1,6 @@
 package com.LexiLucha.LexiLucha.controller
 
+import com.LexiLucha.LexiLucha.dal.GameArchive
 import com.LexiLucha.LexiLucha.dal.GameRepository
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.model.GameState
@@ -13,12 +14,22 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("game")
 class GameController @Autowired(required = true) constructor(
-    private val gameRepo: GameRepository
+    private val gameRepo: GameRepository,
+    private val gameArchive: GameArchive
 ){
 
     @GetMapping
     @CrossOrigin(origins = ["http://localhost:5173", "https://lexilucha.theduggan.online"])
-    fun testEndpoint() : ArrayList<GameState>{
-        return gameRepo.findAll()
+    fun getCurrentGames() : ArrayList<GameState>{
+        val games = ArrayList<GameState>()
+        games.addAll(gameRepo.findAll())
+        return games
+    }
+    @GetMapping("/archive")
+    @CrossOrigin(origins = ["http://localhost:5173", "https://lexilucha.theduggan.online"])
+    fun getArchive() : ArrayList<GameState>{
+        val games = ArrayList<GameState>()
+        games.addAll(gameArchive.findAll())
+        return games
     }
 }

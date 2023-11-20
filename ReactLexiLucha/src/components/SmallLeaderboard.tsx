@@ -8,7 +8,7 @@ const SmallLeaderboard = (props : IProps) => {
     return(
         <Table>
             <TableBody>
-              {props.players.sort((a, b)=> b.stat.score-a.stat.score).map((player, index)=>
+              {props.players.filter(p=>p.active).sort((a, b)=> b.stat.score-a.stat.score).map((player, index)=>
                 <TableRow key={index}>
                     <TableCell>{player.name}</TableCell>
                     <TableCell>{player.stat.score}</TableCell>

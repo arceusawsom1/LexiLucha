@@ -7,11 +7,14 @@ import GameCard from "../components/GameCard";
 
 export const AllGames = () => {
     const [games, setGames] = useState<Array<IGamestate>>([]);
+    const [archiveGames, setArchiveGames] = useState<Array<IGamestate>>([]);
     const refreshData = () => {
         const endpoint = BASE_URL + "game"
         console.log("Endpoint: " + endpoint)
         axios.get(endpoint)
             .then((response : {data: Array<IGamestate>})=>setGames(response.data))
+        axios.get(endpoint + "/archive")
+            .then((response : {data: Array<IGamestate>})=>setArchiveGames(response.data))
     }
     
     useEffect(()=>{
@@ -30,7 +33,13 @@ export const AllGames = () => {
                 )}
             </Grid>
             <Typography variant="h2">Archived Games</Typography>
-            
+            <Grid container>
+                {archiveGames.map((game, gameIndex)=>
+                    <Grid item sx={{m:1}} key={gameIndex}>
+                        <GameCard game={game}/>
+                    </Grid>
+                )}
+            </Grid>
             <Button variant="outlined" onClick={refreshData}>Refresh Data</Button>
 
         </Container>

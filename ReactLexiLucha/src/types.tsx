@@ -22,6 +22,7 @@ type IGamestate = {
     finishedQuestions: Array<number>,
     startTime: number,
     createdTime: number,
+    finishedTime: number,
     phase: number,
     players: Array<IPlayer>
 }

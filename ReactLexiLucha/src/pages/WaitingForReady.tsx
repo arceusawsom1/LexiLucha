@@ -17,7 +17,7 @@ const WaitingForReady = ({gamestate} : IProps) => {
             <Button onClick={onReady}>Ready Up</Button>
             <Typography variant="h3">Current Players: </Typography>
             <List>
-                {gamestate.players.map((player:IPlayer, playerIndex: number)=>
+                {gamestate.players.filter(p=>p.active).map((player:IPlayer, playerIndex: number)=>
                     <ListItem key={playerIndex}>
                         {player.name}:{player.ready ? "Ready": "Not Ready"}
                     </ListItem>

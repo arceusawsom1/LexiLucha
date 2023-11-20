@@ -3,18 +3,30 @@ package com.LexiLucha.LexiLucha.model
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
+@Entity
 data class GameState(
-    var players: ArrayList<Player> = ArrayList(),
+    @OneToMany(cascade = [CascadeType.ALL])
+    var players: MutableSet<Player> = HashSet(),
     val language: LANGUAGE = LANGUAGE.SPANISH,  //default language is spanish
+    @OneToOne
     @JsonIgnore var currentQuestion: Question? = null,
     val finishedQuestions: ArrayList<Int> = ArrayList(),
     var startTime: Long = 0,
     var createdTime: Long = 0,
+    var finishedTime: Long = 0,
     var phase: Int = 0,
-    var currentQuestionSimple : SimpleQuestion?= null){
+    @Transient var currentQuestionSimple : SimpleQuestion?= null,
+    @GeneratedValue @Id var id : Int=0){
 
     fun sendUpdate() {
         println("Sending update")
