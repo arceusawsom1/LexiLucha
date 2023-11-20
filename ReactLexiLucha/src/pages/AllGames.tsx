@@ -1,9 +1,8 @@
-import { Button, Card, Container, Grid, List, ListItem, Typography } from "@mui/material"
+import { Button,  Container, Grid, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { IGamestate } from "../types";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
-import { prettyFormat } from "../utils/time";
 import GameCard from "../components/GameCard";
 
 export const AllGames = () => {
@@ -24,8 +23,8 @@ export const AllGames = () => {
 
             <Typography variant="h2">Currently active games</Typography>
             <Grid container>
-                {games.map(game=>
-                    <Grid item sx={{m:1}}>
+                {games.map((game, gameIndex)=>
+                    <Grid item sx={{m:1}} key={gameIndex}>
                         <GameCard game={game}/>
                     </Grid>
                 )}

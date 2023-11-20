@@ -63,8 +63,8 @@ class SocketController @Autowired constructor(
     private fun onDisconnected(): DisconnectListener {
         return DisconnectListener { client: SocketIOClient ->
             if (connections.containsKey(client.sessionId)){
-                val currentGame : GameState = games.find{it.players.any{it.client==client}} ?: throw Exception("Game not found")
-                currentGame.players = ArrayList(currentGame.players.filter { it.client != client })
+                val currentGame : GameState = games.find{it.activePlayers().any{it.client==client}} ?: throw Exception("Game not found")
+                currentGame.activePlayers().filter { it.client == client }.forEach{ it.active=false }
                 connections.remove(client.sessionId)
                 currentGame.sendUpdate()
             }
@@ -86,7 +86,7 @@ class SocketController @Autowired constructor(
             selectedGame.players.add(newPlayer)
 
             // If the lobby now has the correct number of players, then start waiting for ready ups
-            if (selectedGame.players.size >= MIN_PLAYERS_IN_LOBBY){
+            if (selectedGame.activePlayers().size >= MIN_PLAYERS_IN_LOBBY){
                 selectedGame.phase=2
             }
             selectedGame.sendUpdate();
@@ -103,7 +103,7 @@ class SocketController @Autowired constructor(
             println("${client.sessionId} is ready")
             val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
             gamestate.getPlayerBySessionId(client.sessionId).ready = true
-            if (gamestate.players.all{ it.ready}){
+            if (gamestate.activePlayers().all{ it.ready }){
                 gamestate.phase=3
                 stepQuestion(gamestate)
             }
@@ -139,13 +139,13 @@ class SocketController @Autowired constructor(
             var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
             val correct = attempt.lowercase() == gamestate.currentQuestion?.answer?.lowercase();
             if ( correct  ){
-                if (!gamestate.players.any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
+                if (!gamestate.activePlayers().any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
                     client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
                     println("right fast")
-                    player.stat.score = player.stat.score.plus(gamestate.players.size-1-gamestate.players.filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
+                    player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-1-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
                 } else {
                     println("right slow")
-                    player.stat.score = player.stat.score.plus(gamestate.players.size-1-gamestate.players.filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
+                    player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-1-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
                     client.sendEvent("warningMessage",SimpleMessage("You got the question right, but not the fastest"))
                 }
             } else {
@@ -156,7 +156,7 @@ class SocketController @Autowired constructor(
             val questionId: Int = gamestate.currentQuestion!!.id ?:1
             val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
             player.stat.completions.add(CompletedQuestion(questionId, timeTaken, correct))
-            if (gamestate.players.all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
+            if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
                 stepQuestion(gamestate)
             }
             if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND)

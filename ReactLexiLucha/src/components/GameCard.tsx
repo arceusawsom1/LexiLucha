@@ -20,7 +20,7 @@ export const GameCard = (props: IProps) => {
             {showQuestionIds && 
                 <List>
                     {game.finishedQuestions.map(questionId=>
-                        <ListItem>{questionId}</ListItem>
+                        <ListItem key={questionId}>{questionId}</ListItem>
                     )}
                 </List>
             }
@@ -28,8 +28,8 @@ export const GameCard = (props: IProps) => {
             <Typography>Runtime: {prettyFormat(currentTime-game.createdTime)}</Typography>
             <Typography>Players: {game.players.length===0 ? "0":""}</Typography>
             <List>
-                {game.players.map(player=>
-                    <ListItem>{player.name}</ListItem>
+                {game.players.map((player, playerIndex)=>
+                    <ListItem key={playerIndex} sx={{textDecoration: (player.active ? "none" : "line-through")}}>{player.name}</ListItem>
                 )}
             </List>
         </Card>

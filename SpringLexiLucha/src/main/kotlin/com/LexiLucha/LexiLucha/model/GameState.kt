@@ -15,9 +15,10 @@ data class GameState(
     var createdTime: Long = 0,
     var phase: Int = 0,
     var currentQuestionSimple : SimpleQuestion?= null){
+
     fun sendUpdate() {
         println("Sending update")
-        for (player in players){
+        for (player in players.filter{it.active}){
             player.client.sendEvent("gameUpdate", this)
         }
     }
@@ -33,6 +34,10 @@ data class GameState(
         //if current question exists, add its ID to finished Questions
         currentQuestion?.id?.let { finishedQuestions.add(it) }
         currentQuestion = question
+    }
+
+    fun activePlayers() : List<Player>{
+        return this.players.filter { it.active }
     }
 
 }

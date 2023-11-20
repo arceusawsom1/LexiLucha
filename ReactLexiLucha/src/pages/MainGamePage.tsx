@@ -35,11 +35,13 @@ const MainGamePage = () => {
         console.log("connected")
       }
       const onDisconnect = () => {
+        setFailMessage("Disconnected from server (Tell Ryan)")
         console.log("disconnected")
       }
       const onGameUpdate = (e: IGamestate) => {
         setPhase(1);
         setGamestate(e);
+        console.log("New Gamestate:", e)
       }
       socket.on('connect', onConnect);
       socket.on('disconnect', onDisconnect);
