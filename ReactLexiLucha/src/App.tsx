@@ -16,15 +16,15 @@ function App() {
 
         </Routes>
         <Container sx={{textAlign:"center",my:4}}>
-            <Box sx={{my:1}}>
+            {/* <Box sx={{my:1}}>
                 <Button component={Link} variant="outlined" to="/">New Game</Button>
-            </Box>
+            </Box> 
             <Box sx={{my:1}}>
                 <Button component={Link} variant="outlined" to="dashboard">Dashboard</Button>
             </Box>
             <Box sx={{my:1}}>
                 <Button component={Link} variant="outlined" to="allgames">All Games</Button>
-            </Box>
+            </Box> */}
 
         </Container>
     </>
