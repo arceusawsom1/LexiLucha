@@ -15,7 +15,7 @@ export const AllGames = () => {
             .then((response : {data: Array<IGamestate>})=>setGames(response.data))
         axios.get(endpoint + "/archive")
             .then((response : {data: Array<IGamestate>})=>setArchiveGames(response.data))
-    }
+    } 
     
     useEffect(()=>{
         refreshData()
