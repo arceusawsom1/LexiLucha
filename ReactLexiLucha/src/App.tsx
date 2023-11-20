@@ -1,7 +1,7 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import MainGamePage from './pages/MainGamePage'
-import { Box, Button, Container } from '@mui/material'
+import { Container } from '@mui/material'
 import Dashboard from './pages/Dashboard'
 import { AllGames } from './pages/AllGames'
 
