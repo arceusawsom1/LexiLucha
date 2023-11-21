@@ -5,6 +5,7 @@ import { BASE_URL } from "../utils/constants";
 import { Button, Container, Grid, Typography } from "@mui/material";
 import PopularityByLanguage from "../components/graphs/PopularityByLanguage";
 import GamesPerDay from "../components/graphs/GamesPerDay";
+import TimePerQuestionByLanguage from "../components/graphs/TimePerQuestionByLanguage";
 
 const Dashboard = () => {
     const [games, setGames] = useState<Array<IGamestate>>([]);
@@ -30,6 +31,9 @@ const Dashboard = () => {
                 </Grid>
                 <Grid item>
                     <GamesPerDay games={games} />
+                </Grid>
+                <Grid item>
+                    <TimePerQuestionByLanguage games={games} />
                 </Grid>
             </Grid>
             

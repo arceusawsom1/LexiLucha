@@ -4,6 +4,7 @@ import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.model.Question
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Service
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Service
 @Service
 class Dataloader @Autowired constructor(val questionRepo: QuestionRepository): ApplicationRunner  {
 
-
+    @Value("\${spring.jpa.hibernate.ddl-auto}")
+    lateinit var DDL_SETTING: String
 
     override fun run(args: ApplicationArguments?) {
         val questions: ArrayList<Question> = ArrayList()
@@ -326,7 +328,7 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository): A
 
         questions.forEach{it.answer=it.answer.lowercase().trimEnd('?','.','!')}
         questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
-//        questionRepo.deleteAll();
-//        questionRepo.saveAll(questions)
+        if (DDL_SETTING.lowercase()=="create")
+            questionRepo.saveAll(questions)
     }
 }
