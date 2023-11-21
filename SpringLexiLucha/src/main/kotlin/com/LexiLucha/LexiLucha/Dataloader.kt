@@ -326,7 +326,7 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository): A
 
         questions.forEach{it.answer=it.answer.lowercase().trimEnd('?','.','!')}
         questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
-        questionRepo.deleteAll();
-        questionRepo.saveAll(questions)
+//        questionRepo.deleteAll();
+//        questionRepo.saveAll(questions)
     }
 }
