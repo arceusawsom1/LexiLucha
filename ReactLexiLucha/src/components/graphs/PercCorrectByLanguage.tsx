@@ -6,7 +6,7 @@ import { useMemo } from "react";
 interface IProps {
     games: Array<IGamestate>
 }
-const TimePerQuestionByLanguage = (props: IProps) => {
+const PercCorrectByLanguage = (props: IProps) => {
     const { games } = props;
 
     let allUsedLangauges = useMemo(()=>{
@@ -18,17 +18,16 @@ const TimePerQuestionByLanguage = (props: IProps) => {
         let data : Array<number> = []
 
         for (let language of allUsedLangauges){
-            let times:Array<number> = games
+            let AllAttempts:Array<ICompletedQuestion> = games
                 .filter((game : IGamestate)=>game.language==language)
                 .flatMap((game:IGamestate)=>game.players
-                    .flatMap((player : IPlayer)=>player.stat.completions
-                        .filter((question: ICompletedQuestion)=> question.correct))
-                        .flatMap((question: ICompletedQuestion)=> question.timeTaken))
+                    .flatMap((player : IPlayer)=>player.stat.completions))
+            
+            let correctAttempts = AllAttempts.filter(attempt=>attempt.correct)
 
-            let sum = times.reduce((total:number, iterator:number)=> total+iterator,0)
             let answer = 0
-            if (times.length!=0){
-                answer = sum/times.length/1000
+            if (AllAttempts.length!=0){
+                answer = (correctAttempts.length / AllAttempts.length)*100
             }
             data.push(answer) 
         }
@@ -38,18 +37,18 @@ const TimePerQuestionByLanguage = (props: IProps) => {
     },[games])
     return (
         <Card sx={{p:2,m:1,textAlign:"center"}}>
-            <Typography variant="h3">Time per Question</Typography>
-            <Typography>* Only correct attempts</Typography>
+            <Typography variant="h3">% Correct by Language</Typography>
             {data.length>0 && allUsedLangauges.length>0 && 
                 <BarChart
                     width={500}
                     height={200}
                     series={[{data}]}
                     xAxis={[{data:allUsedLangauges,scaleType:"band"}]}
+                    yAxis={[{max:100}]}
                 />
             }   
         </Card>
     )
 }
 
-export default TimePerQuestionByLanguage
+export default PercCorrectByLanguage

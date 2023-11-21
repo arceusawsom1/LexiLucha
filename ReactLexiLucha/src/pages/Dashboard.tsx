@@ -6,6 +6,7 @@ import { Button, Container, Grid, Typography } from "@mui/material";
 import PopularityByLanguage from "../components/graphs/PopularityByLanguage";
 import GamesPerDay from "../components/graphs/GamesPerDay";
 import TimePerQuestionByLanguage from "../components/graphs/TimePerQuestionByLanguage";
+import PercCorrectByLanguage from "../components/graphs/PercCorrectByLanguage";
 
 const Dashboard = () => {
     const [games, setGames] = useState<Array<IGamestate>>([]);
@@ -34,6 +35,9 @@ const Dashboard = () => {
                 </Grid>
                 <Grid item>
                     <TimePerQuestionByLanguage games={games} />
+                </Grid>
+                <Grid item>
+                    <PercCorrectByLanguage games={games} />
                 </Grid>
             </Grid>
             
