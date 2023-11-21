@@ -2,7 +2,6 @@ import { BarChart } from "@mui/x-charts";
 import { ICompletedQuestion, IGamestate, IPlayer } from "../../types"
 import { Card, Typography } from "@mui/material";
 import { useMemo } from "react";
-import { prettyDate } from "../../utils/date";
 
 interface IProps {
     games: Array<IGamestate>
