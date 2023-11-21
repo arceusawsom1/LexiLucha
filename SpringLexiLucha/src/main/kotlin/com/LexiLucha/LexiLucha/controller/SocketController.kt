@@ -67,6 +67,9 @@ class SocketController @Autowired constructor(
             if (connections.containsKey(client.sessionId)){
                 val currentGame : GameState = games.find{it.activePlayers().any{it.client==client}} ?: throw Exception("Game not found")
                 currentGame.activePlayers().filter { it.client == client }.forEach{ it.active=false }
+                if (currentGame.players.count{it.active} == 0){
+                    games.remove(currentGame)
+                }
                 connections.remove(client.sessionId)
                 currentGame.sendUpdate()
             }
