@@ -63,7 +63,7 @@ class SecurityConfig @Autowired constructor(
             .authorizeHttpRequests { authz: AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry ->
                 authz
                     .requestMatchers("/adminonly").hasAuthority("SCOPE_ADMIN")
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             }
             //        	.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)  //The old syntax
             .oauth2ResourceServer { server: OAuth2ResourceServerConfigurer<HttpSecurity?> ->
