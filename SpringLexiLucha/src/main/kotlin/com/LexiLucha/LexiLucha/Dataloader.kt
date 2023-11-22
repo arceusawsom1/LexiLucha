@@ -2,15 +2,20 @@ package com.LexiLucha.LexiLucha
 
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.model.Question
+import com.LexiLucha.LexiLucha.model.User
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
+import com.LexiLucha.LexiLucha.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.context.annotation.Bean
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class Dataloader @Autowired constructor(val questionRepo: QuestionRepository): ApplicationRunner  {
+class Dataloader @Autowired constructor(val questionRepo: QuestionRepository, val userService: UserService): ApplicationRunner  {
 
     @Value("\${spring.jpa.hibernate.ddl-auto}")
     lateinit var DDL_SETTING: String
@@ -330,5 +335,7 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository): A
         questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
         if (DDL_SETTING.lowercase()=="create")
             questionRepo.saveAll(questions)
+        userService.register(User(username="Ryan",password="password123"))
     }
+
 }

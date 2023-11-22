@@ -19,14 +19,12 @@ class GameController @Autowired(required = true) constructor(
 ){
 
     @GetMapping
-    @CrossOrigin(origins = ["http://localhost:5173", "https://lexilucha.theduggan.online"])
     fun getCurrentGames() : ArrayList<GameState>{
         val games = ArrayList<GameState>()
         games.addAll(gameRepo.findAll())
         return games
     }
     @GetMapping("/archive")
-    @CrossOrigin(origins = ["http://localhost:5173", "https://lexilucha.theduggan.online"])
     fun getArchive() : ArrayList<GameState>{
         val games = ArrayList<GameState>()
         games.addAll(gameArchive.findAll())
