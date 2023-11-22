@@ -1,16 +1,20 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { FormEvent, useEffect, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import { socket } from "../utils/socket";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-
-const LandingForm = () => {
+import { IUser } from "../types";
+interface IProps {
+    me: [IUser, Dispatch<SetStateAction<IUser>>]
+}
+const LandingForm = (props: IProps) => {
+    const [me, _setMe] = props.me
     const [name, setName] = useState<string>("");
     const [language, setLanguage] = useState<string>("");
     const [languages, setLanguages] = useState<Array<string>>(["Spanish","Greek"]);
     const joinQueue = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        socket.emit("joinQueue", {name, language})
+        socket.emit("joinQueue", {name, language, bearer:me.bearer})
     }
 
     useEffect(()=>{
@@ -22,9 +26,9 @@ const LandingForm = () => {
     return(
         <>
             <form onSubmit={joinQueue}>
-                <FormControl fullWidth sx={{my:1}}>
+                {me.bearer.length==0 && <FormControl fullWidth sx={{my:1}}>
                     <TextField required label="Display Name" value={name} onChange={(e)=>setName(e.target.value)}/>
-                </FormControl>
+                </FormControl> }
                 <FormControl fullWidth>
                     <InputLabel id="language-picker">Language</InputLabel>
                     <Select

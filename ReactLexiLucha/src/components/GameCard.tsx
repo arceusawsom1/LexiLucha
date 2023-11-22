@@ -3,6 +3,7 @@ import { prettyFormat } from "../utils/time";
 import { IGamestate } from "../types";
 import { useState } from "react";
 import { prettyDate } from "../utils/date";
+import { getDisplayname } from "../utils/player";
 interface IProps {
     game: IGamestate
 }
@@ -33,7 +34,7 @@ export const GameCard = (props: IProps) => {
             <Typography>Players: {game.players.length===0 ? "0":""}</Typography>
             <List>
                 {game.players.map((player, playerIndex)=>
-                    <ListItem key={playerIndex} sx={{textDecoration: (player.active ? "none" : "line-through")}}>{player.name}:{player.stat.score}</ListItem>
+                    <ListItem key={playerIndex} sx={{textDecoration: (player.active ? "none" : "line-through")}}>{getDisplayname(player)}:{player.stat.score}</ListItem>
                 )}
             </List>
         </Card>

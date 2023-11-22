@@ -37,6 +37,7 @@ type IPlayer = {
     ready:boolean,
     stat: IStat,
     active: boolean,
+    type: string,
 }
 type IStat = {
     score: number,
@@ -46,4 +47,7 @@ type ICompletedQuestion = {
     timeTaken: number,
     correct: boolean,
 }
-export type {IPhraseData, IStats, IOption, IGamestate,IPlayer,ISimpleQuestion, IStat,ICompletedQuestion}
+type IUser = {
+    bearer: string,
+}
+export type {IUser, IPhraseData, IStats, IOption, IGamestate,IPlayer,ISimpleQuestion, IStat,ICompletedQuestion}

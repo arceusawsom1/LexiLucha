@@ -16,4 +16,8 @@ class UserService @Autowired constructor(var userRepository: UserRepository, var
     fun findByUsername(username: String) : User{
         return userRepository.findByUsername(username)
     }
+
+    fun existsByUsername(username: String): Boolean {
+        return userRepository.existsByUsername(username)
+    }
 }

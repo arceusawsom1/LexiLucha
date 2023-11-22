@@ -1,6 +1,6 @@
 import { Container, ThemeProvider, createTheme, Snackbar, Alert, Typography } from '@mui/material'
-import { useEffect,useState } from 'react';
-import { IGamestate } from '../types';
+import { Dispatch, SetStateAction, useEffect,useState } from 'react';
+import { IGamestate, IUser } from '../types';
 import { socket } from '../utils/socket';
 import LandingForm from './LandingForm';
 import WaitingForPlayers from './WaitingForPlayers';
@@ -8,8 +8,11 @@ import WaitingForReady from './WaitingForReady';
 import BasicPhraseQuestion from '../components/BasicPhraseQuestion';
 import RoundOver from './RoundOver';
 
-
-const MainGamePage = () => {
+interface IProps {
+  me: [IUser, Dispatch<SetStateAction<IUser>>]
+}
+const MainGamePage = (props: IProps) => {
+    const [me, setMe] = props.me
     const theme = createTheme({
     
     })
@@ -107,7 +110,7 @@ const MainGamePage = () => {
       <ThemeProvider theme = {theme}>
         <Container sx={{textAlign:"center"}}>
           <Typography variant="h1">Lexi Lucha</Typography>
-          {phase === 0 && <LandingForm />}
+          {phase === 0 && <LandingForm me={[me, setMe]} />}
           {(phase === 1 && gamestate!==undefined)&& 
             <>
               {gamestate.phase===1 && <WaitingForPlayers gamestate={gamestate} />}

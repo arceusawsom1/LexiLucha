@@ -11,6 +11,8 @@ import com.LexiLucha.LexiLucha.model.Question
 import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
+import com.LexiLucha.LexiLucha.model.enums.PLAYERTYPE
+import com.LexiLucha.LexiLucha.security.TokenService
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
 import com.corundumstudio.socketio.SocketIONamespace
@@ -18,9 +20,12 @@ import com.corundumstudio.socketio.SocketIOServer
 import com.corundumstudio.socketio.listener.ConnectListener
 import com.corundumstudio.socketio.listener.DataListener
 import com.corundumstudio.socketio.listener.DisconnectListener
+import com.nimbusds.jwt.JWT
 import jakarta.annotation.PreDestroy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.stereotype.Component
 import java.lang.RuntimeException
 import java.util.*
@@ -32,6 +37,7 @@ class SocketController @Autowired constructor(
     private final val server: SocketIOServer,
     private final val questionRepo: QuestionRepository,
     private final val gameRepo: GameRepository,
+    private final val decoder : JwtDecoder,
     @Value("\${socketio.context-path}") private final val contextPath : String,
     private final val gameArchive: GameArchive
 ) {
@@ -78,8 +84,16 @@ class SocketController @Autowired constructor(
 
     private fun onJoinQueue(): DataListener<JoinQueueMessage> {
         return DataListener<JoinQueueMessage> { client: SocketIOClient, data: JoinQueueMessage, ackSender: AckRequest? ->
-            println("Player joining queue ${data}")
-            val newPlayer = Player(name=data.name ?: "default name", client=client)
+            println("Player joining queue $data")
+            val newPlayer = if (data.name!=""){
+                Player(name=data.name, client=client)
+            } else if (data.bearer!=""){
+                val jwt : Jwt = decoder.decode(data.bearer.removePrefix("Bearer "))
+                val username : String = jwt.subject
+                Player(name=username, client=client, type=PLAYERTYPE.REGISTERED)
+            } else {
+                throw Exception("Name OR Bearer needs to be provided")
+            }
             val language : LANGUAGE = data.language
             // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
             val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1, createdTime=System.currentTimeMillis())

@@ -1,5 +1,6 @@
 package com.LexiLucha.LexiLucha.model
 
+import com.LexiLucha.LexiLucha.model.enums.PLAYERTYPE
 import com.corundumstudio.socketio.SocketIOClient
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
@@ -20,7 +21,8 @@ data class Player (
     val stat:Stat = Stat(),
     @Transient var client : SocketIOClient,
     var ready : Boolean = false,
-    var active : Boolean = true) {
+    var active : Boolean = true,
+    var type : PLAYERTYPE = PLAYERTYPE.GUEST) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

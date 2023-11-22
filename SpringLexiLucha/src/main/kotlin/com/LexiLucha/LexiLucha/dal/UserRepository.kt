@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserRepository : JpaRepository<User, Int> {
     abstract fun findByUsername(username: String) : User
+    abstract fun existsByUsername(username: String): Boolean
 }
