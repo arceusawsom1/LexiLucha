@@ -333,9 +333,12 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository, va
 
         questions.forEach{it.answer=it.answer.lowercase().trimEnd('?','.','!')}
         questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
-        if (DDL_SETTING.lowercase()=="create")
+        if (DDL_SETTING.lowercase()=="create"){
             questionRepo.saveAll(questions)
-        userService.register(User(username="Ryan",password="password123"))
+            userService.register(User(username="Ryan",password="password123"))
+        }
+
+
     }
 
 }
