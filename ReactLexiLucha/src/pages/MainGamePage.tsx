@@ -16,6 +16,8 @@ const MainGamePage = (props: IProps) => {
     const theme = createTheme({
     
     })
+    const audio = new Audio("ding.mp3")
+    audio.preload = 'auto';
     const [successMessage, setSuccessMessage] = useState("");
     const [successOpen, setSuccessOpen] = useState(false);
     const [warningMessage, setWarningMessage] = useState("");
@@ -62,6 +64,7 @@ const MainGamePage = (props: IProps) => {
   
     useEffect(()=>{
       if (successMessage!=""){
+        audio.play()
         setSuccessOpen(true);
         handleWarningClose();
         handleFailClose();
@@ -83,7 +86,7 @@ const MainGamePage = (props: IProps) => {
         handleFailClose();
       }
     },[warningMessage])
-  
+
     const handleSuccessClose = () => {
       setSuccessOpen(false);
       setSuccessMessage("");
