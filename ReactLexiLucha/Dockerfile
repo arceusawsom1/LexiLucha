@@ -15,7 +15,7 @@
 
     # Build the Vite project
     # RUN npm run build
-    RUN npm run dev
+    RUN npm run dev --port 80
     #Stage 2
     # FROM nginx:1.19.0
     # RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf_orig
