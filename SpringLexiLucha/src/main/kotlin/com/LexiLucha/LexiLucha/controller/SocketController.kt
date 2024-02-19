@@ -13,6 +13,7 @@ import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.LexiLucha.LexiLucha.model.enums.PLAYERTYPE
 import com.LexiLucha.LexiLucha.security.TokenService
+import com.LexiLucha.LexiLucha.service.SocketService
 import com.corundumstudio.socketio.AckRequest
 import com.corundumstudio.socketio.SocketIOClient
 import com.corundumstudio.socketio.SocketIONamespace
@@ -35,18 +36,9 @@ import kotlin.collections.ArrayList
 @Component
 class SocketController @Autowired constructor(
     private final val server: SocketIOServer,
-    private final val questionRepo: QuestionRepository,
-    private final val gameRepo: GameRepository,
-    private final val decoder : JwtDecoder,
     @Value("\${socketio.context-path}") private final val contextPath : String,
-    private final val gameArchive: GameArchive
+    private final val socketService : SocketService
 ) {
-    val queue: List<Player> = ArrayList()
-    val connections : MutableMap<UUID, GameState> = HashMap()
-    val games : ArrayList<GameState> = gameRepo.findAll()
-    private final val MIN_PLAYERS_IN_LOBBY = 1
-    private final val QUESTIONS_IN_ROUND = 10
-
     init{
         val namespace:SocketIONamespace = server.addNamespace("$contextPath/main");
         namespace.addConnectListener(onConnected())
@@ -70,122 +62,24 @@ class SocketController @Autowired constructor(
     }
     private fun onDisconnected(): DisconnectListener {
         return DisconnectListener { client: SocketIOClient ->
-            if (connections.containsKey(client.sessionId)){
-                val currentGame : GameState = games.find{it.activePlayers().any{it.client==client}} ?: throw Exception("Game not found")
-                currentGame.activePlayers().filter { it.client == client }.forEach{ it.active=false }
-                if (currentGame.players.count{it.active} == 0){
-                    games.remove(currentGame)
-                }
-                connections.remove(client.sessionId)
-                currentGame.sendUpdate()
-            }
+            socketService.handleDisconnect(client);
         }
     }
 
     private fun onJoinQueue(): DataListener<JoinQueueMessage> {
         return DataListener<JoinQueueMessage> { client: SocketIOClient, data: JoinQueueMessage, ackSender: AckRequest? ->
-            println("Player joining queue $data")
-            val newPlayer = if (data.name!=""){
-                Player(name=data.name, client=client)
-            } else if (data.bearer!=""){
-                val jwt : Jwt = decoder.decode(data.bearer.removePrefix("Bearer "))
-                val username : String = jwt.subject
-                Player(name=username, client=client, type=PLAYERTYPE.REGISTERED)
-            } else {
-                throw Exception("Name OR Bearer needs to be provided")
-            }
-            val language : LANGUAGE = data.language
-            // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
-            val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1, createdTime=System.currentTimeMillis())
-
-            // Point the user to the game
-            connections[client.sessionId] = selectedGame
-
-            // Add the player to the game
-            selectedGame.players.add(newPlayer)
-
-            // If the lobby now has the correct number of players, then start waiting for ready ups
-            if (selectedGame.activePlayers().size >= MIN_PLAYERS_IN_LOBBY){
-                selectedGame.phase=2
-            }
-            selectedGame.sendUpdate();
-
-            // This line COULD cause issues in the future
-            // We need to know whether the game needs to be added to 'games'
-            // We are going to assume that if a game only has one player at this point, then it is new, and thus needs to be added
-            if (selectedGame.players.size == 1)
-                games.add(selectedGame)
+            socketService.handleJoinQueue(client, data)
         }
     }
     private fun onReady(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
-            println("${client.sessionId} is ready")
-            val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
-            gamestate.getPlayerBySessionId(client.sessionId).ready = true
-            if (gamestate.activePlayers().all{ it.ready }){
-                gamestate.phase=3
-                stepQuestion(gamestate)
-            }
-            gamestate.sendUpdate()
+            socketService.handleReady(client)
         }
     }
-    private fun stepQuestion(gamestate: GameState){
-        // Add the old question to the finished questions array, so it doesn't get repeated
-        if (gamestate.currentQuestion != null)
-            gamestate.finishedQuestions.add(gamestate.currentQuestion!!.id)
 
-        // Get all questions for the correct language
-        val allQuestionIds = questionRepo.findIdsByLanguage(gamestate.language)
-        // Remove questions that have already been done
-        val unusedQuestions = allQuestionIds.filter{!gamestate.finishedQuestions.contains(it)}
-        // Get a random question ID
-        val newQuestionID = unusedQuestions.random()
-        // Get that question
-        val newQuestion = questionRepo.findById(newQuestionID).orElseThrow { RuntimeException("can't find question: $newQuestionID") }
-
-
-        // Set the current question to the new question
-        gamestate.currentQuestion = newQuestion
-        gamestate.currentQuestionSimple = SimpleQuestion(newQuestion)
-        // Reset the startTime
-        gamestate.startTime = System.currentTimeMillis()
-    }
     private fun submitAttempt(): DataListener<SimpleMessage> {
-        return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
-            var attempt : String = data?.data ?: throw RuntimeException("gameState null")
-            val gamestate = connections[client.sessionId] ?: throw RuntimeException("gameState null")
-            gamestate.currentQuestion ?: throw RuntimeException("currentQuestion null")
-            var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
-            val correct = attempt.lowercase() == gamestate.currentQuestion?.answer?.lowercase();
-            if ( correct  ){
-                if (!gamestate.activePlayers().any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
-                    client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
-                    println("right fast")
-                    player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
-                } else {
-                    println("right slow")
-                    player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
-                    client.sendEvent("warningMessage",SimpleMessage("You got the question right, but not the fastest"))
-                }
-            } else {
-                println("wrong")
-
-                client.sendEvent("failMessage",SimpleMessage("You got the question wrong!"))
-            }
-            val questionId: Int = gamestate.currentQuestion!!.id ?:1
-            val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
-            player.stat.completions.add(CompletedQuestion(questionId=questionId,timeTaken=timeTaken,correct=correct))
-            if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
-                stepQuestion(gamestate)
-            }
-            if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND && gamestate.phase!=4) {
-                gamestate.phase = 4
-                games.remove(gamestate)
-                gamestate.finishedTime=System.currentTimeMillis()
-                gameArchive.save(gamestate)
-                gamestate.players.forEach{connections.remove(it.client.sessionId)}
-            }
-            gamestate.sendUpdate()
+        return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage, ackSender: AckRequest? ->
+            socketService.handleSubmit(client, data);
         }
     }
 
