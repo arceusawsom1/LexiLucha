@@ -14,13 +14,13 @@
     COPY . .
 
     # Build the Vite project
-    # RUN npm run build
-    ENTRYPOINT ["npm", "run", "debugLive"]
+    RUN npm run build
+    # ENTRYPOINT ["npm", "run", "debugLive"]  #Use this for debugging the prod (Comment out stage 2)
     #Stage 2
-    # FROM nginx:1.19.0
-    # RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf_orig
-    # COPY nginx.conf /etc/nginx/nginx.conf
-    # WORKDIR /usr/share/nginx/html
-    # RUN rm -rf ./*
-    # COPY --from=builder /app/dist .
-    # ENTRYPOINT ["nginx", "-g", "daemon off; "]
+    FROM nginx:1.19.0
+    RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf_orig
+    COPY nginx.conf /etc/nginx/nginx.conf
+    WORKDIR /usr/share/nginx/html
+    RUN rm -rf ./*
+    COPY --from=builder /app/dist .
+    ENTRYPOINT ["nginx", "-g", "daemon off; "]
