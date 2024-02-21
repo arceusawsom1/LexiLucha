@@ -6,11 +6,16 @@ import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.LexiLucha.LexiLucha.model.enums.QUESTIONMODE
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RestController("danger")
+@RestController
+@RequestMapping("danger")
 class DangerousController @Autowired constructor (val questionRepo: QuestionRepository) {
-
+    @GetMapping("ping")
+    fun getAllQuestions() : List<Question>{
+        return questionRepo.findAll()
+    }
     @GetMapping("loadNewData")
     fun saveQuestions(){
         val questions: ArrayList<Question> = ArrayList()
