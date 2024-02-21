@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Query
 
 interface QuestionRepository : JpaRepository<Question, Int> {
 
-    @Query("SELECT q.id FROM Question q WHERE q.language=:language")
-    fun findIdsByLanguage(language: LANGUAGE): List<Int>
+    @Query("SELECT q.id FROM Question q WHERE q.language=:language && q.mode=:mode")
+    fun findIdsByLanguageAndMode(language: LANGUAGE, mode: QUESTIONMODE): List<Int>
 
     @Query("SELECT DISTINCT q.mode FROM Question q WHERE q.language=:language")
     fun findModesByLanguage(language: LANGUAGE): Array<QUESTIONMODE>

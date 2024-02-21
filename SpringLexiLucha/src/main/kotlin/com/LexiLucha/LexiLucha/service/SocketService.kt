@@ -11,6 +11,7 @@ import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.LexiLucha.LexiLucha.model.enums.PLAYERTYPE
+import com.LexiLucha.LexiLucha.model.enums.QUESTIONMODE
 import com.corundumstudio.socketio.SocketIOClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.jwt.Jwt
@@ -54,8 +55,10 @@ class SocketService @Autowired constructor(
             throw Exception("Name OR Bearer needs to be provided")
         }
         val language : LANGUAGE = data.language
+        val mode : QUESTIONMODE = data.mode
+
         // Find an existing game that is in one of the first two phases (waiting for playerrs, or waiting for ready upts) OR create a new game
-        val selectedGame : GameState = games.find{it.language==language && (it.phase==1 || it.phase==2)} ?: GameState(language=language, phase=1, createdTime=System.currentTimeMillis())
+        val selectedGame : GameState = games.find{it.language==language && it.mode==mode && (it.phase==1 || it.phase==2)} ?: GameState(mode=mode, language=language, phase=1, createdTime=System.currentTimeMillis())
 
         // Point the user to the game
         connections[client.sessionId] = selectedGame
@@ -126,8 +129,8 @@ class SocketService @Autowired constructor(
         if (gamestate.currentQuestion != null)
             gamestate.finishedQuestions.add(gamestate.currentQuestion!!.id)
 
-        // Get all questions for the correct language
-        val allQuestionIds = questionRepo.findIdsByLanguage(gamestate.language)
+        // Get all questions for the correct language AND MODE
+        val allQuestionIds = questionRepo.findIdsByLanguageAndMode(gamestate.language, gamestate.mode)
         // Remove questions that have already been done
         val unusedQuestions = allQuestionIds.filter{!gamestate.finishedQuestions.contains(it)}
         // Get a random question ID
