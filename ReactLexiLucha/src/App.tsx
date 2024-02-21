@@ -31,6 +31,7 @@ function App() {
                 <Route path="" element={<MainGamePage me={[me, setMe]} />}/>
                 <Route path="dashboard" Component={Dashboard}/>
                 <Route path="allgames" Component={AllGames}/>
+                <Route path="socketError" Component={AllGames}/>
                 <Route path="login" element={<LoginPage me={[me, setMe]} />}/>
                 <Route path="register" element={<RegisterPage />}/>
                 <Route path="*" Component={NotFoundPage}/>
