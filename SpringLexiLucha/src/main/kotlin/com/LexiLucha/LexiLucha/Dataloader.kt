@@ -331,6 +331,29 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository, va
         questions.add(Question("Kas jums suteikia gyvenimo prasmę?", "What gives meaning to your life?", "Passion pursuer, dream chaser", language=LANGUAGE.LITHUANIAN))
         questions.add(Question("Kokie yra jūsų mėgstamiausi šeimos vakarėlių žaidimai?", "What are your favorite family game night games?", "Game night enthusiast, strategy game lover", language=LANGUAGE.LITHUANIAN))
 
+        // SWEDISH
+
+        questions.add(Question("Vad är dina hobbies?", "What are your hobbies?", "Hiking enthusiast, bookworm", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad är den senaste boken du läste?", "What is the last book you read?", "Mystery novel fan, avid reader", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad är din favoritmat?", "What is your favorite food?", "Sushi lover, pizza enthusiast", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad brukar du göra på helgerna?", "What do you usually do on weekends?", "Movie buff, nature explorer", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad är den senaste filmen du såg?", "What is the last movie you watched?", "Action movie fan, film critic", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Har du några karriärmål?", "Do you have any career goals?", "Entrepreneurial spirit, career dreamer", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Berätta om ditt jobb.", "Tell me about your job.", "IT professional, problem solver", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad är din favoritresedestination?", "What is your favorite travel destination?", "Beach lover, adventure seeker", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vilken typ av musik gillar du?", "What kind of music do you like?", "Jazz enthusiast, classical music lover", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Gör du saker med vänner?", "Do you do things with friends?", "Coffee enthusiast, social butterfly", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad är din favoritsport?", "What is your favorite sport?", "Soccer fan, tennis player", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad studerade du när du var student?", "What did you study when you were a student?", "Economics major, history buff", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad gillar du med Sverige?", "What do you like about Sweden?", "Nature lover, cultural explorer", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad är din mest minnesvärda semester?", "What is your most memorable holiday?", "Road trip adventurer, beachcomber", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad är din första upplevelse med sushi?", "What is your first experience with sushi?", "Sushi tasting experience, culinary adventure", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Gillar du att träna?", "Do you like to exercise?", "Yoga practitioner, gym enthusiast", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Läser du engelska nu?", "Are you reading English now?", "Language learner, book lover", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Gillar du inte att titta på filmer?", "Don't you like watching movies?", "Movie critic, film buff", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Berätta, vad heter du?", "Tell me, what is your name?", "Coffee aficionado, language learner", language=LANGUAGE.SWEDISH))
+        questions.add(Question("Vad kan du göra?", "What can you do?", "Multilingual communicator, problem solver", language=LANGUAGE.SWEDISH))
+
         questions.forEach{it.answer=it.answer.lowercase().trimEnd('?','.','!')}
         questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
         if (DDL_SETTING.lowercase()=="create"){
