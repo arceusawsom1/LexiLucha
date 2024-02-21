@@ -7,6 +7,7 @@ import WaitingForPlayers from './WaitingForPlayers';
 import WaitingForReady from './WaitingForReady';
 import BasicPhraseQuestion from '../components/BasicPhraseQuestion';
 import RoundOver from './RoundOver';
+import { useNavigate } from 'react-router-dom';
 
 interface IProps {
   me: [IUser, Dispatch<SetStateAction<IUser>>]
@@ -16,6 +17,7 @@ const MainGamePage = (props: IProps) => {
     const theme = createTheme({
     
     })
+    const navigate = useNavigate();
     const audio = new Audio("ding.mp3")
     audio.preload = 'auto';
     const [successMessage, setSuccessMessage] = useState("");
@@ -54,6 +56,7 @@ const MainGamePage = (props: IProps) => {
       socket.on("successMessage", (e: {data: string})=>setSuccessMessage(e.data))
       socket.on("failMessage", (e: {data: string})=>setFailMessage(e.data))
       socket.on("warningMessage", (e: {data: string})=>setWarningMessage(e.data))
+      socket.on("connect_error", (err) => {navigate("/socketError?err=" + err)});
   
   
     }

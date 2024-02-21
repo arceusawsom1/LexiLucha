@@ -26,9 +26,8 @@ class SocketService @Autowired constructor(
     private final val gameArchive: GameArchive,
     private final val decoder : JwtDecoder
 ){
-
     val connections : MutableMap<UUID, GameState> = HashMap()
-    val games : ArrayList<GameState> = gameRepo.findAll()
+    var games : ArrayList<GameState> = gameRepo.findAll()
     private final val MIN_PLAYERS_IN_LOBBY = 1
     private final val QUESTIONS_IN_ROUND = 10
 
@@ -94,13 +93,12 @@ class SocketService @Autowired constructor(
         var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
         val correct = attempt.lowercase() == gamestate.currentQuestion?.answer?.lowercase();
         if ( correct  ){
+            player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
             if (!gamestate.activePlayers().any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
                 client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
                 println("right fast")
-                player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
             } else {
                 println("right slow")
-                player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
                 client.sendEvent("warningMessage", SimpleMessage("You got the question right, but not the fastest"))
             }
         } else {
