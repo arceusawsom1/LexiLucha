@@ -10,19 +10,43 @@ interface IProps {
 const LandingForm = (props: IProps) => {
     const [me, _setMe] = props.me
     const [name, setName] = useState<string>("");
-    const [language, setLanguage] = useState<string>("");
-    const [languages, setLanguages] = useState<Array<string>>(["Spanish","Greek"]);
+    const [language, setLanguage] = useState<string>("SPANISH");
+    const [languages, setLanguages] = useState<Array<string>>(["Spanish","Greek", "(the api server is not working)"]);
+    const [mode, setMode] = useState<string>("");
+    const [modeDisabled, setModeDisabled] = useState<boolean>(false);
+    const [modes, setModes] = useState<Array<string>>(["SIMPLE"]);
     const joinQueue = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         socket.emit("joinQueue", {name, language, bearer:me.bearer})
     }
 
     useEffect(()=>{
+        refreshLanguages()
+    },[])
+
+    const refreshLanguages = () => {
         const endpoint = BASE_URL + "language"
         console.log(endpoint)
         axios.get(endpoint)
             .then((response : {data: Array<string>})=>setLanguages(response.data))
-    },[])
+    }
+    
+    useEffect(()=>{
+        if (language==="")
+            return
+        console.log("language is: " + language)
+        const endpoint = BASE_URL + "language/" + language + "/modes"
+        console.log(endpoint)
+        setModeDisabled(true)
+        axios.get(endpoint)
+            .then((response : {data: Array<string>})=>{
+                setModeDisabled(false)
+                setModes(response.data)
+            })
+    },[language])
+
+    
+
     return(
         <>
             <form onSubmit={joinQueue}>
@@ -44,6 +68,21 @@ const LandingForm = (props: IProps) => {
                         ))}
                     </Select>
                 </FormControl>
+                {modes.length>1 && <FormControl fullWidth>
+                    <InputLabel id="mode-picker">Mode</InputLabel>
+                    <Select
+                        labelId="mode-picker"
+                        sx={{mb:2}}
+                        value={mode}
+                        label="Mode"
+                        disabled={modeDisabled}
+                        onChange={(e: {target: {value: string}})=>setMode(e.target.value)}
+                    >
+                        {modes.map(((mode, modeIndex)=>
+                            <MenuItem key={modeIndex} value={mode.toUpperCase()}>{mode.charAt(0).toUpperCase() + mode.substring(1).toLowerCase()}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>}
                 
                 <Box>
                     <Button variant="contained" type="submit">Join Queue</Button>
