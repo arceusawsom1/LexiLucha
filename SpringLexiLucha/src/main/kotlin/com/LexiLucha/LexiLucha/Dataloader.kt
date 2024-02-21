@@ -333,7 +333,6 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository, va
         questions.add(Question("Kokie yra jūsų mėgstamiausi šeimos vakarėlių žaidimai?", "What are your favorite family game night games?", "Game night enthusiast, strategy game lover", language=LANGUAGE.LITHUANIAN))
 
         // SWEDISH
-
         questions.add(Question("Vad är dina hobbies?", "What are your hobbies?", "Hiking enthusiast, bookworm", language=LANGUAGE.SWEDISH))
         questions.add(Question("Vad är den senaste boken du läste?", "What is the last book you read?", "Mystery novel fan, avid reader", language=LANGUAGE.SWEDISH))
         questions.add(Question("Vad är din favoritmat?", "What is your favorite food?", "Sushi lover, pizza enthusiast", language=LANGUAGE.SWEDISH))
