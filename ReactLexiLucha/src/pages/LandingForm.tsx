@@ -17,7 +17,10 @@ const LandingForm = (props: IProps) => {
     const [modes, setModes] = useState<Array<string>>(["SIMPLE"]);
     const joinQueue = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        socket.emit("joinQueue", {name, language, bearer:me.bearer,mode})
+        const message = {name, language, bearer:me.bearer, mode:"SIMPLE"}
+        if (mode!="")
+            message.mode=mode
+        socket.emit("joinQueue", message)
     }
 
     useEffect(()=>{
