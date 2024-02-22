@@ -20,6 +20,7 @@ const LandingForm = (props: IProps) => {
         const message = {name, language, bearer:me.bearer, mode:"SIMPLE"}
         if (mode!="")
             message.mode=mode
+        console.log(message)
         socket.emit("joinQueue", message)
     }
 
