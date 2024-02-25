@@ -9,6 +9,7 @@ import NotFoundPage from './pages/NotFoundPage'
 import { useEffect, useState } from 'react'
 import { IUser } from './types'
 import RegisterPage from './pages/RegisterPage'
+import SocketErrorPage from './pages/SocketErrorPage'
 
 function App() {
     const [me, setMe] = useState<IUser>({bearer:""})
@@ -31,7 +32,7 @@ function App() {
                 <Route path="" element={<MainGamePage me={[me, setMe]} />}/>
                 <Route path="dashboard" Component={Dashboard}/>
                 <Route path="allgames" Component={AllGames}/>
-                <Route path="socketError" Component={AllGames}/>
+                <Route path="socketError" Component={SocketErrorPage}/>
                 <Route path="login" element={<LoginPage me={[me, setMe]} />}/>
                 <Route path="register" element={<RegisterPage />}/>
                 <Route path="*" Component={NotFoundPage}/>

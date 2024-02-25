@@ -95,34 +95,44 @@ class SocketService @Autowired constructor(
         gamestate.currentQuestion ?: throw RuntimeException("currentQuestion null")
         var player: Player = gamestate.getPlayerBySessionId(client.sessionId)
         val correct = attempt.lowercase() == gamestate.currentQuestion?.answer?.lowercase();
+        val questionId: Int = gamestate.currentQuestion!!.id ?:1
+        val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
         if ( correct  ){
-            player.stat.score = player.stat.score.plus(gamestate.activePlayers().size-gamestate.activePlayers().filter{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}.size)
-            if (!gamestate.activePlayers().any{it.stat.completions.size > player.stat.completions.size && it.stat.completions.last().correct}) {
+            val numPlayers = gamestate.activePlayers().size
+            val allAttempts : List<CompletedQuestion> = gamestate.activePlayers().flatMap{it.stat.completions}
+            val currentQuestionAttempts : List<CompletedQuestion> = allAttempts.filter{it.questionId==questionId}
+            val correctAttempts =  currentQuestionAttempts.count{it.correct}
+            val earnedScore = numPlayers-correctAttempts
+            player.stat.score = player.stat.score.plus(earnedScore)
+            if (correctAttempts==0) {
                 client.sendEvent("successMessage", SimpleMessage("You got the question right the fastest!"))
-                println("right fast")
             } else {
-                println("right slow")
                 client.sendEvent("warningMessage", SimpleMessage("You got the question right, but not the fastest"))
             }
         } else {
-            println("wrong")
-
+            println("  - And got it wrong")
             client.sendEvent("failMessage", SimpleMessage("You got the question wrong!"))
         }
-        val questionId: Int = gamestate.currentQuestion!!.id ?:1
-        val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
+
+        // Add a record of the current question to the user
         player.stat.completions.add(CompletedQuestion(questionId=questionId,timeTaken=timeTaken,correct=correct))
+        
+        // If everyone has answered a question, then chose a new question
         if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
             stepQuestion(gamestate)
         }
+        // If the round is complete, then end the round
         if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND && gamestate.phase!=4) {
-            gamestate.phase = 4
-            games.remove(gamestate)
-            gamestate.finishedTime=System.currentTimeMillis()
-            gameArchive.save(gamestate)
-            gamestate.players.forEach{connections.remove(it.client.sessionId)}
+            endGame(gamestate)
         }
         gamestate.sendUpdate()
+    }
+    fun endGame(gamestate: GameState){
+        gamestate.phase = 4
+        games.remove(gamestate)
+        gamestate.finishedTime=System.currentTimeMillis()
+        gameArchive.save(gamestate)
+        gamestate.players.forEach{connections.remove(it.client.sessionId)}
     }
     fun stepQuestion(gamestate: GameState){
         // Add the old question to the finished questions array, so it doesn't get repeated
