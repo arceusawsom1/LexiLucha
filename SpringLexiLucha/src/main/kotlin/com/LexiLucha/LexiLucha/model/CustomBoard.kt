@@ -18,4 +18,7 @@ class CustomBoard (
     @ManyToOne
     var backgroundColor : BackgroundColor = BackgroundColor(color="#ffffff"),
 ){
+    override fun toString(): String {
+        return "CustomBoard(id=$id, textColor=$textColor, borderColor=$borderColor, backgroundColor=$backgroundColor)"
+    }
 }

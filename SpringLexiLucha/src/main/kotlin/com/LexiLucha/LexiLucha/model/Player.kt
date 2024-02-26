@@ -23,7 +23,7 @@ data class Player (
     @Transient var client : SocketIOClient,
     var ready : Boolean = false,
     var active : Boolean = true,
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     var custom : CustomBoard = CustomBoard(),
     var type : PLAYERTYPE = PLAYERTYPE.GUEST) {
     override fun equals(other: Any?): Boolean {
@@ -47,5 +47,9 @@ data class Player (
         result = 31 * result + ready.hashCode()
         result = 31 * result + active.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "Player(id=$id, name='$name', stat=$stat, client=$client, ready=$ready, active=$active, custom=$custom, type=$type)"
     }
 }

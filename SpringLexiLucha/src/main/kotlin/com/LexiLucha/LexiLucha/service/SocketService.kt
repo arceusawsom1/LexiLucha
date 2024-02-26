@@ -124,6 +124,8 @@ class SocketService @Autowired constructor(
         if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
             stepQuestion(gamestate)
         }
+        println("Questions so far: " + gamestate.finishedQuestions.size)
+        println("gamestate: " + gamestate.phase)
         // If the round is complete, then end the round
         if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND && gamestate.phase!=4) {
             endGame(gamestate)
@@ -131,17 +133,28 @@ class SocketService @Autowired constructor(
         gamestate.sendUpdate()
     }
     fun endGame(gamestate: GameState){
+        println(" - Game is ending")
         gamestate.phase = 4
+        println(" - Game is ending2")
         games.remove(gamestate)
+        println(" - Game is ending3")
         gamestate.finishedTime=System.currentTimeMillis()
+        println(" - Game is ending4")
+        println(gamestate)
         gameArchive.save(gamestate)
+        println(" - Game is ending5")
         gamestate.players.forEach{connections.remove(it.client.sessionId)}
+        println(" - Game is ending6")
         val userList = ArrayList<User>();
+        println(" - Game is ending7")
         gamestate.activePlayers().filter{it.type==PLAYERTYPE.REGISTERED}.forEach{userList.add(userService.findByUsername(it.name))}
+        println(" - Game is ending8")
         userList.forEach { it.money+=1 }
+        println(" - Game is ending9")
         userService.saveAll(userList)
     }
     fun stepQuestion(gamestate: GameState){
+        println(" - choosing a new question")
         // Add the old question to the finished questions array, so it doesn't get repeated
         if (gamestate.currentQuestion != null)
             gamestate.finishedQuestions.add(gamestate.currentQuestion!!.id)

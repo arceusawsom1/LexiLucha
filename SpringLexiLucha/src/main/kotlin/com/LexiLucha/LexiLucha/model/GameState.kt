@@ -54,4 +54,8 @@ data class GameState(
         return this.players.filter { it.active }
     }
 
+    override fun toString(): String {
+        return "GameState(players=$players, language=$language, currentQuestion=$currentQuestion, finishedQuestions=$finishedQuestions, startTime=$startTime, createdTime=$createdTime, finishedTime=$finishedTime, phase=$phase, currentQuestionSimple=$currentQuestionSimple, id=$id, mode=$mode)"
+    }
+
 }
