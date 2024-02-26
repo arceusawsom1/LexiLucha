@@ -26,7 +26,7 @@ class SocketServiceTest {
 
     @BeforeEach
     fun setup(){
-        socketService = SocketService(mockGameRepo,mockQuestionRepository,mockGameArchive, mockDecoder)
+//        socketService = SocketService(mockGameRepo,mockQuestionRepository,mockGameArchive, mockDecoder)
     }
 
     @Test
