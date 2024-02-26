@@ -1,7 +1,10 @@
 package com.LexiLucha.LexiLucha.service
 
 import com.LexiLucha.LexiLucha.dal.UserRepository
+import com.LexiLucha.LexiLucha.model.CustomBoard
+import com.LexiLucha.LexiLucha.model.ShopItem
 import com.LexiLucha.LexiLucha.model.User
+import com.LexiLucha.LexiLucha.model.enums.SHOPITEM
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service
 class UserService @Autowired constructor(var userRepository: UserRepository, var encoder: PasswordEncoder) {
     fun register(user : User) {
         val encodedPassword = encoder.encode(user.password)
+        user.custom = CustomBoard();
         user.password= encodedPassword
         userRepository.save(user)
     }

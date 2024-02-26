@@ -18,7 +18,7 @@ data class User (
     @OneToMany
     val items : MutableSet<ShopItem> = java.util.HashSet(),
     @OneToOne(cascade = arrayOf(CascadeType.ALL))
-    val custom: CustomBoard = CustomBoard()
+    var custom: CustomBoard = CustomBoard()
 ){
 
 }
