@@ -10,4 +10,7 @@ open class ShopItem (
     val description : String = "",
     val price : Int = 0,
 ) {
+    override fun toString(): String {
+        return "SHOPITEM [ID: $id, title:$title]"
+    }
 }

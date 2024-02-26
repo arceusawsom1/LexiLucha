@@ -5,6 +5,7 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 
@@ -15,8 +16,8 @@ data class User (
     var password: String,
     val role: ArrayList<ROLE> = arrayListOf(ROLE.USER),
     var money : Int = 0,
-    @OneToMany
-    val items : MutableSet<ShopItem> = java.util.HashSet(),
+    @ManyToMany
+    val items : MutableSet<ShopItem> = mutableSetOf(ShopItem(id=1), ShopItem(id=2),ShopItem(id=3)),
     @OneToOne(cascade = arrayOf(CascadeType.ALL))
     var custom: CustomBoard = CustomBoard()
 ){

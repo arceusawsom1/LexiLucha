@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne
 class CustomBoard (
     @GeneratedValue @Id var id : Int = 0,
     @ManyToOne
-    var textColor : TextColor = TextColor(color="#333333"),
+    var textColor : TextColor = TextColor(id=1,color="#333333"),
     @ManyToOne
     var borderColor : BorderColor = BorderColor(color="#333333"),
     @ManyToOne

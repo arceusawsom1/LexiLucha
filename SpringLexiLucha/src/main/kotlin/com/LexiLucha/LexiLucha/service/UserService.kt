@@ -1,21 +1,20 @@
 package com.LexiLucha.LexiLucha.service
 
+import com.LexiLucha.LexiLucha.dal.ShopItemRepository
 import com.LexiLucha.LexiLucha.dal.UserRepository
 import com.LexiLucha.LexiLucha.model.CustomBoard
-import com.LexiLucha.LexiLucha.model.ShopItem
 import com.LexiLucha.LexiLucha.model.User
-import com.LexiLucha.LexiLucha.model.enums.SHOPITEM
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class UserService @Autowired constructor(var userRepository: UserRepository, var encoder: PasswordEncoder) {
+class UserService @Autowired constructor(var userRepository: UserRepository, var encoder: PasswordEncoder, var shopItemRepository: ShopItemRepository) {
     fun register(user : User) {
         val encodedPassword = encoder.encode(user.password)
         user.custom = CustomBoard();
         user.password= encodedPassword
-        userRepository.save(user)
+        save(user)
     }
     fun findByUsername(username: String) : User{
         return userRepository.findByUsername(username)
@@ -26,6 +25,8 @@ class UserService @Autowired constructor(var userRepository: UserRepository, var
     }
 
     fun save(user: User) {
+//        user.items.filter{it.title==""}.forEach { user.items.remove(it);user.items.add(shopItemRepository.findById(it.id).orElseThrow{RuntimeException("item cant be found (${it.id})")}) }
+//        println(user)
         this.userRepository.save(user)
     }
 

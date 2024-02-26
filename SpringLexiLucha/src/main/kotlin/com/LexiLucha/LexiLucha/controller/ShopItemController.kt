@@ -51,6 +51,7 @@ class ShopItemController @Autowired(required = true) constructor(
     }
     @GetMapping("/borderColors/me")
     fun getMyBorderColors(auth:Authentication) : MutableList<ShopItem> {
+        println("Name: " + auth.name + "(border colors)")
         return shopItemRepo.findMyItemsOfType(auth.name,  BorderColor::class.java);
     }
     @PutMapping("/borderColors/me/choose/{id}")

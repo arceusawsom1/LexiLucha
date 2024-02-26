@@ -390,27 +390,25 @@ class Dataloader @Autowired constructor(val shopItemRepo : ShopItemRepository ,v
         shopItems.add(BorderColor(title="Default Border Color (Black)", description = "", color="#000000",))
         shopItems.add(BackgroundColor(title="Default Background Color (White)", description = "", color="#ffffff",))
         //TextColor Items
-        shopItems.add(TextColor(title="Purple Text Color", description = "An item that allows you to change your leaderboard card test to purple", color="#800080",price=5))
-        shopItems.add(TextColor(title="Orange Text Color", description = "An item that allows you to change your leaderboard card test to Orange", color="#FFA500",price=10))
-        shopItems.add(TextColor(title="Quartz Text Color", description = "An item that allows you to change your leaderboard card test to quartz", color="#51414F",price=15))
+        shopItems.add(TextColor(id=0,title="Purple Text Color", description = "An item that allows you to change your leaderboard card test to purple", color="#800080",price=5))
+        shopItems.add(TextColor(id=0,title="Orange Text Color", description = "An item that allows you to change your leaderboard card test to Orange", color="#FFA500",price=10))
+        shopItems.add(TextColor(id=0,title="Quartz Text Color", description = "An item that allows you to change your leaderboard card test to quartz", color="#51414F",price=15))
         //BorderColor items
-        shopItems.add(BorderColor(title="Teal Border Color", description="An item that allows you to change your leaderboard card border to teal", color="#008080", price=8))
-        shopItems.add(BorderColor(title="Magenta Border Color", description="An item that allows you to change your leaderboard card border to magenta", color="#FF00FF", price=12))
-        shopItems.add(BorderColor(title="Turquoise Border Color", description="An item that allows you to change your leaderboard card border to turquoise", color="#40E0D0", price=18))
+        shopItems.add(BorderColor(id=0,title="Teal Border Color", description="An item that allows you to change your leaderboard card border to teal", color="#008080", price=8))
+        shopItems.add(BorderColor(id=0,title="Magenta Border Color", description="An item that allows you to change your leaderboard card border to magenta", color="#FF00FF", price=12))
+        shopItems.add(BorderColor(id=0,title="Turquoise Border Color", description="An item that allows you to change your leaderboard card border to turquoise", color="#40E0D0", price=18))
         //BackgroundColor items
-        shopItems.add(BackgroundColor(title="Gold Background Color", description="An item that allows you to change your leaderboard card background to gold", color="#FFD700", price=20))
-        shopItems.add(BackgroundColor(title="Silver Background Color", description="An item that allows you to change your leaderboard card background to silver", color="#C0C0C0", price=25))
-        shopItems.add(BackgroundColor(title="Bronze Background Color", description="An item that allows you to change your leaderboard card background to bronze", color="#CD7F32", price=30))
+        shopItems.add(BackgroundColor(id=0,title="Gold Background Color", description="An item that allows you to change your leaderboard card background to gold", color="#FFD700", price=20))
+        shopItems.add(BackgroundColor(id=0,title="Silver Background Color", description="An item that allows you to change your leaderboard card background to silver", color="#C0C0C0", price=25))
+        shopItems.add(BackgroundColor(id=0,title="Bronze Background Color", description="An item that allows you to change your leaderboard card background to bronze", color="#CD7F32", price=30))
 
 
         if (DDL_SETTING.lowercase()=="create"){
             questionRepo.saveAll(questions)
             shopItemRepo.saveAll(shopItems)
-            val simpleUser : User = User(username="Ryan",password="password123",money=12,items= mutableSetOf(shopItems[0],shopItems[1],shopItems[2]))
-            simpleUser.custom.textColor= shopItems[0] as TextColor
-            simpleUser.custom.borderColor= shopItems[1] as BorderColor
-            simpleUser.custom.backgroundColor= shopItems[2] as BackgroundColor
+            val simpleUser : User = User(username="Ryan",password="password123",money=12)
             userService.register(simpleUser)
+            userService.register(User(username="David",password="password123",money=15))
         }
 
 
