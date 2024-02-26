@@ -1,18 +1,19 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import MainGamePage from './pages/MainGamePage'
-import { Box, Button, Container } from '@mui/material'
 import Dashboard from './pages/Dashboard'
 import { AllGames } from './pages/AllGames'
 import LoginPage from './pages/LoginPage'
-import NotFoundPage from './pages/NotFoundPage'
 import { useEffect, useState } from 'react'
-import { IUser } from './types'
+import { IBearer } from './types'
 import RegisterPage from './pages/RegisterPage'
 import SocketErrorPage from './pages/SocketErrorPage'
+import BotNav from './components/BotNav'
+import CustomiseCard from './pages/CustomiseCard'
+import ShopRouter from './routers/ShopRouter'
 
 function App() {
-    const [me, setMe] = useState<IUser>({bearer:""})
+    const [me, setMe] = useState<IBearer>({bearer:""})
 
     useEffect(()=>{
         const bearer = localStorage.getItem("me")
@@ -21,47 +22,23 @@ function App() {
         }
     }, [])
 
-    const logout = () => {
-        localStorage.removeItem("me")
-        setMe({bearer:""})
-    }
+    
 
     return (
         <>
+            <ShopRouter me={[me, setMe]} />
             <Routes>
                 <Route path="" element={<MainGamePage me={[me, setMe]} />}/>
                 <Route path="dashboard" Component={Dashboard}/>
+                { me.bearer!="" && <Route path="customise" element={<CustomiseCard me={[me,setMe]}/>}/> }
                 <Route path="allgames" Component={AllGames}/>
                 <Route path="socketError" Component={SocketErrorPage}/>
                 <Route path="login" element={<LoginPage me={[me, setMe]} />}/>
                 <Route path="register" element={<RegisterPage />}/>
-                <Route path="*" Component={NotFoundPage}/>
+                
+                {/* <Route path="*" Component={NotFoundPage}/> */}
             </Routes>
-            <Container sx={{textAlign:"center",my:4}}>
-                <Box sx={{my:1}}>
-                    <Button component={Link} variant="outlined" to="dashboard">Dashboard</Button>
-                </Box>
-                <Box sx={{my:1}}>
-                    <Button component={Link} variant="outlined" to="allgames">All Games</Button>
-                </Box>
-                {me.bearer.length==0 ? 
-                    <> {/* Not Logged in */}
-                        <Box sx={{my:1}}>
-                            <Button component={Link} variant="contained" to="login">Log In</Button>
-                        </Box>
-                        <Box sx={{my:1}}>
-                            <Button component={Link} variant="outlined" to="register">Register</Button>
-                        </Box>
-                    </>
-                :
-                    <> {/* Logged in */}
-                        <Box sx={{my:1}}>
-                            <Button onClick={logout} variant="outlined">Logout</Button>
-                        </Box>
-                    </>
-                }
-
-            </Container>
+            <BotNav me={[me, setMe]} />
         </>
     )
 }

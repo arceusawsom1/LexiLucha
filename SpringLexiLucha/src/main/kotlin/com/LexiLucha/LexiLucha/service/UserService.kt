@@ -20,4 +20,12 @@ class UserService @Autowired constructor(var userRepository: UserRepository, var
     fun existsByUsername(username: String): Boolean {
         return userRepository.existsByUsername(username)
     }
+
+    fun save(user: User) {
+        this.userRepository.save(user)
+    }
+
+    fun saveAll(userList: ArrayList<User>) {
+        this.userRepository.saveAll(userList)
+    }
 }

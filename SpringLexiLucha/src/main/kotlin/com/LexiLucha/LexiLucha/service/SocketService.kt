@@ -7,6 +7,7 @@ import com.LexiLucha.LexiLucha.messages.SimpleMessage
 import com.LexiLucha.LexiLucha.model.CompletedQuestion
 import com.LexiLucha.LexiLucha.model.GameState
 import com.LexiLucha.LexiLucha.model.Player
+import com.LexiLucha.LexiLucha.model.User
 import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
@@ -25,7 +26,8 @@ class SocketService @Autowired constructor(
     private final val gameRepo: GameRepository,
     private final val questionRepo: QuestionRepository,
     private final val gameArchive: GameArchive,
-    private final val decoder : JwtDecoder
+    private final val decoder : JwtDecoder,
+    private final val userService: UserService
 ){
     val connections : MutableMap<UUID, GameState> = HashMap()
     var games : ArrayList<GameState> = gameRepo.findAll()
@@ -50,7 +52,8 @@ class SocketService @Autowired constructor(
         } else if (data.bearer!=""){
             val jwt : Jwt = decoder.decode(data.bearer.removePrefix("Bearer "))
             val username : String = jwt.subject
-            Player(name=username, client=client, type= PLAYERTYPE.REGISTERED)
+            val user : User = userService.findByUsername(username)
+            Player(name=username, client=client, type= PLAYERTYPE.REGISTERED, custom=user.custom)
         } else {
             throw Exception("Name OR Bearer needs to be provided")
         }
@@ -116,7 +119,7 @@ class SocketService @Autowired constructor(
 
         // Add a record of the current question to the user
         player.stat.completions.add(CompletedQuestion(questionId=questionId,timeTaken=timeTaken,correct=correct))
-        
+
         // If everyone has answered a question, then chose a new question
         if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
             stepQuestion(gamestate)
@@ -133,6 +136,10 @@ class SocketService @Autowired constructor(
         gamestate.finishedTime=System.currentTimeMillis()
         gameArchive.save(gamestate)
         gamestate.players.forEach{connections.remove(it.client.sessionId)}
+        val userList = ArrayList<User>();
+        gamestate.activePlayers().filter{it.type==PLAYERTYPE.REGISTERED}.forEach{userList.add(userService.findByUsername(it.name))}
+        userList.forEach { it.money+=1 }
+        userService.saveAll(userList)
     }
     fun stepQuestion(gamestate: GameState){
         // Add the old question to the finished questions array, so it doesn't get repeated

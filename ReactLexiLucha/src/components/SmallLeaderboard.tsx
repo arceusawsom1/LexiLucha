@@ -1,6 +1,6 @@
-import { Table, TableBody, TableCell, TableRow } from "@mui/material";
+import { Table, TableBody } from "@mui/material";
 import { IPlayer } from "../types";
-import { getDisplayname } from "../utils/player";
+import PlayerBoard from "./PlayerBoard";
 
 interface IProps {
     players: Array<IPlayer>
@@ -10,13 +10,14 @@ const SmallLeaderboard = (props : IProps) => {
         <Table>
             <TableBody>
               {props.players.filter(p=>p.active).sort((a, b)=> b.stat.score-a.stat.score).map((player, index)=>
-                <TableRow key={index}>
-                    <TableCell>{getDisplayname(player)}</TableCell>
-                    <TableCell>{player.stat.score}</TableCell>
-                </TableRow>
+              <>
+                {player.custom !=undefined && 
+                  <PlayerBoard key={index} player={player} custom={player.custom}/>
+                }
+              </>
               )}
             </TableBody>
-          </Table>
+          </Table>  
     )
 }
 

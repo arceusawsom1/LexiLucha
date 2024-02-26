@@ -1,6 +1,6 @@
 import { Container, ThemeProvider, createTheme, Snackbar, Alert, Typography } from '@mui/material'
 import { Dispatch, SetStateAction, useEffect,useState } from 'react';
-import { IGamestate, IUser } from '../types';
+import { IGamestate, IBearer } from '../types';
 import { socket } from '../utils/socket';
 import LandingForm from './LandingForm';
 import WaitingForPlayers from './WaitingForPlayers';
@@ -10,7 +10,7 @@ import RoundOver from './RoundOver';
 import { useNavigate } from 'react-router-dom';
 
 interface IProps {
-  me: [IUser, Dispatch<SetStateAction<IUser>>]
+  me: [IBearer, Dispatch<SetStateAction<IBearer>>]
 }
 const MainGamePage = (props: IProps) => {
     const [me, setMe] = props.me

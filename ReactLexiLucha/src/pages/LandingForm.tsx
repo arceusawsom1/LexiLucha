@@ -3,9 +3,9 @@ import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react"
 import { socket } from "../utils/socket";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { IUser } from "../types";
+import { IBearer } from "../types";
 interface IProps {
-    me: [IUser, Dispatch<SetStateAction<IUser>>]
+    me: [IBearer, Dispatch<SetStateAction<IBearer>>]
 }
 const LandingForm = (props: IProps) => {
     const [me, _setMe] = props.me

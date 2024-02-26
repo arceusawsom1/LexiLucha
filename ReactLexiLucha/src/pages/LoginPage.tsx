@@ -2,10 +2,10 @@ import { Alert, Box, Button, Container, TextField, Typography } from "@mui/mater
 import { Dispatch, FormEvent, SetStateAction, useState } from "react"
 import { BASE_URL } from "../utils/constants"
 import axios from "axios"
-import { IUser } from "../types"
+import { IBearer } from "../types"
 import { useNavigate } from "react-router-dom"
 interface IProps {
-    me: [IUser, Dispatch<SetStateAction<IUser>>]
+    me: [IBearer, Dispatch<SetStateAction<IBearer>>]
 }
 const LoginPage = (props: IProps) => {
     const [username, setUsername] = useState("")

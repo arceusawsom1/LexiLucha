@@ -8,6 +8,7 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Cascade
 import javax.annotation.processing.Generated
@@ -22,6 +23,8 @@ data class Player (
     @Transient var client : SocketIOClient,
     var ready : Boolean = false,
     var active : Boolean = true,
+    @OneToOne
+    var custom : CustomBoard = CustomBoard(),
     var type : PLAYERTYPE = PLAYERTYPE.GUEST) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

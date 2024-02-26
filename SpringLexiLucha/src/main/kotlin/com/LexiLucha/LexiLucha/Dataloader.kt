@@ -1,10 +1,15 @@
 package com.LexiLucha.LexiLucha
 
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
+import com.LexiLucha.LexiLucha.dal.ShopItemRepository
 import com.LexiLucha.LexiLucha.model.Question
+import com.LexiLucha.LexiLucha.model.ShopItem
 import com.LexiLucha.LexiLucha.model.User
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.LexiLucha.LexiLucha.model.enums.QUESTIONMODE
+import com.LexiLucha.LexiLucha.model.shopItems.BackgroundColor
+import com.LexiLucha.LexiLucha.model.shopItems.BorderColor
+import com.LexiLucha.LexiLucha.model.shopItems.TextColor
 import com.LexiLucha.LexiLucha.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -16,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class Dataloader @Autowired constructor(val questionRepo: QuestionRepository, val userService: UserService): ApplicationRunner  {
+class Dataloader @Autowired constructor(val shopItemRepo : ShopItemRepository ,val questionRepo: QuestionRepository, val userService: UserService): ApplicationRunner  {
 
     @Value("\${spring.jpa.hibernate.ddl-auto}")
     lateinit var DDL_SETTING: String
@@ -379,10 +384,36 @@ class Dataloader @Autowired constructor(val questionRepo: QuestionRepository, va
 
         questions.forEach{it.answer=it.answer.lowercase().trimEnd('?','.','!')}
         questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
+        // Creating some shop items
+        val shopItems : ArrayList<ShopItem> = ArrayList()
+        shopItems.add(TextColor(title="Default Text Color (Black)", description = "", color="#000000",))
+        shopItems.add(BorderColor(title="Default Border Color (Black)", description = "", color="#000000",))
+        shopItems.add(BackgroundColor(title="Default Background Color (White)", description = "", color="#ffffff",))
+        //TextColor Items
+        shopItems.add(TextColor(title="Purple Text Color", description = "An item that allows you to change your leaderboard card test to purple", color="#800080",price=5))
+        shopItems.add(TextColor(title="Orange Text Color", description = "An item that allows you to change your leaderboard card test to Orange", color="#FFA500",price=10))
+        shopItems.add(TextColor(title="Quartz Text Color", description = "An item that allows you to change your leaderboard card test to quartz", color="#51414F",price=15))
+        //BorderColor items
+        shopItems.add(BorderColor(title="Teal Border Color", description="An item that allows you to change your leaderboard card border to teal", color="#008080", price=8))
+        shopItems.add(BorderColor(title="Magenta Border Color", description="An item that allows you to change your leaderboard card border to magenta", color="#FF00FF", price=12))
+        shopItems.add(BorderColor(title="Turquoise Border Color", description="An item that allows you to change your leaderboard card border to turquoise", color="#40E0D0", price=18))
+        //BackgroundColor items
+        shopItems.add(BackgroundColor(title="Gold Background Color", description="An item that allows you to change your leaderboard card background to gold", color="#FFD700", price=20))
+        shopItems.add(BackgroundColor(title="Silver Background Color", description="An item that allows you to change your leaderboard card background to silver", color="#C0C0C0", price=25))
+        shopItems.add(BackgroundColor(title="Bronze Background Color", description="An item that allows you to change your leaderboard card background to bronze", color="#CD7F32", price=30))
+
+
         if (DDL_SETTING.lowercase()=="create"){
             questionRepo.saveAll(questions)
-            userService.register(User(username="Ryan",password="password123"))
+            shopItemRepo.saveAll(shopItems)
+            val simpleUser : User = User(username="Ryan",password="password123",money=12,items= mutableSetOf(shopItems[0],shopItems[1],shopItems[2]))
+            simpleUser.custom.textColor= shopItems[0] as TextColor
+            simpleUser.custom.borderColor= shopItems[1] as BorderColor
+            simpleUser.custom.backgroundColor= shopItems[2] as BackgroundColor
+            userService.register(simpleUser)
         }
+
+
 
 
     }

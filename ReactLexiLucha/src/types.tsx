@@ -38,6 +38,7 @@ type IPlayer = {
     stat: IStat,
     active: boolean,
     type: string,
+    custom?:ICustomBoard,
 }
 type IStat = {
     score: number,
@@ -47,7 +48,33 @@ type ICompletedQuestion = {
     timeTaken: number,
     correct: boolean,
 }
-type IUser = {
+type IBearer = {
     bearer: string,
 }
-export type {IUser, IPhraseData, IStats, IOption, IGamestate,IPlayer,ISimpleQuestion, IStat,ICompletedQuestion}
+type IUser = {
+    username:string,
+    custom:ICustomBoard,
+    money:number,
+}
+type ICustomBoard = {
+    textColor: ITextColor,
+    backgroundColor: IBackgroundColor,
+    borderColor: IBorderColor,
+
+}
+type IShopItem = {
+    title:string,
+    description:string,
+    price:number,
+    id:number,
+}
+type ITextColor = IShopItem & {
+    color:string
+}
+type IBackgroundColor = IShopItem & {
+    color:string
+}
+type IBorderColor = IShopItem & {
+    color:string
+}
+export type {IUser, IBackgroundColor, IBorderColor, ITextColor, IShopItem, IBearer as IBearer, IPhraseData, IStats, IOption, IGamestate, IPlayer, ISimpleQuestion, IStat, ICompletedQuestion, ICustomBoard}
