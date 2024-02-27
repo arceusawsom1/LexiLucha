@@ -8,6 +8,7 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Cascade
@@ -23,8 +24,8 @@ data class Player (
     @Transient var client : SocketIOClient,
     var ready : Boolean = false,
     var active : Boolean = true,
-    @OneToOne(cascade = [CascadeType.ALL])
-    var custom : CustomBoard = CustomBoard(),
+    @ManyToOne
+    var custom : CustomBoard = CustomBoard(id=-1),
     var type : PLAYERTYPE = PLAYERTYPE.GUEST) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

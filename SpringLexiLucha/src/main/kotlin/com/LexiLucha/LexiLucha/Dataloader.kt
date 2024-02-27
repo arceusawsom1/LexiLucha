@@ -1,7 +1,9 @@
 package com.LexiLucha.LexiLucha
 
+import com.LexiLucha.LexiLucha.dal.CustomBoardRepository
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.dal.ShopItemRepository
+import com.LexiLucha.LexiLucha.model.CustomBoard
 import com.LexiLucha.LexiLucha.model.Question
 import com.LexiLucha.LexiLucha.model.ShopItem
 import com.LexiLucha.LexiLucha.model.User
@@ -21,7 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
-class Dataloader @Autowired constructor(val shopItemRepo : ShopItemRepository ,val questionRepo: QuestionRepository, val userService: UserService): ApplicationRunner  {
+class Dataloader @Autowired constructor(val customBoardRepository: CustomBoardRepository ,val shopItemRepo : ShopItemRepository ,val questionRepo: QuestionRepository, val userService: UserService): ApplicationRunner  {
 
     @Value("\${spring.jpa.hibernate.ddl-auto}")
     lateinit var DDL_SETTING: String
@@ -404,8 +406,8 @@ class Dataloader @Autowired constructor(val shopItemRepo : ShopItemRepository ,v
 
 
         if (DDL_SETTING.lowercase()=="create"){
-            questionRepo.saveAll(questions)
             shopItemRepo.saveAll(shopItems)
+            questionRepo.saveAll(questions)
             val simpleUser : User = User(username="Ryan",password="password123",money=12)
             userService.register(simpleUser)
             userService.register(User(username="David",password="password123",money=15))

@@ -12,11 +12,11 @@ import jakarta.persistence.ManyToOne
 class CustomBoard (
     @GeneratedValue @Id var id : Int = 0,
     @ManyToOne
-    var textColor : TextColor = TextColor(id=1,color="#333333"),
+    var textColor : TextColor = TextColor(id=-1,color="#333333"),
     @ManyToOne
-    var borderColor : BorderColor = BorderColor(color="#333333"),
+    var borderColor : BorderColor = BorderColor(id=-2,color="#333333"),
     @ManyToOne
-    var backgroundColor : BackgroundColor = BackgroundColor(color="#ffffff"),
+    var backgroundColor : BackgroundColor = BackgroundColor(id=-3,color="#ffffff"),
 ){
     override fun toString(): String {
         return "CustomBoard(id=$id, textColor=$textColor, borderColor=$borderColor, backgroundColor=$backgroundColor)"
