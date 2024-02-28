@@ -8,6 +8,7 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import java.util.*
@@ -18,7 +19,7 @@ data class GameState(
     @OneToMany(cascade = [CascadeType.ALL])
     var players: MutableSet<Player> = java.util.HashSet(),
     val language: LANGUAGE = LANGUAGE.SPANISH,  //default language is spanish
-    @OneToOne
+    @ManyToOne
     @JsonIgnore var currentQuestion: Question? = null,
     val finishedQuestions: ArrayList<Int> = java.util.ArrayList(),
     var startTime: Long = 0,
