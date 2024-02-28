@@ -7,11 +7,12 @@ interface IProps {
     gamestate: IGamestate
 }
 const RoundOver = (props: IProps) => {
-    let totalScore=0;
+    let totalScore:number =0;
     console.log(socket.id)
     console.log(props.gamestate.players)
     const thisPlayer = props.gamestate.players.filter(p=>p.socketId===socket.id)[0]
     console.log(thisPlayer)
+    totalScore = thisPlayer.targets?.map((t)=>t.points).reduce((item,total)=>total+item,0) || 0
     return(
         <>
             <Typography variant="h2">Game over</Typography>
@@ -21,7 +22,6 @@ const RoundOver = (props: IProps) => {
             {thisPlayer.targets && thisPlayer.targets.map((target,index)=>
                 <Card key={index}>
                     <Typography variant="body1">{target.name}   +{target.points}</Typography>
-                    {totalScore+=target.points}
                 </Card>
             )}
             <Typography variant="body1">Total Points: {totalScore}</Typography>
