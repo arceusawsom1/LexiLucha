@@ -140,7 +140,7 @@ class SocketService @Autowired constructor(
         gamestate.finishedTime=System.currentTimeMillis()
         println(gamestate)
         gameArchive.save(gamestate)
-        gamestate.players.forEach{connections.remove(it.client.sessionId)}
+        gamestate.players.forEach{connections.remove(it.client?.sessionId)}
         gamestate.activePlayers().filter{it.type==PLAYERTYPE.REGISTERED}.forEach{
             val currentUser = userService.findByUsername(it.name)
 

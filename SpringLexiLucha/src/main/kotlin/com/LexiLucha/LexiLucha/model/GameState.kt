@@ -34,7 +34,7 @@ data class GameState(
     fun sendUpdate() {
         println("Sending update")
         for (player in players.filter{it.active}){
-            player.client.sendEvent("gameUpdate", this)
+            player.client?.sendEvent("gameUpdate", this)
         }
     }
 
@@ -42,7 +42,7 @@ data class GameState(
         println("Starting Game")
     }
     fun getPlayerBySessionId(sessionID: UUID) : Player{
-        return players.find { player -> player.client.sessionId === sessionID } ?: throw RuntimeException("Invalid session ID");
+        return players.find { player -> player.client?.sessionId === sessionID } ?: throw RuntimeException("Invalid session ID");
     }
 
     fun nextQuestion(question: Question) {

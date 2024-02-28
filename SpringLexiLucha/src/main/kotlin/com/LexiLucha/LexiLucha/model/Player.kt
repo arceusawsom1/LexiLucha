@@ -25,7 +25,7 @@ data class Player (
     val name: String = "",
     @OneToOne(cascade = [CascadeType.ALL])
     val stat:Stat = Stat(),
-    @Transient var client : SocketIOClient,
+    @Transient var client : SocketIOClient?,
     var ready : Boolean = false,
     var active : Boolean = true,
     @ManyToOne
@@ -47,8 +47,10 @@ data class Player (
 
         return true
     }
-    fun getSocketId(): UUID? {
-        return client.sessionId
+    fun getSocketId(): String {
+        if (client!=null)
+            return client!!.sessionId.toString()
+        return "No client connected";
     }
     override fun hashCode(): Int {
         var result = id
