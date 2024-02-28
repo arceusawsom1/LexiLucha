@@ -1,16 +1,32 @@
-import { Button, Typography } from "@mui/material";
+import { Button, Card, Typography } from "@mui/material";
 import SmallLeaderboard from "../components/SmallLeaderboard";
 import { IGamestate } from "../types";
+import { socket } from "../utils/socket";
 
 interface IProps {
     gamestate: IGamestate
 }
 const RoundOver = (props: IProps) => {
+    let totalScore=0;
+    console.log(socket.id)
+    console.log(props.gamestate.players)
+    const thisPlayer = props.gamestate.players.filter(p=>p.socketId===socket.id)[0]
+    console.log(thisPlayer)
     return(
         <>
             <Typography variant="h2">Game over</Typography>
             <SmallLeaderboard players={props.gamestate.players} />
             <Button onClick={()=>window.location.href="/"}>Play Again</Button>
+            <Typography variant="h4">Targets Achieved: </Typography> 
+            {thisPlayer.targets && thisPlayer.targets.map((target,index)=>
+                <Card key={index}>
+                    <Typography variant="body1">{target.name}   +{target.points}</Typography>
+                    {totalScore+=target.points}
+                </Card>
+            )}
+            <Typography variant="body1">Total Points: {totalScore}</Typography>
+
+
         </>
     )
 }

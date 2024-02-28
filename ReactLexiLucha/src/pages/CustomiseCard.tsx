@@ -9,7 +9,7 @@ interface IProps{
     me: [IBearer, Dispatch<SetStateAction<IBearer>>]
 }
 const CustomiseCard = (props:IProps) => {
-    const [player, setPlayer] = useState<IPlayer>({name:"loading...", ready:true, active:true, stat:{score:2,completions:[]}, type:"some type lol"})
+    const [player, setPlayer] = useState<IPlayer>({name:"loading...", ready:true, active:true, stat:{score:2,completions:[]}, type:"some type lol",socketId:""})
     const [custom, setCustom] = useState<ICustomBoard>({backgroundColor:{title:"Default color (White)",description:"",price:1,id:-1,color:"ffffff"},textColor:{title:"Default color (Black)",description:"",price:1,id:-1,color:"000000"},borderColor:{title:"Default color (Black)",description:"",price:1,id:-1,color:"000000"}})
     const [money, setMoney] = useState<number>(0)
     const refreshData = () =>{

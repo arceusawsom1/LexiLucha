@@ -1,5 +1,6 @@
 package com.LexiLucha.LexiLucha.model
 
+import com.LexiLucha.LexiLucha.model.dto.GameTargetSimple
 import com.LexiLucha.LexiLucha.model.enums.PLAYERTYPE
 import com.corundumstudio.socketio.SocketIOClient
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -12,7 +13,10 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.Cascade
+import java.util.*
 import javax.annotation.processing.Generated
+import kotlin.collections.HashSet
+
 @JsonIgnoreProperties(value = [ "client" ])
 
 @Entity
@@ -26,13 +30,15 @@ data class Player (
     var active : Boolean = true,
     @ManyToOne
     var custom : CustomBoard = CustomBoard(id=-1),
+    @Transient
+    var targets : HashSet<GameTargetSimple> = hashSetOf<GameTargetSimple>(),
+
     var type : PLAYERTYPE = PLAYERTYPE.GUEST) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
         other as Player
-
         if (id != other.id) return false
         if (name != other.name) return false
         if (client != other.client) return false
@@ -41,7 +47,9 @@ data class Player (
 
         return true
     }
-
+    fun getSocketId(): UUID? {
+        return client.sessionId
+    }
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + name.hashCode()

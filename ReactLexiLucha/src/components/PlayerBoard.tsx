@@ -8,7 +8,6 @@ interface IProps {
 }
 const PlayerBoard = (props:IProps) => {
     const { player, custom } = props;
-    console.log(custom)
     return(
         <TableRow style={{color:custom.textColor.color, border:`5px solid ${custom.borderColor.color}`, backgroundColor: custom.backgroundColor.color}}>
             <TableCell style={{color:custom.textColor.color}}>{getDisplayname(player)}</TableCell>

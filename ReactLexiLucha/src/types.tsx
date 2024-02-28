@@ -39,6 +39,8 @@ type IPlayer = {
     active: boolean,
     type: string,
     custom?:ICustomBoard,
+    targets?:Array<IGameTarget>,
+    socketId:string,
 }
 type IStat = {
     score: number,
@@ -76,5 +78,9 @@ type IBackgroundColor = IShopItem & {
 }
 type IBorderColor = IShopItem & {
     color:string
+}
+type IGameTarget = {
+    points:number,
+    name:string,
 }
 export type {IUser, IBackgroundColor, IBorderColor, ITextColor, IShopItem, IBearer as IBearer, IPhraseData, IStats, IOption, IGamestate, IPlayer, ISimpleQuestion, IStat, ICompletedQuestion, ICustomBoard}

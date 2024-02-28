@@ -4,10 +4,12 @@ import com.LexiLucha.LexiLucha.dal.GameArchive
 import com.LexiLucha.LexiLucha.dal.GameRepository
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.messages.SimpleMessage
-import com.LexiLucha.LexiLucha.model.CompletedQuestion
-import com.LexiLucha.LexiLucha.model.GameState
-import com.LexiLucha.LexiLucha.model.Player
-import com.LexiLucha.LexiLucha.model.User
+import com.LexiLucha.LexiLucha.model.*
+import com.LexiLucha.LexiLucha.model.GameTargets.AllQuestionsCorrect
+import com.LexiLucha.LexiLucha.model.GameTargets.CompletedGame
+import com.LexiLucha.LexiLucha.model.GameTargets.TenPeopleInGame
+import com.LexiLucha.LexiLucha.model.GameTargets.TopOfLeaderboard
+import com.LexiLucha.LexiLucha.model.dto.GameTargetSimple
 import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
@@ -133,26 +135,41 @@ class SocketService @Autowired constructor(
         gamestate.sendUpdate()
     }
     fun endGame(gamestate: GameState){
-        println(" - Game is ending")
         gamestate.phase = 4
-        println(" - Game is ending2")
         games.remove(gamestate)
-        println(" - Game is ending3")
         gamestate.finishedTime=System.currentTimeMillis()
-        println(" - Game is ending4")
         println(gamestate)
         gameArchive.save(gamestate)
-        println(" - Game is ending5")
         gamestate.players.forEach{connections.remove(it.client.sessionId)}
-        println(" - Game is ending6")
-        val userList = ArrayList<User>();
-        println(" - Game is ending7")
-        gamestate.activePlayers().filter{it.type==PLAYERTYPE.REGISTERED}.forEach{userList.add(userService.findByUsername(it.name))}
-        println(" - Game is ending8")
-        userList.forEach { it.money+=1 }
-        println(" - Game is ending9")
-        userService.saveAll(userList)
+        gamestate.activePlayers().filter{it.type==PLAYERTYPE.REGISTERED}.forEach{
+            val currentUser = userService.findByUsername(it.name)
+
+            currentUser.money += calcNewMoney(gamestate, it)
+            println("New Money: ${currentUser.money}")
+            userService.save(currentUser)
+        }
     }
+
+    private fun calcNewMoney(gamestate: GameState, player: Player): Int {
+        val possibleTargets :List<GameTarget> = mutableListOf(
+            AllQuestionsCorrect(),
+            CompletedGame(),
+            TenPeopleInGame(),
+            TopOfLeaderboard())
+        var total : Int = 0;
+        possibleTargets.forEach {
+            if (it.isQualified(gamestate, player.id)){
+                val pointsEarned = it.getPoints(gamestate, player.id)
+                total += pointsEarned
+                player.targets.add(GameTargetSimple(name=it.getName(), points=pointsEarned))
+
+            }
+
+        }
+        println("total getting added: $total")
+        return total
+    }
+
     fun stepQuestion(gamestate: GameState){
         println(" - choosing a new question")
         // Add the old question to the finished questions array, so it doesn't get repeated
