@@ -11,7 +11,6 @@ const RoundOver = (props: IProps) => {
     console.log(socket.id)
     console.log(props.gamestate.players)
     const thisPlayer = props.gamestate.players.filter(p=>p.socketId===socket.id)[0]
-    console.log(thisPlayer)
     totalScore = thisPlayer.targets?.map((t)=>t.points).reduce((item,total)=>total+item,0) || 0
     return(
         <>
@@ -20,7 +19,7 @@ const RoundOver = (props: IProps) => {
             <Button onClick={()=>window.location.href="/"}>Play Again</Button>
             <Typography variant="h4">Targets Achieved: </Typography> 
             {thisPlayer.targets && thisPlayer.targets.map((target,index)=>
-                <Card key={index}>
+                <Card key={index} sx={{my:1,backgroundColor:"#d9fdd4"}}>
                     <Typography variant="body1">{target.name}   +{target.points}</Typography>
                 </Card>
             )}

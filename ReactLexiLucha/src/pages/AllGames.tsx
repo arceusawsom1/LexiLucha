@@ -34,7 +34,7 @@ export const AllGames = () => {
             </Grid>
             <Typography variant="h2">Archived Games</Typography>
             <Grid container>
-                {archiveGames.map((game, gameIndex)=>
+                {archiveGames.reverse().map((game, gameIndex)=>
                     <Grid item sx={{m:1}} key={gameIndex}>
                         <GameCard game={game}/>
                     </Grid>
