@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Card, Grid } from "@mui/material";
 import { IShopItem, IBearer } from "../types";
 import { BASE_URL } from "../utils/constants";
 import { Dispatch, SetStateAction } from "react";
@@ -17,11 +17,15 @@ const ShopItem = (props:IProps) => {
         axios.get(endpoint, {headers:{Authorization:me.bearer}})
     }
     return(
-        <Grid item sx={{m:1,width:"200px",height:"200px",overflow:"hidden",border:"1px solid black"}}>
-            <p>{title}</p>
-            <p>{description}</p>
-            <p>{price}</p>
-            <Button onClick={buyItem}>Buy</Button>
+        <Grid item>
+            <Card sx={{p:1,m:1,width:"200px",height:"200px",overflow:"hidden"}}>
+                <p>{title}</p>
+                <p>{description}</p>
+                <div>
+                    {price}
+                    <Button onClick={buyItem}>Buy</Button>
+                </div>
+            </Card>
         </Grid>
     )
 }

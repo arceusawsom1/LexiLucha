@@ -62,6 +62,7 @@ type ICustomBoard = {
     textColor: ITextColor,
     backgroundColor: IBackgroundColor,
     borderColor: IBorderColor,
+    backgroundImage?:IBackgroundImage,
 
 }
 type IShopItem = {
@@ -69,6 +70,9 @@ type IShopItem = {
     description:string,
     price:number,
     id:number,
+}
+type IBackgroundImage = IShopItem & {
+    url:string
 }
 type ITextColor = IShopItem & {
     color:string
@@ -83,4 +87,4 @@ type IGameTarget = {
     points:number,
     name:string,
 }
-export type {IUser, IBackgroundColor, IBorderColor, ITextColor, IShopItem, IBearer as IBearer, IPhraseData, IStats, IOption, IGamestate, IPlayer, ISimpleQuestion, IStat, ICompletedQuestion, ICustomBoard}
+export type {IBackgroundImage, IUser, IBackgroundColor, IBorderColor, ITextColor, IShopItem, IBearer as IBearer, IPhraseData, IStats, IOption, IGamestate, IPlayer, ISimpleQuestion, IStat, ICompletedQuestion, ICustomBoard}

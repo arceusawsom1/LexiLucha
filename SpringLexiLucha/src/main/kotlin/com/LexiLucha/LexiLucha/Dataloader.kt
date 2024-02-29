@@ -10,6 +10,7 @@ import com.LexiLucha.LexiLucha.model.User
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.LexiLucha.LexiLucha.model.enums.QUESTIONMODE
 import com.LexiLucha.LexiLucha.model.shopItems.BackgroundColor
+import com.LexiLucha.LexiLucha.model.shopItems.BackgroundImage
 import com.LexiLucha.LexiLucha.model.shopItems.BorderColor
 import com.LexiLucha.LexiLucha.model.shopItems.TextColor
 import com.LexiLucha.LexiLucha.service.UserService
@@ -420,9 +421,7 @@ class Dataloader @Autowired constructor(val customBoardRepository: CustomBoardRe
         questions.forEach{it.noiseWords=it.noiseWords.lowercase().trimEnd('?','.','!')}
         // Creating some shop items
         val shopItems : ArrayList<ShopItem> = ArrayList()
-        shopItems.add(TextColor(title="Default Text Color (Black)", description = "", color="#000000",))
-        shopItems.add(BorderColor(title="Default Border Color (Black)", description = "", color="#000000",))
-        shopItems.add(BackgroundColor(title="Default Background Color (White)", description = "", color="#ffffff",))
+
         //TextColor Items
         shopItems.add(TextColor(id=0,title="Purple Text Color", description = "An item that allows you to change your leaderboard card test to purple", color="#800080",price=5))
         shopItems.add(TextColor(id=0,title="Orange Text Color", description = "An item that allows you to change your leaderboard card test to Orange", color="#FFA500",price=10))
@@ -435,14 +434,17 @@ class Dataloader @Autowired constructor(val customBoardRepository: CustomBoardRe
         shopItems.add(BackgroundColor(id=0,title="Gold Background Color", description="An item that allows you to change your leaderboard card background to gold", color="#FFD700", price=20))
         shopItems.add(BackgroundColor(id=0,title="Silver Background Color", description="An item that allows you to change your leaderboard card background to silver", color="#C0C0C0", price=25))
         shopItems.add(BackgroundColor(id=0,title="Bronze Background Color", description="An item that allows you to change your leaderboard card background to bronze", color="#CD7F32", price=30))
-
+        //BackgroundImage items
+        shopItems.add(BackgroundImage(id=0,title="Carbon Background Image",description="An Item that allows you to look cool on the leaderboard", url="public/boardBackgrounds/carbon.jpg",price=50))
+        shopItems.add(BackgroundImage(id=0,title="lines Background Image",description="An Item that allows you to look cool on the leaderboard", url="public/boardBackgrounds/lines.gif",price=100))
+        shopItems.add(BackgroundImage(id=0,title="waves Background Image",description="An Item that allows you to look cool on the leaderboard", url="public/boardBackgrounds/waves.gif",price=250))
 
         if (DDL_SETTING.lowercase()=="create"){
             shopItemRepo.saveAll(shopItems)
             questionRepo.saveAll(questions)
-            val simpleUser : User = User(username="Ryan",password="password123",money=12)
+            val simpleUser : User = User(username="Ryan",password="password123",money=1200)
             userService.register(simpleUser)
-            userService.register(User(username="David",password="password123",money=15))
+            userService.register(User(username="David",password="password123",money=1500))
         }
 
 

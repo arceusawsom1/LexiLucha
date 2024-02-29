@@ -13,6 +13,7 @@ const ShopRouter = (props:IProps) => {
                 <Route path="textColor" element={<Shop backPath="/customise" apiPath="items/textColors" title="Text Color Shop" me={props.me}/>} />
                 <Route path="borderColor" element={<Shop backPath="/customise" apiPath="items/borderColors" title="Border Color Shop" me={props.me}/>} />
                 <Route path="backgroundColor" element={<Shop backPath="/customise" apiPath="items/backgroundColors" title="Background Color Shop" me={props.me}/>} />
+                <Route path="backgroundImage" element={<Shop backPath="/customise" apiPath="items/backgroundImages" title="Background Image Shop" me={props.me}/>} />
             </Route>}
         </Routes>
     )

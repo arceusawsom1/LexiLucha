@@ -11,11 +11,10 @@ interface IProps {
 const PlayerBoard = (props:IProps) => {
     const { player, custom, complete } = props;
     return(
-        <TableRow style={{color:custom.textColor.color, border:`5px solid ${custom.borderColor.color}`, backgroundColor: custom.backgroundColor.color}}>
+        <TableRow style={{color:custom.textColor.color, border:`5px solid ${custom.borderColor.color}`,backgroundColor:custom.backgroundColor.color, backgroundImage:`url(${(custom.backgroundImage ||{}).url})`}}>
             <TableCell style={{color:custom.textColor.color}}>{getDisplayname(player)}</TableCell>
             <TableCell style={{color:custom.textColor.color}}>{player.stat.score}</TableCell>
             <TableCell style={{color:custom.textColor.color}}>{complete===true ? <CheckCircleIcon/>:""}</TableCell>
-
         </TableRow>
     )
 }

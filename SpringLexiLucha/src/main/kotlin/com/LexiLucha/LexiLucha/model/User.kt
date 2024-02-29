@@ -17,7 +17,7 @@ data class User (
     val role: ArrayList<ROLE> = arrayListOf(ROLE.USER),
     var money : Int = 0,
     @ManyToMany
-    val items : MutableSet<ShopItem> = mutableSetOf(ShopItem(id=1), ShopItem(id=2),ShopItem(id=3)),
+    val items : MutableSet<ShopItem> = mutableSetOf(ShopItem(id=-1), ShopItem(id=-2),ShopItem(id=-3),ShopItem(-4)),
     @OneToOne(cascade = arrayOf(CascadeType.ALL))
     var custom: CustomBoard = CustomBoard()
 ){

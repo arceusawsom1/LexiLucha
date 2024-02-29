@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import { IShopItem, IBearer } from "../types";
 import ShopItem from "../components/ShopItem";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -34,15 +34,15 @@ const Shop = (props: IProps) => {
             })
     }
     return(
-        <>
-            <Typography>{title}</Typography>
+        <Container sx={{backgroundColor:"white"}}>
+            <Typography variant="h2">{title}</Typography>
             <Grid container>
                 {items.map((item, index)=>
                     <ShopItem me={props.me} key={index} item={item} />
                 )}
                 <Link to={backPath}>Back</Link>
             </Grid>
-        </>
+        </Container>
     )
 }
 export default Shop;

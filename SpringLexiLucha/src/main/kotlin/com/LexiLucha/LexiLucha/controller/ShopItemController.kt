@@ -10,6 +10,7 @@ import com.LexiLucha.LexiLucha.model.ShopItem
 import com.LexiLucha.LexiLucha.model.User
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.LexiLucha.LexiLucha.model.shopItems.BackgroundColor
+import com.LexiLucha.LexiLucha.model.shopItems.BackgroundImage
 import com.LexiLucha.LexiLucha.model.shopItems.BorderColor
 import com.LexiLucha.LexiLucha.model.shopItems.TextColor
 import com.LexiLucha.LexiLucha.service.UserService
@@ -74,6 +75,21 @@ class ShopItemController @Autowired(required = true) constructor(
         val user : User = userService.findByUsername(auth.name)
         val item : BackgroundColor = shopItemRepo.findBackgroundColorById(id)
         user.custom.backgroundColor= item;
+        userService.save(user);
+    }
+    @GetMapping("/backgroundImages")
+    fun getBackgroundImages() : MutableList<BackgroundImage> {
+        return shopItemRepo.findAllBackgroundImages()
+    }
+    @GetMapping("/backgroundImages/me")
+    fun getMyBackgroundImages(auth:Authentication) : MutableList<ShopItem> {
+        return shopItemRepo.findMyItemsOfType(auth.name,  BackgroundImage::class.java);
+    }
+    @PutMapping("/backgroundImages/me/choose/{id}")
+    fun chooseBackgroundImages(auth:Authentication, @PathVariable id : Int) {
+        val user : User = userService.findByUsername(auth.name)
+        val item : BackgroundImage = shopItemRepo.findBackgroundImagesById(id)
+        user.custom.backgroundImage= item;
         userService.save(user);
     }
     @GetMapping("/buy/{itemId}")

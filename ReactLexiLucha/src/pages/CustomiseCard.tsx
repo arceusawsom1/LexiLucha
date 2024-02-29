@@ -1,6 +1,6 @@
 import { Container, Table, TableBody, Typography } from "@mui/material"
 import PlayerBoard from "../components/PlayerBoard"
-import { ICustomBoard, IPlayer, ITextColor, IBearer, IUser, IBorderColor, IBackgroundColor } from "../types"
+import { ICustomBoard, IPlayer, ITextColor, IBearer, IUser, IBorderColor, IBackgroundColor, IBackgroundImage } from "../types"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ColorPicker from "../components/ColorPicker"
 import axios from "axios"
@@ -33,11 +33,13 @@ const CustomiseCard = (props:IProps) => {
     return(
         <Container sx={{textAlign:"center"}}>
             <Typography variant="h1">Customizer</Typography>
-            <ColorPicker me={props.me} shopLink = "textColor" label="Text Color" state={[custom.textColor, (newVal:ITextColor)=>{setCustom({...custom,textColor:newVal})}]} apiPath={"items/textColors/me"}/>
+            <ColorPicker me={props.me} shopLink = "textColor" label="Text Color" state={[custom.textColor, (newVal:ITextColor)=>{setCustom({...custom,textColor:newVal as ITextColor})}]} apiPath={"items/textColors/me"}/>
             <ColorPicker me={props.me} shopLink = "borderColor" label="Border Color" state={[custom.borderColor, (newVal:IBorderColor)=>{setCustom({...custom,borderColor:newVal})}]} apiPath={"items/borderColors/me"}/>
             <ColorPicker me={props.me} shopLink = "backgroundColor" label="Background Color" state={[custom.backgroundColor, (newVal:IBackgroundColor)=>{setCustom({...custom,backgroundColor:newVal})}]} apiPath={"items/backgroundColors/me"}/>
+            <ColorPicker me={props.me} shopLink = "backgroundImage" label="Background Image" state={[custom.backgroundImage, (newVal:IBackgroundImage)=>{setCustom({...custom,backgroundImage:newVal})}]} apiPath={"items/backgroundImages/me"}/>
             {/* <Picker shopLink = "backgroundColor" label="Background Color" state={[custom.backgroundColor, (newVal:string)=>{setCustom({...custom,backgroundColor:newVal})}]} options={basicColors} /> */}
             {/* <Picker shopLink = "borderColor" label="Border Color" state={[custom.borderColor, (newVal:string)=>{setCustom({...custom,borderColor:newVal})}]} options={basicColors} /> */}
+            <Typography variant="h4">Preview</Typography>
             <Table>
                 <TableBody>
                     <PlayerBoard player={player} custom={custom}/>
