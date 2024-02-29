@@ -135,7 +135,7 @@ const MainGamePage = (props: IProps) => {
             <>
               {gamestate.phase===1 && <WaitingForPlayers gamestate={gamestate} />}
               {gamestate.phase===2 && <WaitingForReady gamestate={gamestate} />}
-              {gamestate.phase===3 && <BasicPhraseQuestion timer={timer} gamestate={gamestate} correctHandler={setSuccessMessage} failHandler={setFailMessage} currentQuestion={gamestate.currentQuestionSimple} key={gamestate.currentQuestionSimple.id}/>}
+              {gamestate.phase===3 && <BasicPhraseQuestion timer={[timer, timerActive]} gamestate={gamestate} correctHandler={setSuccessMessage} failHandler={setFailMessage} currentQuestion={gamestate.currentQuestionSimple} key={gamestate.currentQuestionSimple.id}/>}
               {gamestate.phase===4 && <RoundOver gamestate = {gamestate} />}
             </>
           }

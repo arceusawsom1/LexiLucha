@@ -11,10 +11,12 @@ interface IProps {
   failHandler: (message: string)=>void,
   currentQuestion: ISimpleQuestion,
   gamestate: IGamestate,
-  timer:number,
+  timer:[number, boolean],
 }
 
-const BasicPhraseQuestion = ({ currentQuestion, gamestate, timer } : IProps) => {
+const BasicPhraseQuestion = (props : IProps) => {
+  const [timer, timerActive] = props.timer
+  const {gamestate, currentQuestion} = props;
   const [question, setQuestion] = useState<IPhraseData>()
   const [selected, setSelected] = useState<string[]>([]);
   const mobileDevice = useMediaQuery('(max-width:600px)');
@@ -76,7 +78,7 @@ const BasicPhraseQuestion = ({ currentQuestion, gamestate, timer } : IProps) => 
         <>
           {stage==="question" && 
             <>
-              <Typography variant="h2" sx={{mb:3,mt:10}}>{timer/1000}</Typography>
+              <Typography variant="h2" sx={{mb:3,mt:10}}>{timerActive ? timer/1000 : "--"}</Typography>
               <Typography variant="h3" sx={{mb:3,mt:10}}>{question.phrase}</Typography>
               <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}>
                 {selected.map((word, wordIndex)=>
@@ -100,7 +102,7 @@ const BasicPhraseQuestion = ({ currentQuestion, gamestate, timer } : IProps) => 
               <CircularProgress />
             </>
           }
-          <SmallLeaderboard players={gamestate.players} />
+          <SmallLeaderboard gamestate={gamestate} />
         </>
       }
       </Container>

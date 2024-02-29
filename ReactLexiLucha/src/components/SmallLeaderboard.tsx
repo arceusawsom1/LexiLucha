@@ -1,20 +1,16 @@
 import { Table, TableBody } from "@mui/material";
-import { IPlayer } from "../types";
+import { IGamestate, IPlayer } from "../types";
 import PlayerBoard from "./PlayerBoard";
 
 interface IProps {
-    players: Array<IPlayer>
+    gamestate: IGamestate
 }
 const SmallLeaderboard = (props : IProps) => {
     return(
         <Table>
             <TableBody>
-              {props.players.filter(p=>p.active).sort((a, b)=> b.stat.score-a.stat.score).map((player, index)=>
-              <>
-                {player.custom !=undefined && 
-                  <PlayerBoard key={index} player={player} custom={player.custom}/>
-                }
-              </>
+              {props.gamestate.players.filter(p=>p.active&&p.custom!=undefined).sort((a, b)=> b.stat.score-a.stat.score).map((player, index)=>
+                  <PlayerBoard key={index} player={player} custom={player.custom!} complete={player.stat.completions.length===props.gamestate.finishedQuestions.length+1}/>
               )}
             </TableBody>
           </Table>  

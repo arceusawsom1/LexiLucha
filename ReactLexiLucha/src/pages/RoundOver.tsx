@@ -15,7 +15,7 @@ const RoundOver = (props: IProps) => {
     return(
         <>
             <Typography variant="h2">Game over</Typography>
-            <SmallLeaderboard players={props.gamestate.players} />
+            <SmallLeaderboard gamestate={props.gamestate} />
             <Button onClick={()=>window.location.href="/"}>Play Again</Button>
             <Typography variant="h4">Targets Achieved: </Typography> 
             {thisPlayer.targets && thisPlayer.targets.map((target,index)=>
