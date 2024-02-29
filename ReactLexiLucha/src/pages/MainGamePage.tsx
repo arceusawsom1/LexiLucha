@@ -25,6 +25,8 @@ const MainGamePage = (props: IProps) => {
     const [warningMessage, setWarningMessage] = useState("");
     const [warningOpen, setWarningOpen] = useState(false);
     const [failMessage, setFailMessage] = useState("");
+    const [timer, setTimer] = useState(0); //Only used for display purposes, not actually doing anything (except counting down)
+    const [timerActive, setTimerActive] = useState(false);
     const [failOpen, setFailOpen] = useState(false);
     const [phase, setPhase] = useState(0);
     const [gamestate, setGamestate] = useState<IGamestate>();
@@ -37,7 +39,7 @@ const MainGamePage = (props: IProps) => {
       socket.off("successMessage")
       socket.off("failMessage")
       socket.off("warningMessage")
-  
+      socket.off("startTimer")
       const onConnect = () => {
         console.log("connected")
       }
@@ -57,10 +59,22 @@ const MainGamePage = (props: IProps) => {
       socket.on("failMessage", (e: {data: string})=>setFailMessage(e.data))
       socket.on("warningMessage", (e: {data: string})=>setWarningMessage(e.data))
       socket.on("connect_error", (err) => {navigate("/socketError?err=" + err)});
-  
+      socket.on("startTimer", (timerVal:number) => {setTimer(timerVal);setTimerActive(true)});
+      socket.on("stopTimer", () => {setTimerActive(false)});
+
   
     }
   
+    useEffect(() => {
+      // setting time from 0 to 1 every 10 milisecond using javascript setInterval method
+      let intervalId:number;
+      if (timerActive){
+        intervalId = setInterval(() => setTimer(timer - 1000), 950);
+
+      }
+      return () => clearInterval(intervalId);
+    }, [ timer, timerActive ]);
+
     useEffect(()=>{
       setupSockets();
     },[])
@@ -121,7 +135,7 @@ const MainGamePage = (props: IProps) => {
             <>
               {gamestate.phase===1 && <WaitingForPlayers gamestate={gamestate} />}
               {gamestate.phase===2 && <WaitingForReady gamestate={gamestate} />}
-              {gamestate.phase===3 && <BasicPhraseQuestion gamestate={gamestate} correctHandler={setSuccessMessage} failHandler={setFailMessage} currentQuestion={gamestate.currentQuestionSimple} key={gamestate.currentQuestionSimple.id}/>}
+              {gamestate.phase===3 && <BasicPhraseQuestion timer={timer} gamestate={gamestate} correctHandler={setSuccessMessage} failHandler={setFailMessage} currentQuestion={gamestate.currentQuestionSimple} key={gamestate.currentQuestionSimple.id}/>}
               {gamestate.phase===4 && <RoundOver gamestate = {gamestate} />}
             </>
           }

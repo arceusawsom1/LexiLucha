@@ -15,13 +15,10 @@ const LandingForm = (props: IProps) => {
     const [mode, setMode] = useState<string>("");
     const [modeDisabled, setModeDisabled] = useState<boolean>(false);
     const [modes, setModes] = useState<Array<string>>(["SIMPLE"]);
+
     const joinQueue = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const message = {name, language, bearer:me.bearer, mode:"SIMPLE"}
-        if (mode!="")
-            message.mode=mode
-        console.log(message)
-        socket.emit("joinQueue", message)
+        socket.emit("joinQueue", {name, language, bearer:me.bearer})
     }
 
     useEffect(()=>{
@@ -48,6 +45,20 @@ const LandingForm = (props: IProps) => {
                 setModes(response.data)
             })
     },[language])
+
+    useEffect(()=>{
+        if (language==="")
+            return
+        console.log("language is: " + language)
+        const endpoint = BASE_URL + "language/" + language + "/modes"
+        console.log(endpoint)
+        setModeDisabled(true)
+        axios.get(endpoint)
+            .then((response : {data: Array<string>})=>{
+                setModeDisabled(false)
+                setModes(response.data)
+            })
+    },[modes])
 
     
 

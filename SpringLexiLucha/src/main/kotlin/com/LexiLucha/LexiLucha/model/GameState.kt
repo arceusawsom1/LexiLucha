@@ -1,5 +1,6 @@
 package com.LexiLucha.LexiLucha.model
 
+import com.LexiLucha.LexiLucha.messages.SimpleMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
 import com.LexiLucha.LexiLucha.model.enums.LANGUAGE
 import com.LexiLucha.LexiLucha.model.enums.QUESTIONMODE
@@ -57,6 +58,22 @@ data class GameState(
 
     override fun toString(): String {
         return "GameState(players=$players, language=$language, currentQuestion=$currentQuestion, finishedQuestions=$finishedQuestions, startTime=$startTime, createdTime=$createdTime, finishedTime=$finishedTime, phase=$phase, currentQuestionSimple=$currentQuestionSimple, id=$id, mode=$mode)"
+    }
+
+    fun sendMessage(protocol : String, payload : Any) {
+        for (player in players.filter{it.active}){
+            player.client?.sendEvent(protocol, payload)
+        }
+    }
+    fun sendMessage(protocol : String, message : String) {
+        for (player in players.filter{it.active}){
+            player.client?.sendEvent(protocol, SimpleMessage(message))
+        }
+    }
+    fun sendMessage(protocol : String) {
+        for (player in players.filter{it.active}){
+            player.client?.sendEvent(protocol)
+        }
     }
 
 }

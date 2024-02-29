@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.stereotype.Service
 import java.lang.RuntimeException
 import java.util.*
+import kotlin.concurrent.timerTask
 
 @Service
 class SocketService @Autowired constructor(
@@ -35,6 +36,10 @@ class SocketService @Autowired constructor(
     var games : ArrayList<GameState> = gameRepo.findAll()
     private final val MIN_PLAYERS_IN_LOBBY = 1
     private final val QUESTIONS_IN_ROUND = 10
+    private final val QUESTIONS_TIME_LIMIT : Long= 10
+
+    var tt  = timerTask {  }
+
 
     fun handleDisconnect(client : SocketIOClient){
         if (connections.containsKey(client.sessionId)){
@@ -102,10 +107,10 @@ class SocketService @Autowired constructor(
         val correct = attempt.lowercase() == gamestate.currentQuestion?.answer?.lowercase();
         val questionId: Int = gamestate.currentQuestion!!.id ?:1
         val timeTaken: Long = System.currentTimeMillis() - gamestate.startTime
+        val allAttempts : List<CompletedQuestion> = gamestate.activePlayers().flatMap{it.stat.completions}
+        val currentQuestionAttempts : List<CompletedQuestion> = allAttempts.filter{it.questionId==questionId}
         if ( correct  ){
             val numPlayers = gamestate.activePlayers().size
-            val allAttempts : List<CompletedQuestion> = gamestate.activePlayers().flatMap{it.stat.completions}
-            val currentQuestionAttempts : List<CompletedQuestion> = allAttempts.filter{it.questionId==questionId}
             val correctAttempts =  currentQuestionAttempts.count{it.correct}
             val earnedScore = numPlayers-correctAttempts
             player.stat.score = player.stat.score.plus(earnedScore)
@@ -119,20 +124,40 @@ class SocketService @Autowired constructor(
             client.sendEvent("failMessage", SimpleMessage("You got the question wrong!"))
         }
 
+        if (currentQuestionAttempts.isEmpty()) { //Meaning that noone has answered the question yet
+            tt=timerTask {
+                println("it has been 10 seconds")
+                endRoundEarly(gamestate,timeTaken)
+            }
+            gamestate.sendMessage("startTimer",QUESTIONS_TIME_LIMIT*1000)
+            Timer().schedule(tt, QUESTIONS_TIME_LIMIT*1000)
+        }
         // Add a record of the current question to the user
         player.stat.completions.add(CompletedQuestion(questionId=questionId,timeTaken=timeTaken,correct=correct))
 
         // If everyone has answered a question, then chose a new question
         if (gamestate.activePlayers().all{ p -> p.stat.completions.any {it.questionId==questionId}}) {
+            println("--END ROUND ${gamestate.finishedQuestions.size} NATURALLY--")
             stepQuestion(gamestate)
         }
+        endSubmit(gamestate)
+    }
+    fun endSubmit(gamestate: GameState){
         println("Questions so far: " + gamestate.finishedQuestions.size)
         println("gamestate: " + gamestate.phase)
+
         // If the round is complete, then end the round
         if (gamestate.finishedQuestions.size>=QUESTIONS_IN_ROUND && gamestate.phase!=4) {
             endGame(gamestate)
         }
         gamestate.sendUpdate()
+    }
+    fun endRoundEarly(gamestate: GameState, timeTakenFirstSubmission: Long) {
+        val timeTaken = timeTakenFirstSubmission + QUESTIONS_TIME_LIMIT*1000
+        gamestate.activePlayers().filter{it.stat.completions.size == gamestate.finishedQuestions.size}.forEach{it.stat.completions.add(CompletedQuestion(questionId=gamestate.currentQuestion!!.id,timeTaken=timeTaken,correct=false))}
+        println("--ENDING ROUND ${gamestate.finishedQuestions.size} EARLY--")
+        stepQuestion(gamestate);
+        endSubmit(gamestate)
     }
     fun endGame(gamestate: GameState){
         gamestate.phase = 4
@@ -172,6 +197,8 @@ class SocketService @Autowired constructor(
 
     fun stepQuestion(gamestate: GameState){
         println(" - choosing a new question")
+        gamestate.sendMessage("stopTimer")
+        tt.cancel()
         // Add the old question to the finished questions array, so it doesn't get repeated
         if (gamestate.currentQuestion != null)
             gamestate.finishedQuestions.add(gamestate.currentQuestion!!.id)
