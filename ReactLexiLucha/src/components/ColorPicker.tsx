@@ -1,4 +1,4 @@
-import { Card, Container, Paper, Typography } from "@mui/material";
+import { Card, Typography } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
@@ -27,7 +27,7 @@ const ColorPicker = (props:IProps) => {
             }
         }
         axios.get(endpoint, requestOptions)
-            .then((response:{data:Array<ITextColor>})=>setOptions(response.data))
+            .then((response:{data:Array<ITextColor & IBackgroundImage>})=>setOptions(response.data))
     }
     const styles = {
         display:"inline-block", 
