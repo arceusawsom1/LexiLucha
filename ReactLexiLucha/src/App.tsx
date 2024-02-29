@@ -15,6 +15,7 @@ import { Container } from '@mui/material'
 
 function App() {
     const [me, setMe] = useState<IBearer>({bearer:""})
+    const [ingame, setIngame] = useState<boolean>(false)
 
     useEffect(()=>{
         const bearer = localStorage.getItem("me")
@@ -27,11 +28,11 @@ function App() {
 
     return (
         <>
-            <TopNav me={[me, setMe]}/>
+            <TopNav inGame={[ingame, setIngame]} me={[me, setMe]}/>
             <Container sx={{backgroundColor:"white",p:2,mt:12,textAlign:"center",width:"1200px"}}>
                 <ShopRouter me={[me, setMe]} />
                 <Routes>
-                    <Route path="" element={<MainGamePage me={[me, setMe]} />}/>
+                    <Route path="" element={<MainGamePage me={[me, setMe]} inGame={[ingame, setIngame]} />}/>
                     <Route path="dashboard" Component={Dashboard}/>
                     { me.bearer!="" && <Route path="customise" element={<CustomiseCard me={[me,setMe]}/>}/> }
                     <Route path="allgames" Component={AllGames}/>

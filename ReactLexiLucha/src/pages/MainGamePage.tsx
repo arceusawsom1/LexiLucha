@@ -10,10 +10,12 @@ import RoundOver from './RoundOver';
 import { useNavigate } from 'react-router-dom';
 
 interface IProps {
-  me: [IBearer, Dispatch<SetStateAction<IBearer>>]
+  me: [IBearer, Dispatch<SetStateAction<IBearer>>],
+  inGame: [boolean, Dispatch<SetStateAction<boolean>>],
 }
 const MainGamePage = (props: IProps) => {
     const [me, setMe] = props.me
+    const [_inGame, setInGame] = props.inGame
     const theme = createTheme({
     
     })
@@ -49,6 +51,10 @@ const MainGamePage = (props: IProps) => {
       }
       const onGameUpdate = (e: IGamestate) => {
         setPhase(1);
+        if (e.phase===4)
+          setInGame(false);
+        else
+          setInGame(true);
         setGamestate(e);
         console.log("New Gamestate:", e)
       }
