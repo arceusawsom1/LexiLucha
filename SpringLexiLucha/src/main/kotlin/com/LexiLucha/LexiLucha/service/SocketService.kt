@@ -124,7 +124,7 @@ class SocketService @Autowired constructor(
             client.sendEvent("failMessage", SimpleMessage("You got the question wrong!"))
         }
 
-        if (currentQuestionAttempts.isEmpty()) { //Meaning that noone has answered the question yet
+        if (currentQuestionAttempts.isEmpty() && gamestate.activePlayers().size>1) { //Meaning that noone has answered the question yet (and there is more than one player)
             tt=timerTask {
                 println("it has been 10 seconds")
                 endRoundEarly(gamestate,timeTaken)
