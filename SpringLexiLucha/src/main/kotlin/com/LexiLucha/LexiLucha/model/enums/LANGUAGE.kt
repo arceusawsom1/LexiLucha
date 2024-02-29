@@ -8,5 +8,6 @@ enum class LANGUAGE {
     VIETNAMESE,
     MANDARIN,
     LITHUANIAN,
-    SWEDISH
+    SWEDISH,
+    HINDI
 }

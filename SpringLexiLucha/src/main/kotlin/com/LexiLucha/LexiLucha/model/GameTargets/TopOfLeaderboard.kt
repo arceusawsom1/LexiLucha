@@ -19,9 +19,17 @@ class TopOfLeaderboard : GameTarget {
         if (gameState.players.size<=1)
             return false
         val currentPlayer : Player = gameState.activePlayers().find { it.id==playerId } ?: throw RuntimeException("Cant find player")
+        println("Calculating top of leaderboard")
+        println(currentPlayer)
         val currentScore : Int = currentPlayer.stat.completions.count { it.correct }
+        println(currentScore)
         val allScores : MutableList<Int> = gameState.activePlayers().map { it.stat. completions.count{it.correct}}.toMutableList()
+        println(allScores)
         allScores.remove(currentScore)
+        println(allScores)
+
+        println("end of Calculating top of leaderboard")
         return currentScore > allScores.max() //Ties do not count
+
     }
 }
