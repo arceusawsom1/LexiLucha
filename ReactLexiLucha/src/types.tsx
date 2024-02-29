@@ -47,8 +47,10 @@ type IStat = {
     completions: Array<ICompletedQuestion>
 }
 type ICompletedQuestion = {
+    id:number,
     timeTaken: number,
     correct: boolean,
+    questionId:number,
 }
 type IBearer = {
     bearer: string,

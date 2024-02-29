@@ -1,6 +1,6 @@
 import { AppBar, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, SxProps, Theme, Toolbar, Typography } from "@mui/material"
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IBearer } from "../types";
 type MenuItem = {
     label:string,
