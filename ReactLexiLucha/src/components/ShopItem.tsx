@@ -22,7 +22,7 @@ const ShopItem = (props:IProps) => {
     }
     return(
         <Grid item>
-            <Card variant="outlined" sx={{p:1,m:1,minWidth:"200px",maxWidth:"253px",height:"200px",overflow:"hidden"}}>
+            <Card variant="outlined" sx={{justifyContent:"space-between",p:1,m:1,minWidth:"200px",maxWidth:"253px",height:"200px",overflow:"hidden"}}>
             <Typography gutterBottom variant="h5" component="div" sx={{whiteSpace:"nowrap", textOverflow:"ellipsis",overflow:"hidden"}}>
                 {title}
             </Typography>
