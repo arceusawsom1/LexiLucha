@@ -435,9 +435,9 @@ class Dataloader @Autowired constructor(val customBoardRepository: CustomBoardRe
         shopItems.add(BackgroundColor(id=0,title="Silver Background Color", description="An item that allows you to change your leaderboard card background to silver", color="#C0C0C0", price=25))
         shopItems.add(BackgroundColor(id=0,title="Bronze Background Color", description="An item that allows you to change your leaderboard card background to bronze", color="#CD7F32", price=30))
         //BackgroundImage items
-        shopItems.add(BackgroundImage(id=0,title="Carbon Background Image",description="An Item that allows you to look cool on the leaderboard", url="public/boardBackgrounds/carbon.jpg",price=50))
-        shopItems.add(BackgroundImage(id=0,title="lines Background Image",description="An Item that allows you to look cool on the leaderboard", url="public/boardBackgrounds/lines.gif",price=100))
-        shopItems.add(BackgroundImage(id=0,title="waves Background Image",description="An Item that allows you to look cool on the leaderboard", url="public/boardBackgrounds/waves.gif",price=250))
+        shopItems.add(BackgroundImage(id=0,title="Carbon Background Image",description="An Item that allows you to look cool on the leaderboard", url="boardBackgrounds/carbon.jpg",price=50))
+        shopItems.add(BackgroundImage(id=0,title="lines Background Image",description="An Item that allows you to look cool on the leaderboard", url="boardBackgrounds/lines.gif",price=100))
+        shopItems.add(BackgroundImage(id=0,title="waves Background Image",description="An Item that allows you to look cool on the leaderboard", url="boardBackgrounds/waves.gif",price=250))
 
         if (DDL_SETTING.lowercase()=="create"){
             shopItemRepo.saveAll(shopItems)

@@ -17,13 +17,17 @@ const RoundOver = (props: IProps) => {
             <Typography variant="h2">Game over</Typography>
             <SmallLeaderboard gamestate={props.gamestate} />
             <Button onClick={()=>window.location.href="/"}>Play Again</Button>
-            <Typography variant="h4">Targets Achieved: </Typography> 
-            {thisPlayer.targets && thisPlayer.targets.map((target,index)=>
-                <Card key={index} sx={{my:1,backgroundColor:"#d9fdd4"}}>
-                    <Typography variant="body1">{target.name}   +{target.points}</Typography>
-                </Card>
-            )}
-            <Typography variant="body1">Total Points: {totalScore}</Typography>
+            {thisPlayer.socketId!=null &&
+                <>
+                <Typography variant="h4">Targets Achieved: </Typography> 
+                {thisPlayer.targets && thisPlayer.targets.map((target,index)=>
+                    <Card key={index} sx={{my:1,backgroundColor:"#d9fdd4"}}>
+                        <Typography variant="body1">{target.name}   +{target.points}</Typography>
+                    </Card>
+                )}
+                <Typography variant="body1">Total Points: {totalScore}</Typography>
+                </>
+            }
 
 
         </>

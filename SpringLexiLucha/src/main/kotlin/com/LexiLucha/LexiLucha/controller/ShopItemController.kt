@@ -26,6 +26,10 @@ class ShopItemController @Autowired(required = true) constructor(
     private val shopItemRepo: ShopItemRepository,
     val userService: UserService
 ){
+    @GetMapping
+    fun getAllItems() : MutableList<ShopItem> {
+        return shopItemRepo.findAll()
+    }
     @GetMapping("/me")
     fun getMyCustom(auth:Authentication) : User {
         val user : User = userService.findByUsername(auth.name)

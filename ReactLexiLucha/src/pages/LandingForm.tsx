@@ -46,19 +46,19 @@ const LandingForm = (props: IProps) => {
             })
     },[language])
 
-    useEffect(()=>{
-        if (language==="")
-            return
-        console.log("language is: " + language)
-        const endpoint = BASE_URL + "language/" + language + "/modes"
-        console.log(endpoint)
-        setModeDisabled(true)
-        axios.get(endpoint)
-            .then((response : {data: Array<string>})=>{
-                setModeDisabled(false)
-                setModes(response.data)
-            })
-    },[modes])
+    // useEffect(()=>{
+    //     if (language==="")
+    //         return
+    //     console.log("language is: " + language)
+    //     const endpoint = BASE_URL + "language/" + language + "/modes"
+    //     console.log(endpoint)
+    //     setModeDisabled(true)
+    //     axios.get(endpoint)
+    //         .then((response : {data: Array<string>})=>{
+    //             setModeDisabled(false)
+    //             setModes(response.data)
+    //         })
+    // },[modes])
 
     
 

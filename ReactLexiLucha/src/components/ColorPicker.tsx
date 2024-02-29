@@ -1,6 +1,5 @@
-import { Card, Typography } from "@mui/material";
+import { Card, Container, Typography } from "@mui/material";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { ITextColor, IBearer, IBackgroundImage } from "../types";
@@ -12,7 +11,7 @@ interface IProps {
     me: [IBearer, Dispatch<SetStateAction<IBearer>>]
 }
 const ColorPicker = (props:IProps) => {
-    const {label, apiPath, shopLink} = props;
+    const {label, apiPath} = props;
     const [options, setOptions] = useState<Array<ITextColor & IBackgroundImage>>([])
     const [selected, setSelected] = props.state;
     const [me, _setMe] = props.me
@@ -29,12 +28,12 @@ const ColorPicker = (props:IProps) => {
         axios.get(endpoint, requestOptions)
             .then((response:{data:Array<ITextColor & IBackgroundImage>})=>setOptions(response.data))
     }
+    useEffect(()=>{
+        console.log(selected)
+    },[selected])
     const styles = {
-        display:"inline-block", 
         width:"120px",
-        height:"30px",
-        padding:"5px",
-        margin:"2px",
+        height:"40px",
         fontSize:"20px",
         cursor:"pointer"
     }
@@ -49,23 +48,20 @@ const ColorPicker = (props:IProps) => {
         axios.put(endpoint,{}, requestOptions)
     }
     return(
-        <Card sx={{my:2,py:2}}>
-            <Typography variant="h5">{label}</Typography>
-            {options.map((option, index)=>
-                <div key={index} style={{
-                        ...styles,
-                        backgroundColor:option.color,
-                        backgroundImage:`url(${option.url})`,
-                        border:`${(selected==option)? "5px":"2px"} solid  black`,
-                    }} onClick={()=>{handleClick(option)}}>
-                    {option.color}
-                </div>
-            )}
-            <Link to={"/shop/" + shopLink}>
-                <div style={styles}>
-                    Buy more
-                </div>
-            </Link>
+        <Card variant="outlined" sx={{my:2,flexFlow:"none"}}>
+                <Typography variant="h5">{label}</Typography>
+                <Container sx={{flexFlow:"row",display:"flex",justifyContent:"center"}}>
+                    {options.map((option, index)=>
+                        <Card key={index} sx={{m:2}} style={{
+                                ...styles,
+                                backgroundColor:option.color,
+                                backgroundImage:`url(${option.url})`,
+                                border:`${(selected!=undefined && selected.id==option.id)? "5px":"2px"} solid  black`,
+                            }} onClick={()=>{handleClick(option)}}>
+                            {option.color}
+                        </Card>
+                    )}
+                </Container>
         </Card>
     )
 }

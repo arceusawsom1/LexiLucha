@@ -5,6 +5,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import ColorPicker from "../components/ColorPicker"
 import axios from "axios"
 import { BASE_URL } from "../utils/constants"
+import { Link } from "react-router-dom"
+
 interface IProps{
     me: [IBearer, Dispatch<SetStateAction<IBearer>>]
 }
@@ -31,14 +33,14 @@ const CustomiseCard = (props:IProps) => {
     },[])
     
     return(
-        <Container sx={{textAlign:"center"}}>
+        <Container>
             <Typography variant="h1">Customizer</Typography>
+            <Typography variant="body1">Here you can customise how you apear on the leaderboard during games.</Typography>
+            <Typography variant="body1">You must go to the <Link to="/shop">shop</Link> to purchase new options </Typography>
             <ColorPicker me={props.me} shopLink = "textColor" label="Text Color" state={[custom.textColor, (newVal:ITextColor)=>{setCustom({...custom,textColor:newVal as ITextColor})}]} apiPath={"items/textColors/me"}/>
             <ColorPicker me={props.me} shopLink = "borderColor" label="Border Color" state={[custom.borderColor, (newVal:IBorderColor)=>{setCustom({...custom,borderColor:newVal})}]} apiPath={"items/borderColors/me"}/>
             <ColorPicker me={props.me} shopLink = "backgroundColor" label="Background Color" state={[custom.backgroundColor, (newVal:IBackgroundColor)=>{setCustom({...custom,backgroundColor:newVal})}]} apiPath={"items/backgroundColors/me"}/>
             <ColorPicker me={props.me} shopLink = "backgroundImage" label="Background Image" state={[custom.backgroundImage, (newVal:IBackgroundImage)=>{setCustom({...custom,backgroundImage:newVal})}]} apiPath={"items/backgroundImages/me"}/>
-            {/* <Picker shopLink = "backgroundColor" label="Background Color" state={[custom.backgroundColor, (newVal:string)=>{setCustom({...custom,backgroundColor:newVal})}]} options={basicColors} /> */}
-            {/* <Picker shopLink = "borderColor" label="Border Color" state={[custom.borderColor, (newVal:string)=>{setCustom({...custom,borderColor:newVal})}]} options={basicColors} /> */}
             <Typography variant="h4">Preview</Typography>
             <Table>
                 <TableBody>

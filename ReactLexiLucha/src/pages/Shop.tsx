@@ -1,5 +1,5 @@
-import { Container, Grid, Typography } from "@mui/material";
-import { IShopItem, IBearer } from "../types";
+import { Grid, Typography } from "@mui/material";
+import { IShopItem, IBearer, IUser } from "../types";
 import ShopItem from "../components/ShopItem";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
@@ -9,10 +9,9 @@ interface IProps{
     title : string,
     apiPath : string, //Change to IShopItem eventually
     me: [IBearer, Dispatch<SetStateAction<IBearer>>],
-    backPath : string,
 }
 const Shop = (props: IProps) => {
-    const {title, apiPath, backPath} = props
+    const {title, apiPath} = props
     const [me] = props.me
     const [items, setItems] = useState<Array<IShopItem>>([])
     useEffect(()=>{
@@ -25,24 +24,25 @@ const Shop = (props: IProps) => {
                 const allItems = response.data
                 console.log(response.data)
                 axios.get(BASE_URL + apiPath+"/me",{headers:{Authorization:me.bearer}})
-                    .then((response2:{data:Array<IShopItem>})=>{
+                    .then((response2:{data:IUser})=>{
                         console.log(response2.data)
-                        const myIds :Array<Number> = response2.data.flatMap(item=>item.id)
+                        const myIds :Array<Number> = response2.data.items.flatMap(item=>item.id)
                         console.log(myIds) 
                         setItems(allItems.filter(item=>!myIds.includes(item.id)))
                     })
             })
     }
     return(
-        <Container sx={{backgroundColor:"white"}}>
-            <Typography variant="h2">{title}</Typography>
+        <>
+            <Typography variant="h1" sx={{textAlign:"center"}}>{title}</Typography>
+            <Typography variant="body1">Here you can buy upgrades to customise how you apear on the leaderboard during games.</Typography>
+            <Typography variant="body1">You must go to <Link to="/customise">customise</Link> to apply the purchases </Typography>
             <Grid container>
                 {items.map((item, index)=>
-                    <ShopItem me={props.me} key={index} item={item} />
+                    <ShopItem me={props.me} key={index} item={item} refreshData={refreshData}/>
                 )}
-                <Link to={backPath}>Back</Link>
             </Grid>
-        </Container>
+        </>
     )
 }
 export default Shop;

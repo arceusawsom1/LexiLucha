@@ -57,6 +57,7 @@ type IUser = {
     username:string,
     custom:ICustomBoard,
     money:number,
+    items:Array<IShopItem>,
 }
 type ICustomBoard = {
     textColor: ITextColor,
