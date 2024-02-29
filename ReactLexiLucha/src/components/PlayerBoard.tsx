@@ -1,4 +1,4 @@
-import { Icon, TableCell, TableRow } from "@mui/material"
+import { TableCell, TableRow } from "@mui/material"
 import { getDisplayname } from "../utils/player"
 import { ICustomBoard, IPlayer } from "../types";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -6,7 +6,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 interface IProps {
     player:IPlayer,
     custom:ICustomBoard,
-    complete:boolean,
+    complete?:boolean,
 }
 const PlayerBoard = (props:IProps) => {
     const { player, custom, complete } = props;

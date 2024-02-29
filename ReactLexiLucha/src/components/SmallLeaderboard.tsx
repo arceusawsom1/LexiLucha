@@ -1,5 +1,5 @@
 import { Table, TableBody } from "@mui/material";
-import { IGamestate, IPlayer } from "../types";
+import { IGamestate } from "../types";
 import PlayerBoard from "./PlayerBoard";
 
 interface IProps {
