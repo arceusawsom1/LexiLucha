@@ -22,6 +22,7 @@ const MainGamePage = (props: IProps) => {
     const navigate = useNavigate();
     const audio = new Audio("ding.mp3")
     audio.preload = 'auto';
+    const [allLobbies, setAllLobbies] = useState<Array<IGamestate>>([])
     const [successMessage, setSuccessMessage] = useState("");
     const [successOpen, setSuccessOpen] = useState(false);
     const [warningMessage, setWarningMessage] = useState("");
@@ -44,8 +45,10 @@ const MainGamePage = (props: IProps) => {
       socket.off("startTimer")
       const onConnect = () => {
         console.log("connected")
+        socket.emit("requestAllLobbies")
       }
-      const onDisconnect = () => {
+      const onDisconnect = (e:any) => {
+        console.log(e)
         setFailMessage("Disconnected from server (Tell Ryan)")
         console.log("disconnected")
       }
@@ -61,6 +64,7 @@ const MainGamePage = (props: IProps) => {
       socket.on('connect', onConnect);
       socket.on('disconnect', onDisconnect);
       socket.on('gameUpdate', onGameUpdate);
+      socket.on('allLobbies', (e: {data: Array<IGamestate>})=>{console.log(e);setAllLobbies(e.data)});
       socket.on("successMessage", (e: {data: string})=>setSuccessMessage(e.data))
       socket.on("failMessage", (e: {data: string})=>setFailMessage(e.data))
       socket.on("warningMessage", (e: {data: string})=>setWarningMessage(e.data))
@@ -136,7 +140,7 @@ const MainGamePage = (props: IProps) => {
       <ThemeProvider theme = {theme}>
         <Container sx={{textAlign:"center"}}>
           <Typography variant="h1">Lexi Lucha</Typography>
-          {phase === 0 && <LandingForm me={[me, setMe]} />}
+          {phase === 0 && <LandingForm me={[me, setMe]} allLobbies={allLobbies}/>}
           {(phase === 1 && gamestate!==undefined)&& 
             <>
               {gamestate.phase===1 && <WaitingForPlayers gamestate={gamestate} />}

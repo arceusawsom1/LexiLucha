@@ -3,19 +3,39 @@ import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react"
 import { socket } from "../utils/socket";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { IBearer } from "../types";
+import { IBearer, IGamestate } from "../types";
 interface IProps {
-    me: [IBearer, Dispatch<SetStateAction<IBearer>>]
+    me: [IBearer, Dispatch<SetStateAction<IBearer>>],
+    allLobbies: Array<IGamestate>
+}
+interface ILanguage {
+    value:string,
+    display:string,
 }
 const LandingForm = (props: IProps) => {
     const [me, _setMe] = props.me
+    const { allLobbies } = props
     const [name, setName] = useState<string>("");
     const [language, setLanguage] = useState<string>("SPANISH");
     const [languages, setLanguages] = useState<Array<string>>(["Spanish","Greek", "(the api server is not working)"]);
     const [mode, setMode] = useState<string>("");
     const [modeDisabled, setModeDisabled] = useState<boolean>(false);
     const [modes, setModes] = useState<Array<string>>(["SIMPLE"]);
+    // useEffect(()=>{
+    //     console.log("All Lobbies: " + allLobbies)
 
+    // },[allLobbies])
+    const displayLanguages :Array<ILanguage>= []
+    languages.forEach((language)=>{
+        const currentLobby = allLobbies.filter((lobby:IGamestate)=>lobby.language==language && (lobby.phase==1 || lobby.phase==2))[0]
+        let playercount = 0
+        if (currentLobby!=undefined)
+            playercount = currentLobby.players.filter((player)=>player.active).length
+        displayLanguages.push({
+            display:language + " Playercount: " + playercount,
+            value:language
+        })
+    })
     const joinQueue = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         socket.emit("joinQueue", {name, language, bearer:me.bearer})
@@ -26,6 +46,7 @@ const LandingForm = (props: IProps) => {
     },[])
 
     const refreshLanguages = () => {
+        
         const endpoint = BASE_URL + "language"
         console.log(endpoint)
         axios.get(endpoint)
@@ -78,8 +99,8 @@ const LandingForm = (props: IProps) => {
                         label="Language"
                         onChange={(e: {target: {value: string}})=>setLanguage(e.target.value)}
                     >
-                        {languages.map(((language, languageIndex)=>
-                            <MenuItem key={languageIndex} value={language.toUpperCase()}>{language.charAt(0).toUpperCase() + language.substring(1).toLowerCase()}</MenuItem>
+                        {displayLanguages.map(((language, languageIndex)=>
+                            <MenuItem key={languageIndex} value={language.value.toUpperCase()}>{language.display.charAt(0).toUpperCase() + language.display.substring(1).toLowerCase()}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>

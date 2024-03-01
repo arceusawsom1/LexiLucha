@@ -5,10 +5,7 @@ import com.LexiLucha.LexiLucha.dal.GameRepository
 import com.LexiLucha.LexiLucha.dal.QuestionRepository
 import com.LexiLucha.LexiLucha.messages.SimpleMessage
 import com.LexiLucha.LexiLucha.model.*
-import com.LexiLucha.LexiLucha.model.GameTargets.AllQuestionsCorrect
-import com.LexiLucha.LexiLucha.model.GameTargets.CompletedGame
-import com.LexiLucha.LexiLucha.model.GameTargets.TenPeopleInGame
-import com.LexiLucha.LexiLucha.model.GameTargets.TopOfLeaderboard
+import com.LexiLucha.LexiLucha.model.GameTargets.*
 import com.LexiLucha.LexiLucha.model.dto.GameTargetSimple
 import com.LexiLucha.LexiLucha.model.dto.JoinQueueMessage
 import com.LexiLucha.LexiLucha.model.dto.SimpleQuestion
@@ -87,6 +84,7 @@ class SocketService @Autowired constructor(
         // We are going to assume that if a game only has one player at this point, then it is new, and thus needs to be added
         if (selectedGame.players.size == 1)
             games.add(selectedGame)
+
     }
     fun handleReady(client: SocketIOClient){
         println("${client.sessionId} is ready")
@@ -180,6 +178,7 @@ class SocketService @Autowired constructor(
             AllQuestionsCorrect(),
             CompletedGame(),
             TenPeopleInGame(),
+            PlaceHighInBigLeaderboard(),
             TopOfLeaderboard())
         var total : Int = 0;
         possibleTargets.forEach {
@@ -218,5 +217,9 @@ class SocketService @Autowired constructor(
         gamestate.currentQuestionSimple = SimpleQuestion(newQuestion)
         // Reset the startTime
         gamestate.startTime = System.currentTimeMillis()
+    }
+
+    fun allLobbies(): List<GameState> {
+        return games
     }
 }
