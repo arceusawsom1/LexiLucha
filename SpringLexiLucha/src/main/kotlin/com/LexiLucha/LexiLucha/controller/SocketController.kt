@@ -48,7 +48,7 @@ class SocketController @Autowired constructor(
         namespace.addEventListener("joinQueue", JoinQueueMessage::class.java, onJoinQueue())
         namespace.addEventListener("ready", SimpleMessage::class.java, onReady())
         namespace.addEventListener("submitAttempt", SimpleMessage::class.java, submitAttempt())
-        namespace.addEventListener("requestAllLobbies", SimpleMessage::class.java, broadcastLobbies())
+//        namespace.addEventListener("requestAllLobbies", SimpleMessage::class.java, broadcastLobbiesListner())
 
 
 
@@ -63,30 +63,33 @@ class SocketController @Autowired constructor(
         return ConnectListener { client: SocketIOClient ->
             val handshakeData = client.handshakeData
             println("Client[${client.sessionId.toString()}] - Connected to game module through '${ handshakeData.url}'")
-//            client.sendEvent("allLobbies", AllLobbies(socketService.allLobbies()))
         }
     }
-    private fun broadcastLobbies(): DataListener<SimpleMessage> {
+    private fun broadcastLobbiesListner(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { _: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
-            server.broadcastOperations.sendEvent("allLobbies", AllLobbies(socketService.allLobbies()))
+            broadcastLobbiesListner()
         }
+    }
+    private fun broadcastLobbies(){
+        server.broadcastOperations.sendEvent("allLobbies", AllLobbies(socketService.allLobbies()))
     }
     private fun onDisconnected(): DisconnectListener {
         return DisconnectListener { client: SocketIOClient ->
             socketService.handleDisconnect(client);
+            broadcastLobbies()
         }
     }
 
     private fun onJoinQueue(): DataListener<JoinQueueMessage> {
         return DataListener<JoinQueueMessage> { client: SocketIOClient, data: JoinQueueMessage, ackSender: AckRequest? ->
             socketService.handleJoinQueue(client, data)
-            server.broadcastOperations.sendEvent("allLobbies", AllLobbies(socketService.allLobbies()))
+            broadcastLobbies()
         }
     }
     private fun onReady(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
             socketService.handleReady(client)
-            server.broadcastOperations.sendEvent("allLobbies", AllLobbies(socketService.allLobbies()))
+            broadcastLobbies()
         }
     }
 
