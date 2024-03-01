@@ -7,7 +7,7 @@ import com.LexiLucha.LexiLucha.model.Player
 class TopOfLeaderboard : GameTarget {
     final val POINTS = 3
 
-    override fun getName(): String {
+    override fun getName(gameState: GameState, playerId: Int): String {
         return "You came first!"
     }
 

@@ -6,7 +6,7 @@ import com.LexiLucha.LexiLucha.model.GameTarget
 class CompletedGame : GameTarget {
     final val POINTS = 1
 
-    override fun getName(): String {
+    override fun getName(gameState: GameState, playerId: Int): String {
         return "You finished an online game"
     }
 

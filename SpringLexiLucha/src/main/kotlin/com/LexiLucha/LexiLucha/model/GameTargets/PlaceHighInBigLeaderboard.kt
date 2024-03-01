@@ -7,7 +7,7 @@ import com.LexiLucha.LexiLucha.model.Player
 class PlaceHighInBigLeaderboard : GameTarget {
     final val POINTS = 3
 
-    override fun getName(): String {
+    override fun getName(gameState: GameState, playerId: Int): String {
         return "placed highly in a large game (10 players or more)!"
     }
 

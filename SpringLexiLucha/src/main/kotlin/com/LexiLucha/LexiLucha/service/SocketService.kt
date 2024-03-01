@@ -185,7 +185,7 @@ class SocketService @Autowired constructor(
             if (it.isQualified(gamestate, player.id)){
                 val pointsEarned = it.getPoints(gamestate, player.id)
                 total += pointsEarned
-                player.targets.add(GameTargetSimple(name=it.getName(), points=pointsEarned))
+                player.targets.add(GameTargetSimple(name=it.getName(,), points=pointsEarned))
 
             }
 

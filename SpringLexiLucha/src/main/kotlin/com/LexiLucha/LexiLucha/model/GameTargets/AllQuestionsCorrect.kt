@@ -6,7 +6,7 @@ import com.LexiLucha.LexiLucha.model.GameTarget
 class AllQuestionsCorrect : GameTarget {
     final val POINTS = 5
 
-    override fun getName(): String {
+    override fun getName(gameState: GameState, playerId: Int): String {
         return "You got every question correct!"
     }
 
