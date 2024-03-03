@@ -13,7 +13,6 @@ import java.util.*
 
 @RestController
 @RequestMapping("language")
-@CrossOrigin(origins = ["http://localhost:5173", "https://lexilucha.theduggan.online"])
 class LanguageController @Autowired constructor(private final val questionRepo: QuestionRepository){
 
     @GetMapping

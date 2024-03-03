@@ -14,7 +14,6 @@ import java.util.*
 
 @RestController
 @RequestMapping("question")
-@CrossOrigin(origins = ["http://localhost:5173", "https://lexilucha.theduggan.online"])
 class QuestionController @Autowired constructor(private final val questionRepo: QuestionRepository){
 
     @GetMapping

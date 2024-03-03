@@ -82,7 +82,7 @@ class SecurityConfig @Autowired constructor(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = mutableListOf("http://localhost:5173", "https://lexilucha.theduggan.online") // this is the React/frontend port, not
+        configuration.allowedOrigins = mutableListOf("http://localhost:5173", "https://lexilucha.theduggan.online", "https://lexilucha.com", "https://www.lexilucha.com") // this is the React/frontend port, not
         // the java port
         configuration.setAllowedMethods(mutableListOf("GET", "POST", "PUT", "DELETE"))
         configuration.allowCredentials = true
