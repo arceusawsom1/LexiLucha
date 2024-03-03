@@ -54,7 +54,7 @@ This required a lot of additions to both the backend and frontend, including:
 - Incorporating a navigation bar (given all the new pages)
 - General improvements to the front-end styling
 
-There were a few silly mistakes made during this process that increased development time, mostly relating to having unnecessary constraints in my database. However, eventually, all of these changes were made, and the project became what you see today.
+There were a few mistakes made during this process that increased development time, mostly relating to having unnecessary constraints in my database. However, eventually, all of these changes were made, and the project became what you see today.
 
 I used a lot of technologies including
 
