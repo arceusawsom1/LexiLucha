@@ -32,7 +32,7 @@ Once I had the compose working locally, I set up a GitHub Actions workflow to ta
 
 One major benefit of having deployed the application is that I was now able to distribute the prototype to my friends and family and collect feedback. This was important given the one-man nature of the project, and they had no shortage of feedback to provide.
 
-For the main game loop, there were two main features that people really wanted were:
+For the main game loop, there were two features that people really wanted, they were:
 
 - A time limit for each question, increasing the pace of the game
 - A way to see the answers to incorrectly answered questions
@@ -54,7 +54,7 @@ This required a lot of additions to both the backend and frontend, including:
 - Incorporating a navigation bar (given all the new pages)
 - General improvements to the front-end styling
 
-There were a few silly mistakes made during this process that increased development time, mostly relating to having unnecessary constraints in my database. However, eventually, all of these changes were made, and the project became what you see today.
+There were a few mistakes made during this process that increased development time, mostly relating to having unnecessary constraints in my database. However, eventually, all of these changes were made, and the project became what you see today.
 
 I used a lot of technologies including
 
