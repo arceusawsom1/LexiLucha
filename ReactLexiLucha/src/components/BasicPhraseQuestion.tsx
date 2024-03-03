@@ -1,10 +1,11 @@
 import { Button, Chip, CircularProgress, Container, Typography, useMediaQuery } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import SearchBar from "./SearchBar";
-import { IGamestate, IPhraseData, ISimpleQuestion, IStats } from "../types";
+import { IGamestate, IOption, IPhraseData, ISimpleQuestion, IStats } from "../types";
 import createQuestion from "../utils/QuestionCreator";
 import { socket } from "../utils/socket";
 import SmallLeaderboard from "./SmallLeaderboard";
+import { motion } from "framer-motion"
 
 interface IProps {
   correctHandler: (message: string)=>void,
@@ -14,11 +15,13 @@ interface IProps {
   timer:[number, boolean],
 }
 
+
+
 const BasicPhraseQuestion = (props : IProps) => {
   const [timer, timerActive] = props.timer
   const {gamestate, currentQuestion} = props;
   const [question, setQuestion] = useState<IPhraseData>()
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<IOption[]>([]);
   const mobileDevice = useMediaQuery('(max-width:600px)');
   const [stage, setStage] = useState<string>("question");
   const [_stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
@@ -44,13 +47,13 @@ const BasicPhraseQuestion = (props : IProps) => {
     if (question){
       question.options[wordIndex].selected=true
       setQuestion({...question})
-      setSelected([...selected, question.options[wordIndex].value])
+      setSelected([...selected, question.options[wordIndex]])
       setTimeWordPicked(Date.now())
     }
   },[selected, question])
 
   const onUnselect = (wordIndex: number) => {
-    setQuestion({...question!, options: question!.options.map(wordValue=>{if (wordValue.value===selected[wordIndex]) wordValue.selected=false; return wordValue})})
+    setQuestion({...question!, options: question!.options.map(wordValue=>{if (wordValue.id===selected[wordIndex].id) wordValue.selected=false; return wordValue})})
     setSelected([...selected.filter((_unused,index)=>wordIndex!==index)])
   }
 
@@ -63,7 +66,7 @@ const BasicPhraseQuestion = (props : IProps) => {
   
   const onSubmit = () => {
     setStage("submitted")
-    socket.emit("submitAttempt", {data:selected.join(" ")})
+    socket.emit("submitAttempt", {data:selected.map((w:IOption)=>w.value).join(" ")})
   }
 
   // const loadNewQuestion = (index ?: number) => {
@@ -82,12 +85,16 @@ const BasicPhraseQuestion = (props : IProps) => {
               <Typography variant="h3" sx={{mb:3,mt:10}}>{question.phrase}</Typography>
               <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}>
                 {selected.map((word, wordIndex)=>
-                  <Chip sx={{ml:0,m:0.5}} key={wordIndex} label={word} onClick={()=>onUnselect(wordIndex)}/>
+                  <motion.div layoutId={word.id.toString()} style={{display:"inline-block"}}>
+                    <Chip sx={{ml:0,m:0.5}} key={word.id} label={word.value} onClick={()=>onUnselect(wordIndex)}/>
+                  </motion.div>
                 )}
               </Container>
               <Container sx={{my:2}}>
                 {question.options.map((word, wordIndex)=>
-                  <Chip sx={{mt:0.5,mx:0.2}} disabled={word.selected} key={wordIndex} label={word.value} onClick={()=>onSelect(wordIndex)}/>
+                  <motion.div layoutId={word.id.toString()} style={{display:"inline-block"}}>
+                    <Chip sx={{mt:0.5,mx:0.2,display:word.selected?"none":""}} key={word.id} disabled={word.selected} label={word.value} onClick={()=>onSelect(wordIndex)}/>
+                  </motion.div>
                 )}
               </Container>
               <Button variant="contained" onClick={onSubmit}>Submit</Button>

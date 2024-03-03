@@ -4,17 +4,17 @@ import { SMART_WORD_INPUT_DELAY } from "../assets/settings";
 
 interface IProps{
     question: IPhraseData,
-    selected: string[],
+    selected: IOption[],
     timeWordPicked: number,
     onSelect: (index: number)=>void,
     onUnselect: (index: number)=>void,
     onSubmit: ()=>void,
 }
 const SearchBar = ({question,selected, timeWordPicked, onSelect, onUnselect, onSubmit}: IProps) => {
-    const [currentSearch, setCurrentSearch] = useState<string>("");
-    const inputRef = useRef<HTMLInputElement>(null);
-//This is where we handle the "smart autocomplete" feature
-const handleKeypress = (e: { target: { value: string; }; }) => {
+  const [currentSearch, setCurrentSearch] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  //This is where we handle the "smart autocomplete" feature
+  const handleKeypress = (e: { target: { value: string; }; }) => {
     const timeSinceLastInput = Date.now()- timeWordPicked
 
     if (timeSinceLastInput < SMART_WORD_INPUT_DELAY){

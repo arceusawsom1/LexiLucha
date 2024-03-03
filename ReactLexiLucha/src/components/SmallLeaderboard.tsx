@@ -8,9 +8,9 @@ interface IProps {
 const SmallLeaderboard = (props : IProps) => {
     return(
         <Table sx={{mt:2}}>
-            <TableBody>
+            <TableBody>        
               {props.gamestate.players.filter(p=>p.active&&p.custom!=undefined).sort((a, b)=> b.stat.score-a.stat.score).map((player, index)=>
-                  <PlayerBoard key={index} player={player} custom={player.custom!} complete={player.stat.completions.length===props.gamestate.finishedQuestions.length+1}/>
+                    <PlayerBoard key={index} player={player} custom={player.custom!} complete={player.stat.completions.length===props.gamestate.finishedQuestions.length+1}/>
               )}
             </TableBody>
           </Table>  

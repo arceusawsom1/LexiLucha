@@ -1,5 +1,4 @@
 import { IPhraseData } from "../types"
-
 const createQuestion= (phrase: string, answer: string) : IPhraseData => {
     const question : IPhraseData = {
         phrase: phrase,
@@ -11,7 +10,7 @@ const createQuestion= (phrase: string, answer: string) : IPhraseData => {
         ...answer.split(" "),
     ]
     shuffle(arr)
-    arr.forEach(item=>question.options.push({value: item, selected: false}))
+    arr.forEach((item,index)=>question.options.push({id:index,value: item, selected: false}))
     return question
 }
 
