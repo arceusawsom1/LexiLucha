@@ -10,7 +10,7 @@ I embarked on this web development project with the primary goal of delving into
 
 ## The timeline of the project
 
-### The beggining
+### The beginning
 
 My primary goal of this project was to improve my React and front-end skills. I wanted to create a project with a functional and easy-to-use UI. The first page I created was the main game page, where the site gives you a phrase and you are provided with a number of words to choose from to translate the phrase.
 
