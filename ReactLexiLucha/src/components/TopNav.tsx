@@ -13,6 +13,10 @@ const navItems : Array<MenuItem> = [
         destination:"/",        
     },
     {
+        label:"About me",
+        destination:"/aboutMe",        
+    },
+    {
         label:"Dashboard",
         destination:"/dashboard",        
     },

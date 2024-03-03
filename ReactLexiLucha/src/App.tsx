@@ -13,6 +13,7 @@ import ShopRouter from './routers/ShopRouter'
 import TopNav from './components/TopNav'
 import { Container } from '@mui/material'
 import LandingPage from './pages/LandingPage'
+import AboutMe from './pages/AboutMe'
 
 function App() {
     const [me, setMe] = useState<IBearer>({bearer:""})
@@ -34,6 +35,7 @@ function App() {
                 <ShopRouter me={[me, setMe]} />
                 <Routes>
                     <Route path="" element={<LandingPage />}/>
+                    <Route path="aboutMe" element={<AboutMe />}/>
                     <Route path="play" element={<MainGamePage me={[me, setMe]} inGame={[ingame, setIngame]} />}/>
                     <Route path="dashboard" Component={Dashboard}/>
                     { me.bearer!="" && <Route path="customise" element={<CustomiseCard me={[me,setMe]}/>}/> }
