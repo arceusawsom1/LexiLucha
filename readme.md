@@ -32,7 +32,7 @@ Once I had the compose working locally, I set up a GitHub Actions workflow to ta
 
 One major benefit of having deployed the application is that I was now able to distribute the prototype to my friends and family and collect feedback. This was important given the one-man nature of the project, and they had no shortage of feedback to provide.
 
-For the main game loop, there were two main features that people really wanted were:
+For the main game loop, there were two features that people really wanted, they were:
 
 - A time limit for each question, increasing the pace of the game
 - A way to see the answers to incorrectly answered questions
