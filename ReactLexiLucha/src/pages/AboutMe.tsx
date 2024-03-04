@@ -49,7 +49,6 @@ const renderList = (items:Array<String>) =>{
     )
 }
 const shadowProp={boxShadow:"1px 1px 22px 0px rgba(0,0,0,0.75)"};
-const lexiLuchaIntro = `LexiLucha, a platform where users can hone their Language Other Than English (LOTE) skills, emerged as a dynamic space where individuals can engage in friendly competitions with their peers. Leveraging real-time communication enabled by sockets, users can race against each other to translate simple phrases and questions from languages such as Spanish, German, and Vietnamese. This project not only served as a playground for learning but also as a practical application of these technologies in a meaningful and engaging context.`
 const newPara = `I embarked on this web development project with the primary goal of delving into new tools and technologies within the realm of web development, notably Socket.IO and TypeScript. However, throughout the journey, I found myself immersing in a plethora of other technologies, including Kotlin, GitHub Actions, Docker, Framer Motion, and Material-UI. Of course there were some tools that I have allready used plenty, but could refresh my skills on such as MySQL and SpringBoot.`
 const para1 = `LexiLucha, a platform where users can hone their Language Other Than English (LOTE) skills, emerged as a dynamic space where individuals can engage in friendly competitions with their peers. Leveraging real-time communication enabled by sockets, users can race against each other to translate simple phrases and questions from languages such as Spanish, German, and Vietnamese. This project not only served as a playground for learning but also as a practical application of these technologies in a meaningful and engaging context.`
 const para2 = `My primary goal of this project was to improve my React and front-end skills. I wanted to create a project with a functional and easy-to-use UI. The first page I created was the main game page, where the site gives you a phrase and you are provided with a number of words to choose from to translate the phrase.`
@@ -66,54 +65,3 @@ const para11 = `I had plans to add a shop to customize your profile, and profile
 const para12 = `This required a lot of additions to both the backend and frontend, including:`
 const list2 = [`Account registration and login functionality`,`Tracking completed games (this information used to be temporary)`, `a credit system`, `an in-game shop`,`Functionality to apply/choose upgrades`,`Achievements to earn upon completing games`,`Incorporating a navigation bar (given all the new pages)`,`General improvements to the front-end styling`]
 const para13 = `There were a few silly mistakes made during this process that increased development time, mostly relating to having unnecessary constraints in my database. However, eventually, all of these changes were made, and the project became what you see today.`
-const data = `# Readme
-
-### About the project
-
-
-### 
-
-
-## The timeline of the project
-
-### 
-![Untitled](images/readme1.png)
-### 
-![Untitled](images/readme2.png)
-
-
-
-
-
-### 
-- 
-- 
-
-
-I used a lot of technologies including
-
-Frontend:
-
-- pnpm
-- react
-- react-dom
-- motion framer
-- typescript
-
-backend
-
-- kotlin
-- maven
-- springboot
-    - Spring Data JPA
-    - Spring web
-    - Spring Security
-- Jackson
-- mysql
-
-Other
-
-- postman
-- notion
-- excalidraw`
-
