@@ -55,7 +55,7 @@ This required a lot of additions to both the backend and frontend, including:
 - General improvements to the front-end styling
 
 There were a few mistakes made during this process that increased development time, mostly relating to having unnecessary constraints in my database. However, eventually, all of these changes were made, and the project became what you see today.
-
+## Technologies used
 I used a lot of technologies including
 
 Frontend:
