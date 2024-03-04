@@ -8,6 +8,7 @@ import WaitingForReady from './WaitingForReady';
 import BasicPhraseQuestion from '../components/BasicPhraseQuestion';
 import RoundOver from './RoundOver';
 import { useNavigate } from 'react-router-dom';
+import { CORRECT_BING, playBadBeep } from "../utils/audioHelper"
 
 interface IProps {
   me: [IBearer, Dispatch<SetStateAction<IBearer>>],
@@ -20,8 +21,6 @@ const MainGamePage = (props: IProps) => {
     
     })
     const navigate = useNavigate();
-    const audio = new Audio("ding.mp3")
-    audio.preload = 'auto';
     const [allLobbies, setAllLobbies] = useState<Array<IGamestate>>([])
     const [successMessage, setSuccessMessage] = useState("");
     const [successOpen, setSuccessOpen] = useState(false);
@@ -91,7 +90,7 @@ const MainGamePage = (props: IProps) => {
   
     useEffect(()=>{
       if (successMessage!=""){
-        audio.play()
+        CORRECT_BING.play()
         setSuccessOpen(true);
         handleWarningClose();
         handleFailClose();
@@ -100,6 +99,7 @@ const MainGamePage = (props: IProps) => {
   
     useEffect(()=>{
       if (failMessage!=""){
+        playBadBeep();
         setFailOpen(true);
         handleSuccessClose();
         handleWarningClose();

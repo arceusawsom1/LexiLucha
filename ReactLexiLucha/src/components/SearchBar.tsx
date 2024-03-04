@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { IOption, IPhraseData } from "../types";
 import { SMART_WORD_INPUT_DELAY } from "../assets/settings";
+import { playBeep, playThud } from "../utils/audioHelper";
 
 interface IProps{
     question: IPhraseData,
@@ -18,6 +19,7 @@ const SearchBar = ({question,selected, timeWordPicked, onSelect, onUnselect, onS
     const timeSinceLastInput = Date.now()- timeWordPicked
 
     if (timeSinceLastInput < SMART_WORD_INPUT_DELAY){
+      playThud();
       return;
     }
     // get the most up to date search
@@ -44,6 +46,7 @@ const SearchBar = ({question,selected, timeWordPicked, onSelect, onUnselect, onS
       question!.options.some((option, optionIndex)=>{
         if (matches(newSearch, option) && (newSearch.length===option.value.length || !spacePushed)){
           onSelect(optionIndex);
+          playBeep();
           newSearch="" //This means that a search was found
           return true; //Make sure it only effects the first matching word
         }
