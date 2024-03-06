@@ -102,7 +102,7 @@ const BasicPhraseQuestion = (props : IProps) => {
                 <Button variant="contained" onClick={onSubmit}>Submit</Button>
                 <Button onClick={clearSelected}>Clear</Button>
               </Container>}
-              { mobileDevice && <Container sx={{display:"flex",justifyContent:"space-evenly",backgroundColor:"#d8d8d8",position:"absolute",bottom:0,left:0,height:"80px"}}>
+              { mobileDevice && <Container sx={{display:"flex",justifyContent:"space-evenly",backgroundColor:"#d8d8d8",position:"fixed",bottom:0,left:0,height:"80px"}}>
                 <Button sx={{height:"80%",margin:"auto 0", width:"40%"}} variant="contained" onClick={onSubmit}>Submit</Button>
                 <Button sx={{height:"80%",margin:"auto 0", width:"40%"}} variant="outlined" onClick={clearSelected}>Clear</Button>
               </Container>}
