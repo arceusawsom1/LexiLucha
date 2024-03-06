@@ -21,6 +21,9 @@ class GameController @Autowired(required = true) constructor(
     @GetMapping
     fun getCurrentGames() : ArrayList<GameState>{
         val games = ArrayList<GameState>()
+
+        val myHistory : History = History();
+
         games.addAll(gameRepo.findAll())
         return games
     }

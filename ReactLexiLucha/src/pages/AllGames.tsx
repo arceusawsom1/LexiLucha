@@ -10,7 +10,6 @@ export const AllGames = () => {
     const [archiveGames, setArchiveGames] = useState<Array<IGamestate>>([]);
     const refreshData = () => {
         const endpoint = BASE_URL + "game"
-        console.log("Endpoint: " + endpoint)
         axios.get(endpoint)
             .then((response : {data: Array<IGamestate>})=>setGames(response.data))
         axios.get(endpoint + "/archive")

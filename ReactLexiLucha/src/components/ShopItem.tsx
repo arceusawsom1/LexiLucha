@@ -13,7 +13,6 @@ const ShopItem = (props:IProps) => {
     const { refreshData, me } = props
     const buyItem = () => {
         const endpoint=(BASE_URL+"items/buy/" + id)
-        console.log(endpoint,);
         axios.get(endpoint, {headers:{Authorization:me.bearer}})
             .then(()=>refreshData())
         

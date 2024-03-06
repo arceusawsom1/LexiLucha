@@ -21,12 +21,9 @@ const Shop = (props: IProps) => {
         axios.get(endpoint)
             .then((response:{data:Array<IShopItem>}) => {
                 const allItems = response.data
-                console.log(response.data)
                 axios.get(BASE_URL + apiPath+"/me",{headers:{Authorization:me.bearer}})
                     .then((response2:{data:IUser})=>{
-                        console.log(response2.data)
                         const myIds :Array<Number> = response2.data.items.flatMap(item=>item.id)
-                        console.log(myIds) 
                         setItems(allItems.filter(item=>!myIds.includes(item.id)))
                     })
             })

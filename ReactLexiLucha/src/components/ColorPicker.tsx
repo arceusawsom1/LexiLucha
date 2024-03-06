@@ -28,9 +28,6 @@ const ColorPicker = (props:IProps) => {
         axios.get(endpoint, requestOptions)
             .then((response:{data:Array<ITextColor & IBackgroundImage>})=>setOptions(response.data))
     }
-    useEffect(()=>{
-        console.log(selected)
-    },[selected])
     const styles = {
         width:"120px",
         height:"40px",

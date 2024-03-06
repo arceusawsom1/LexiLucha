@@ -14,7 +14,6 @@ const GamesPerDay = (props: IProps) => {
         let labels : Array<string>= []
         let currentDay = new Date()
         while (currentDay.getTime() > new Date(new Date().setDate(new Date().getDate()-14)).getTime()){
-            console.log("Added a day");
             labels.push(prettyDate(currentDay.getTime()))
             currentDay.setDate(currentDay.getDate()-1)
         }

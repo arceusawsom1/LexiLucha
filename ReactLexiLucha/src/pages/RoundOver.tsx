@@ -10,10 +10,8 @@ interface IProps {
 }
 const RoundOver = (props: IProps) => {
     let totalScore:number =0;
-    console.log(socket.id)
     const [seeSolutions, setSeeSolutions] = useState(false)
     const toggleSolutions = () => setSeeSolutions(!seeSolutions)
-    console.log(props.gamestate.players)
     const thisPlayer = props.gamestate.players.filter(p=>p.socketId===socket.id)[0]
     totalScore = thisPlayer.targets?.map((t)=>t.points).reduce((item,total)=>total+item,0) || 0
     return(

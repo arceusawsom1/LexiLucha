@@ -21,10 +21,7 @@ const LandingForm = (props: IProps) => {
     const [mode, setMode] = useState<string>("");
     const [modeDisabled, setModeDisabled] = useState<boolean>(false);
     const [modes, setModes] = useState<Array<string>>(["SIMPLE"]);
-    // useEffect(()=>{
-    //     console.log("All Lobbies: " + allLobbies)
-
-    // },[allLobbies])
+    
     const displayLanguages :Array<ILanguage>= []
     languages.forEach((language)=>{
         const currentLobby = allLobbies.filter((lobby:IGamestate)=>lobby.language==language && (lobby.phase==1 || lobby.phase==2))[0]
@@ -48,7 +45,6 @@ const LandingForm = (props: IProps) => {
     const refreshLanguages = () => {
         
         const endpoint = BASE_URL + "language"
-        console.log(endpoint)
         axios.get(endpoint)
             .then((response : {data: Array<string>})=>setLanguages(response.data))
     }
@@ -56,9 +52,7 @@ const LandingForm = (props: IProps) => {
     useEffect(()=>{
         if (language==="")
             return
-        console.log("language is: " + language)
         const endpoint = BASE_URL + "language/" + language + "/modes"
-        console.log(endpoint)
         setModeDisabled(true)
         axios.get(endpoint)
             .then((response : {data: Array<string>})=>{
@@ -66,22 +60,6 @@ const LandingForm = (props: IProps) => {
                 setModes(response.data)
             })
     },[language])
-
-    // useEffect(()=>{
-    //     if (language==="")
-    //         return
-    //     console.log("language is: " + language)
-    //     const endpoint = BASE_URL + "language/" + language + "/modes"
-    //     console.log(endpoint)
-    //     setModeDisabled(true)
-    //     axios.get(endpoint)
-    //         .then((response : {data: Array<string>})=>{
-    //             setModeDisabled(false)
-    //             setModes(response.data)
-    //         })
-    // },[modes])
-
-    
 
     return(
         <>

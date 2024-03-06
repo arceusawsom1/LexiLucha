@@ -5,7 +5,6 @@ const createQuestion= (phrase: string, answer: string) : IPhraseData => {
         answer: answer,
         options: []
     }
-    console.log(answer.split(" "))
     const arr: string[] = [
         ...answer.split(" "),
     ]

@@ -26,7 +26,7 @@ const BasicPhraseQuestion = (props : IProps) => {
   const [stage, setStage] = useState<string>("question");
   const [_stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
   const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
-
+  console.log(window.innerWidth)
   useEffect(()=>{
     setSelected([])
     setStage("question")
@@ -85,20 +85,28 @@ const BasicPhraseQuestion = (props : IProps) => {
               <Typography variant="h3" sx={{mb:3,mt:10}}>{question.phrase}</Typography>
               <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}>
                 {selected.map((word, wordIndex)=>
-                  <motion.div layoutId={word.id.toString()} style={{display:"inline-block"}}>
+                  <motion.div layoutId={word.id.toString()} key={word.id} style={{display:"inline-block"}}>
                     <Chip sx={{ml:0,m:0.5}} key={word.id} label={word.value} onClick={()=>onUnselect(wordIndex)}/>
                   </motion.div>
                 )}
               </Container>
+              {mobileDevice && <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}></Container>}  {/* render a second answer line if the user is on mobile */}
               <Container sx={{my:2}}>
                 {question.options.map((word, wordIndex)=>
-                  <motion.div layoutId={word.id.toString()} style={{display:"inline-block"}}>
+                  <motion.div key={word.id} layoutId={word.id.toString()} style={{display:"inline-block"}}>
                     <Chip sx={{mt:0.5,mx:0.2,display:word.selected?"none":""}} key={word.id} disabled={word.selected} label={word.value} onClick={()=>onSelect(wordIndex)}/>
                   </motion.div>
                 )}
               </Container>
-              <Button variant="contained" onClick={onSubmit}>Submit</Button>
-              <Button onClick={clearSelected}>Clear</Button>
+              { !mobileDevice && <Container>
+                <Button variant="contained" onClick={onSubmit}>Submit</Button>
+                <Button onClick={clearSelected}>Clear</Button>
+              </Container>}
+              { mobileDevice && <Container sx={{display:"flex",justifyContent:"space-evenly",backgroundColor:"#d8d8d8",position:"absolute",bottom:0,left:0,height:"80px"}}>
+                <Button sx={{height:"80%",margin:"auto 0", width:"40%"}} variant="contained" onClick={onSubmit}>Submit</Button>
+                <Button sx={{height:"80%",margin:"auto 0", width:"40%"}} variant="outlined" onClick={clearSelected}>Clear</Button>
+              </Container>}
+              
               {mobileDevice || <SearchBar timeWordPicked={timeWordPicked} question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
               {/* <StatView stats={stats}/> */}
             </>

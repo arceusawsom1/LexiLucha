@@ -33,7 +33,7 @@ const MainGamePage = (props: IProps) => {
     const [phase, setPhase] = useState(0);
     const [gamestate, setGamestate] = useState<IGamestate>();
     const setupSockets = () => {
-      console.log("setting up sockets")
+      console.debug("Connecting to socket server")
   
       socket.off("connect")
       socket.off("disconnect")
@@ -43,13 +43,12 @@ const MainGamePage = (props: IProps) => {
       socket.off("warningMessage")
       socket.off("startTimer")
       const onConnect = () => {
-        console.log("connected")
+        console.debug("connected")
         socket.emit("requestAllLobbies")
       }
       const onDisconnect = (e:any) => {
-        console.log(e)
         setFailMessage("Disconnected from server (Tell Ryan)")
-        console.log("disconnected")
+        console.warn("disconnected, reason: " + e)
       }
       const onGameUpdate = (e: IGamestate) => {
         setPhase(1);
@@ -58,19 +57,19 @@ const MainGamePage = (props: IProps) => {
         else
           setInGame(true);
         setGamestate(e);
-        console.log("New Gamestate:", e)
+        console.debug("New Gamestate:", e)
       }
       socket.on('connect', onConnect);
       socket.on('disconnect', onDisconnect);
       socket.on('gameUpdate', onGameUpdate);
-      socket.on('allLobbies', (e: {data: Array<IGamestate>})=>{console.log(e);setAllLobbies(e.data)});
+      socket.on('allLobbies', (e: {data: Array<IGamestate>})=>setAllLobbies(e.data));
       socket.on("successMessage", (e: {data: string})=>setSuccessMessage(e.data))
       socket.on("failMessage", (e: {data: string})=>setFailMessage(e.data))
       socket.on("warningMessage", (e: {data: string})=>setWarningMessage(e.data))
       socket.on("connect_error", (err) => {navigate("/socketError?err=" + err)});
       socket.on("startTimer", (timerVal:number) => {setTimer(timerVal);setTimerActive(true)});
       socket.on("stopTimer", () => {setTimerActive(false)});
-
+        
   
     }
   

@@ -15,7 +15,6 @@ export const GameCard = (props: IProps) => {
     }
     const currentTime = Date.now()
     const runtime = prettyFormat(game.finishedTime==0 ? currentTime-game.createdTime : game.finishedTime - game.createdTime)   
-    console.log(game.finishedTime)
     return (
         <Card sx={{p:1}}>
             <Typography>Language: {game.language}</Typography>

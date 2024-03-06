@@ -17,19 +17,17 @@ const LoginPage = (props: IProps) => {
         e.preventDefault()
         setErrorMsg("")
         const endpoint = BASE_URL + "auth/login"
-        console.log(endpoint)
         const body = {}
         const requestOptions = {auth:{username, password}}
         axios.post(endpoint, body, requestOptions)
             .then(response=>{
                 const bearer = "Bearer " + response.data
-                console.log(bearer)
                 setMe({bearer})
                 localStorage.setItem("me",bearer)
                 navigate("/")
             })
             .catch(err=>{
-                console.log(err)
+                console.warn(err)
                 setErrorMsg("Something went wrong")
             })
     }

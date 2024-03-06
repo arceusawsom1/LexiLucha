@@ -14,7 +14,6 @@ const RegisterPage = () => {
     const submit = (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       const endpoint = BASE_URL + "auth/register"
-      console.log(endpoint)
       if (password==confirmPassword){
         const body = {username, password}
         axios.post(endpoint, body)
@@ -28,7 +27,6 @@ const RegisterPage = () => {
                 setErrorMsg("Something went wrong")
               }
             }
-            console.log(response.status)
           })
       } else {
         setErrorMsg("Password and confirm password are different")
