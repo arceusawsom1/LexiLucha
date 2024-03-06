@@ -1,18 +1,17 @@
 import { Grid, Typography } from "@mui/material";
 import { IShopItem, IBearer, IUser } from "../types";
 import ShopItem from "../components/ShopItem";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { Link } from "react-router-dom";
 interface IProps{
     title : string,
     apiPath : string, //Change to IShopItem eventually
-    me: [IBearer, Dispatch<SetStateAction<IBearer>>],
+    me: IBearer,
 }
 const Shop = (props: IProps) => {
-    const {title, apiPath} = props
-    const [me] = props.me
+    const {title, apiPath, me} = props
     const [items, setItems] = useState<Array<IShopItem>>([])
     useEffect(()=>{
         refreshData();

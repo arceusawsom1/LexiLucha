@@ -1,18 +1,16 @@
 import { Button, Card, CardActions, Grid, Typography } from "@mui/material";
 import { IShopItem, IBearer } from "../types";
 import { BASE_URL } from "../utils/constants";
-import { Dispatch, SetStateAction } from "react";
 import axios from "axios";
 
 interface IProps {
     item:IShopItem,
-    me: [IBearer, Dispatch<SetStateAction<IBearer>>],
+    me: IBearer,
     refreshData : ()=>void,
 }
 const ShopItem = (props:IProps) => {
     const {title, description, price, id} = props.item;
-    const { refreshData } = props
-    const [me, _setMe] = props.me
+    const { refreshData, me } = props
     const buyItem = () => {
         const endpoint=(BASE_URL+"items/buy/" + id)
         console.log(endpoint,);

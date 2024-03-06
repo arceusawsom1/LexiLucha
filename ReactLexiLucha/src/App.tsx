@@ -1,19 +1,20 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import MainGamePage from './pages/MainGamePage'
-import Dashboard from './pages/Dashboard'
 import { AllGames } from './pages/AllGames'
-import LoginPage from './pages/LoginPage'
-import { useEffect, useState } from 'react'
-import { IBearer } from './types'
-import RegisterPage from './pages/RegisterPage'
+import React, { Suspense, useEffect, useState } from 'react'
 import SocketErrorPage from './pages/SocketErrorPage'
-import CustomiseCard from './pages/CustomiseCard'
-import ShopRouter from './routers/ShopRouter'
-import TopNav from './components/TopNav'
+import { IBearer } from './types'
 import { Container } from '@mui/material'
+import LoginPage from './pages/LoginPage'
 import LandingPage from './pages/LandingPage'
+import RegisterPage from './pages/RegisterPage'
 import AboutMe from './pages/AboutMe'
+const MainGamePage = React.lazy(() => import('./pages/MainGamePage'));
+const Shop = React.lazy(() => import('./pages/Shop'));
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const CustomiseCard = React.lazy(() => import('./pages/CustomiseCard'));
+const TopNav = React.lazy(() => import('./components/TopNav'));
+
 
 function App() {
     const [me, setMe] = useState<IBearer>({bearer:""})
@@ -30,15 +31,15 @@ function App() {
 
     return (
         <>
-            <TopNav inGame={[ingame, setIngame]} me={[me, setMe]}/>
+            <Suspense><TopNav inGame={[ingame, setIngame]} me={[me, setMe]}/></Suspense>
             <Container sx={{backgroundColor:"white",p:2,mt:12,textAlign:"center",width:"1200px"}}>
-                <ShopRouter me={[me, setMe]} />
                 <Routes>
                     <Route path="" element={<LandingPage />}/>
+                    <Route path="shop" element={<Suspense><Shop  apiPath="items" title="Full Shop" me={me}/></Suspense>}/>
                     <Route path="aboutMe" element={<AboutMe />}/>
-                    <Route path="play" element={<MainGamePage me={[me, setMe]} inGame={[ingame, setIngame]} />}/>
-                    <Route path="dashboard" Component={Dashboard}/>
-                    { me.bearer!="" && <Route path="customise" element={<CustomiseCard me={[me,setMe]}/>}/> }
+                    <Route path="play" element={<Suspense><MainGamePage me={[me, setMe]} inGame={[ingame, setIngame]} /></Suspense>}/>
+                    <Route path="dashboard" element={<Suspense><Dashboard/></Suspense>}/>
+                    { me.bearer!="" && <Route path="customise" element={<Suspense><CustomiseCard me={[me,setMe]}/></Suspense>}/> }
                     <Route path="allgames" Component={AllGames}/>
                     <Route path="socketError" Component={SocketErrorPage}/>
                     <Route path="login" element={<LoginPage me={[me, setMe]} />}/>
