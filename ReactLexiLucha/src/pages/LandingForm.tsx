@@ -1,5 +1,5 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useMemo, useState } from "react";
 import { socket } from "../utils/socket";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
@@ -22,17 +22,19 @@ const LandingForm = (props: IProps) => {
     const [modeDisabled, setModeDisabled] = useState<boolean>(false);
     const [modes, setModes] = useState<Array<string>>(["SIMPLE"]);
     
-    const displayLanguages :Array<ILanguage>= []
-    languages.forEach((language)=>{
-        const currentLobby = allLobbies.filter((lobby:IGamestate)=>lobby.language==language && (lobby.phase==1 || lobby.phase==2))[0]
-        let playercount = 0
-        if (currentLobby!=undefined)
-            playercount = currentLobby.players.filter((player)=>player.active).length
-        displayLanguages.push({
-            display:language + " Playercount: " + playercount,
-            value:language
+    const displayLanguages :Array<ILanguage> = useMemo(()=>{
+        return languages.map((language)=>{
+            console.log("running loop")
+            const currentLobby = allLobbies.filter((lobby:IGamestate)=>lobby.language==language && (lobby.phase==1 || lobby.phase==2))[0]
+            let playercount = 0
+            if (currentLobby!=undefined)
+                playercount = currentLobby.players.filter((player)=>player.active).length
+            return {
+                display:language + " (" + playercount + ")",
+                value:language
+            }
         })
-    })
+    },[languages, allLobbies])
     const joinQueue = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         socket.emit("joinQueue", {name, language, bearer:me.bearer})

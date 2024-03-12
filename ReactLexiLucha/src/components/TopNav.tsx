@@ -8,8 +8,8 @@ type MenuItem = {
     destination:string,
     mode:"loggedIn"|"loggedOut"|"always",
 }
-
-const navItems : Array<MenuItem> = [
+type Menu = Array<MenuItem>
+const navItems : Menu = [
     {
         label:"Home",
         destination:"/",

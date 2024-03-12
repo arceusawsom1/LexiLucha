@@ -48,7 +48,7 @@ class SocketController @Autowired constructor(
         namespace.addEventListener("joinQueue", JoinQueueMessage::class.java, onJoinQueue())
         namespace.addEventListener("ready", SimpleMessage::class.java, onReady())
         namespace.addEventListener("submitAttempt", SimpleMessage::class.java, submitAttempt())
-//        namespace.addEventListener("requestAllLobbies", SimpleMessage::class.java, broadcastLobbiesListner())
+        namespace.addEventListener("requestAllLobbies", SimpleMessage::class.java, broadcastLobbiesListner())
 
 
 
@@ -67,7 +67,8 @@ class SocketController @Autowired constructor(
     }
     private fun broadcastLobbiesListner(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { _: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
-            broadcastLobbiesListner()
+            println("Sending allLobbies info")
+            broadcastLobbies()
         }
     }
     private fun broadcastLobbies(){

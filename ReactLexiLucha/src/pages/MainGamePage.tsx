@@ -71,7 +71,7 @@ const MainGamePage = (props: IProps) => {
       socket.on("connect_error", (err) => {navigate("/socketError?err=" + err)});
       socket.on("startTimer", (timerVal:number) => {setTimer(timerVal);setTimerActive(true)});
       socket.on("stopTimer", () => {setTimerActive(false)});
-        
+
   
     }
   
