@@ -24,7 +24,6 @@ const LandingForm = (props: IProps) => {
     
     const displayLanguages :Array<ILanguage> = useMemo(()=>{
         return languages.map((language)=>{
-            console.log("running loop")
             const currentLobby = allLobbies.filter((lobby:IGamestate)=>lobby.language==language && (lobby.phase==1 || lobby.phase==2))[0]
             let playercount = 0
             if (currentLobby!=undefined)

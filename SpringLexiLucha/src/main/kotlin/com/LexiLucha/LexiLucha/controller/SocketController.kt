@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component
 import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.timerTask
 
 
 @Component
@@ -50,7 +51,7 @@ class SocketController @Autowired constructor(
         namespace.addEventListener("submitAttempt", SimpleMessage::class.java, submitAttempt())
         namespace.addEventListener("requestAllLobbies", SimpleMessage::class.java, broadcastLobbiesListner())
 
-
+        Timer().schedule(timerTask{broadcastLobbies()},1000,1000)
 
 
     }
@@ -63,12 +64,13 @@ class SocketController @Autowired constructor(
         return ConnectListener { client: SocketIOClient ->
             val handshakeData = client.handshakeData
             println("Client[${client.sessionId.toString()}] - Connected to game module through '${ handshakeData.url}'")
+
         }
     }
     private fun broadcastLobbiesListner(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { _: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
             println("Sending allLobbies info")
-            broadcastLobbies()
+//            broadcastLobbies()
         }
     }
     private fun broadcastLobbies(){
@@ -77,20 +79,20 @@ class SocketController @Autowired constructor(
     private fun onDisconnected(): DisconnectListener {
         return DisconnectListener { client: SocketIOClient ->
             socketService.handleDisconnect(client);
-            broadcastLobbies()
+//            broadcastLobbies()
         }
     }
 
     private fun onJoinQueue(): DataListener<JoinQueueMessage> {
         return DataListener<JoinQueueMessage> { client: SocketIOClient, data: JoinQueueMessage, ackSender: AckRequest? ->
             socketService.handleJoinQueue(client, data)
-            broadcastLobbies()
+//            broadcastLobbies()
         }
     }
     private fun onReady(): DataListener<SimpleMessage> {
         return DataListener<SimpleMessage> { client: SocketIOClient, data: SimpleMessage?, ackSender: AckRequest? ->
             socketService.handleReady(client)
-            broadcastLobbies()
+//            broadcastLobbies()
         }
     }
 

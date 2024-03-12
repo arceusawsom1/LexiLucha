@@ -46,7 +46,6 @@ const MainGamePage = (props: IProps) => {
       socket.off("startTimer")
       const onConnect = () => {
         console.debug("connected")
-        socket.emit("requestAllLobbies")
       }
       const onDisconnect = (e:any) => {
         setFailMessage("Disconnected from server (Tell Ryan)")
