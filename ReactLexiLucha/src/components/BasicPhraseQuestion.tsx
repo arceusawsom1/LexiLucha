@@ -26,7 +26,6 @@ const BasicPhraseQuestion = (props : IProps) => {
   const [stage, setStage] = useState<string>("question");
   const [_stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
   const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
-  console.log(window.innerWidth)
   useEffect(()=>{
     setSelected([])
     setStage("question")
@@ -93,9 +92,16 @@ const BasicPhraseQuestion = (props : IProps) => {
               {isMobile && <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}></Container>}  {/* render a second answer line if the user is on mobile */}
               <Container sx={{my:2}}>
                 {question.options.map((word, wordIndex)=>
-                  <motion.div key={word.id} layoutId={word.id.toString()} style={{display:"inline-block"}}>
-                    <Chip sx={{mt:0.5,mx:0.2,display:word.selected?"none":""}} key={word.id} disabled={word.selected} label={word.value} onClick={()=>onSelect(wordIndex)}/>
-                  </motion.div>
+                  <>
+                    {!word.selected ? 
+                      <motion.div animate={{transitionEnd:{display:"inline-block"}}} key={word.id} layoutId={word.id.toString()} style={{display:"inline-block"}}>
+                        <Chip sx={{mt:0.5,mx:0.2}} key={word.id} disabled={word.selected} label={word.value} onClick={()=>onSelect(wordIndex)}/>
+                      </motion.div>
+                    :
+                      <Chip sx={{mt:0.5,mx:0.2}} key={word.id} disabled={word.selected} label={word.value} onClick={()=>onSelect(wordIndex)}/>
+                    }
+                  </>
+
                 )}
               </Container>
               { !isMobile && <Container>

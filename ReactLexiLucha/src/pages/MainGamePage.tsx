@@ -63,7 +63,7 @@ const MainGamePage = (props: IProps) => {
       socket.on('connect', onConnect);
       socket.on('disconnect', onDisconnect);
       socket.on('gameUpdate', onGameUpdate);
-      socket.on('allLobbies', (e: {data: Array<IGamestate>})=>setAllLobbies(e.data));
+      socket.on('allLobbies', (e: {data: Array<IGamestate>})=>{if (phase==0) setAllLobbies(e.data)});
       socket.on("successMessage", (e: {data: string})=>setSuccessMessage(e.data))
       socket.on("failMessage", (e: {data: string})=>setFailMessage(e.data))
       socket.on("warningMessage", (e: {data: string})=>setWarningMessage(e.data))
