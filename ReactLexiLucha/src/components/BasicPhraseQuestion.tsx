@@ -1,4 +1,4 @@
-import { Button, Chip, CircularProgress, Container, Typography, useMediaQuery } from "@mui/material"
+import { Button, Chip, CircularProgress, Container, Typography } from "@mui/material"
 import { useCallback, useEffect, useState } from "react"
 import SearchBar from "./SearchBar";
 import { IGamestate, IOption, IPhraseData, ISimpleQuestion, IStats } from "../types";
@@ -13,16 +13,16 @@ interface IProps {
   currentQuestion: ISimpleQuestion,
   gamestate: IGamestate,
   timer:[number, boolean],
+  isMobile: boolean,
 }
 
 
 
 const BasicPhraseQuestion = (props : IProps) => {
   const [timer, timerActive] = props.timer
-  const {gamestate, currentQuestion} = props;
+  const {gamestate, currentQuestion, isMobile} = props;
   const [question, setQuestion] = useState<IPhraseData>()
   const [selected, setSelected] = useState<IOption[]>([]);
-  const mobileDevice = useMediaQuery('(max-width:600px)');
   const [stage, setStage] = useState<string>("question");
   const [_stats, setStats] = useState<IStats>({totalAttempts:0, correct:0, incorrect:0, streak:0, maxStreak: 0})
   const [timeWordPicked, setTimeWordPicked] = useState<number>(Date.now())
@@ -90,7 +90,7 @@ const BasicPhraseQuestion = (props : IProps) => {
                   </motion.div>
                 )}
               </Container>
-              {mobileDevice && <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}></Container>}  {/* render a second answer line if the user is on mobile */}
+              {isMobile && <Container  sx={{textAlign:"left", borderBottom:"1px solid gray",height:"40px"}}></Container>}  {/* render a second answer line if the user is on mobile */}
               <Container sx={{my:2}}>
                 {question.options.map((word, wordIndex)=>
                   <motion.div key={word.id} layoutId={word.id.toString()} style={{display:"inline-block"}}>
@@ -98,16 +98,16 @@ const BasicPhraseQuestion = (props : IProps) => {
                   </motion.div>
                 )}
               </Container>
-              { !mobileDevice && <Container>
+              { !isMobile && <Container>
                 <Button variant="contained" onClick={onSubmit}>Submit</Button>
                 <Button onClick={clearSelected}>Clear</Button>
               </Container>}
-              { mobileDevice && <Container sx={{display:"flex",justifyContent:"space-evenly",backgroundColor:"#d8d8d8",position:"fixed",bottom:0,left:0,height:"80px"}}>
+              { isMobile && <Container sx={{display:"flex",justifyContent:"space-evenly",backgroundColor:"#d8d8d8",position:"fixed",bottom:0,left:0,height:"80px"}}>
                 <Button sx={{height:"80%",margin:"auto 0", width:"40%"}} variant="contained" onClick={onSubmit}>Submit</Button>
                 <Button sx={{height:"80%",margin:"auto 0", width:"40%"}} variant="outlined" onClick={clearSelected}>Clear</Button>
               </Container>}
               
-              {mobileDevice || <SearchBar timeWordPicked={timeWordPicked} question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
+              {isMobile || <SearchBar timeWordPicked={timeWordPicked} question={question} selected={selected} onSubmit={onSubmit} onSelect={onSelect} onUnselect={onUnselect}/>}
               {/* <StatView stats={stats}/> */}
             </>
           }

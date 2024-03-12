@@ -13,10 +13,12 @@ import { CORRECT_BING, playBadBeep } from "../utils/audioHelper"
 interface IProps {
   me: [IBearer, Dispatch<SetStateAction<IBearer>>],
   inGame: [boolean, Dispatch<SetStateAction<boolean>>],
+  isMobile: boolean,
 }
 const MainGamePage = (props: IProps) => {
     const [me, setMe] = props.me
     const [_inGame, setInGame] = props.inGame
+    const { isMobile } = props;
     const theme = createTheme({
     
     })
@@ -144,7 +146,7 @@ const MainGamePage = (props: IProps) => {
             <>
               {gamestate.phase===1 && <WaitingForPlayers gamestate={gamestate} />}
               {gamestate.phase===2 && <WaitingForReady gamestate={gamestate} />}
-              {gamestate.phase===3 && <BasicPhraseQuestion timer={[timer, timerActive]} gamestate={gamestate} correctHandler={setSuccessMessage} failHandler={setFailMessage} currentQuestion={gamestate.currentQuestionSimple} key={gamestate.currentQuestionSimple.id}/>}
+              {gamestate.phase===3 && <BasicPhraseQuestion isMobile={isMobile} timer={[timer, timerActive]} gamestate={gamestate} correctHandler={setSuccessMessage} failHandler={setFailMessage} currentQuestion={gamestate.currentQuestionSimple} key={gamestate.currentQuestionSimple.id}/>}
               {gamestate.phase===4 && <RoundOver gamestate = {gamestate} />}
             </>
           }

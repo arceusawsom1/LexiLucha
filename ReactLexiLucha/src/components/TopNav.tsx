@@ -2,28 +2,60 @@ import { AppBar, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListI
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IBearer } from "../types";
+import MenuIcon from '@mui/icons-material/Menu';
 type MenuItem = {
     label:string,
     destination:string,
+    mode:"loggedIn"|"loggedOut"|"always",
 }
 
 const navItems : Array<MenuItem> = [
     {
         label:"Home",
-        destination:"/",        
+        destination:"/",
+        mode:"loggedIn",
     },
     {
         label:"About me",
-        destination:"/aboutMe",        
+        destination:"/aboutMe",
+        mode:"always",
     },
     {
         label:"Dashboard",
-        destination:"/dashboard",        
+        destination:"/dashboard",
+        mode:"loggedIn",
     },
     {
         label:"All Games",
-        destination:"/allgames",        
-    },];
+        destination:"/allgames",
+        mode:"loggedIn",
+    },
+    {
+        label:"Login",
+        destination:"/login",
+        mode:"loggedOut",
+    },
+    {
+        label:"Register",
+        destination:"/register",
+        mode:"loggedOut",
+    },
+    {
+        label:"Shop",
+        destination:"/shop",
+        mode:"loggedIn",
+    },
+    {
+        label:"Customise",
+        destination:"/customise",
+        mode:"loggedIn",
+    },
+    {
+        label:"Logout",
+        destination:"/logout",
+        mode:"loggedIn",
+    },
+];
 
 type IModalProps = {
     callback?:()=>void,
@@ -75,10 +107,11 @@ type IButtonProps = {
     variant?:"text"|"outlined"|"contained",
     onClick?: ()=>void,
     children?:ReactNode,
-    sx?: SxProps<Theme> | undefined
+    sx?: SxProps<Theme> | undefined,
+    isMobile:boolean,
 }
 const LockableButton = (props : IButtonProps) => {  
-    const {to, variant, onClick, children, sx} = props
+    const {to, variant, onClick, children, sx, isMobile} = props
     const [locked, setLocked] = props.locked
     const navigate = useNavigate();
     const [open, setOpen] = useState(false)
@@ -98,29 +131,47 @@ const LockableButton = (props : IButtonProps) => {
     return(
         <>
             <MyModal open={[open, setOpen]} callback={callback} />
-            <Button sx={sx} variant={variant || "text"} onClick={handle}>{children || "Text goes here!"}</Button>
+            {!isMobile ? 
+                <Button sx={sx} variant={variant || "text"} onClick={handle}>{children || "Text goes here!"}</Button>
+            :
+                <ListItem disablePadding>
+                    <ListItemButton onClick={handle} sx={{ textAlign: 'center' }}>
+                        <ListItemText primary={children} />
+                    </ListItemButton>
+                </ListItem>
+            }
         </>
     )
 }
 interface IProps {
     me: [IBearer, Dispatch<SetStateAction<IBearer>>],
     inGame: [boolean, Dispatch<SetStateAction<boolean>>],
+    isMobile: boolean,
 }
 const TopNav = (props:IProps) => { 
-    const [me, setMe] = props.me
+    const [me, _setMe] = props.me
     const [inGame, setIngame] = props.inGame
+    const { isMobile } = props
 
-    const logout = () => {
-        localStorage.removeItem("me")
-        setMe({bearer:""})
-    }
+    
     const [mobileOpen, setMobileOpen] = useState(false)
     const drawerWidth = 240;
 
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
-
+    const shouldShow = (item:MenuItem):boolean => {
+        if (item.mode==="always"){
+            return true
+        }
+        if (item.mode==="loggedIn"){
+            return me.bearer.length!==0
+        }
+        if (item.mode==="loggedOut"){
+            return me.bearer.length===0
+        }
+        return false;
+    }
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
             <Typography variant="h6" sx={{ my: 2 }}>
@@ -128,12 +179,12 @@ const TopNav = (props:IProps) => {
             </Typography>
             <Divider />
             <List>
-                {navItems.map((item : MenuItem) => 
-                <ListItem key={item.label} disablePadding>
-                    <ListItemButton sx={{ textAlign: 'center' }}>
-                    <ListItemText primary={item.label} />
-                    </ListItemButton>
-                </ListItem>
+                {navItems.map((item : MenuItem) =>
+                    shouldShow(item) &&
+                    <LockableButton isMobile={isMobile} locked={[inGame, setIngame]} key={item.label} sx={{ color: '#000' }} to={item.destination}>
+                        {item.label}
+                    </LockableButton>
+                        
                 )}
             </List>
         </Box>
@@ -144,43 +195,28 @@ const TopNav = (props:IProps) => {
         {/* <CssBaseline /> */}
         <AppBar component="nav">
             <Toolbar>
-            <IconButton
+            {isMobile && <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
             sx={{ mr: 2 }}
           >
-            {/* <MenuIcon /> */}
-          </IconButton>
+            <MenuIcon />
+          </IconButton>}
           <Typography
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            LexiLucha
+          >LexiLucha
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <LockableButton locked={[inGame, setIngame]} key={item.label} sx={{ color: '#fff' }} to={item.destination}>
-                {item.label}
-              </LockableButton>
+                shouldShow(item) && 
+                    <LockableButton isMobile={isMobile} locked={[inGame, setIngame]} key={item.label} sx={{ color: '#fff' }} to={item.destination}>
+                        {item.label}
+                    </LockableButton>
             ))}
-            {me.bearer.length==0 ? 
-                <> 
-                    {/* Not Logged in */}
-                    <LockableButton locked={[inGame, setIngame]} to="login" sx={{ color: '#fff' }}>Login</LockableButton>
-                    <LockableButton locked={[inGame, setIngame]} to="register" sx={{ color: '#fff' }}>Register</LockableButton>
-                </>
-            :
-                <> 
-                    {/* Logged in */}
-                    <LockableButton locked={[inGame, setIngame]} to="customise" sx={{ color: '#fff' }}>Customise</LockableButton>
-                    <LockableButton locked={[inGame, setIngame]} sx={{ color: '#fff' }} to="shop">Shop</LockableButton>
-                    <LockableButton locked={[inGame, setIngame]} sx={{ color: '#fff' }} to="customise">Customise Card</LockableButton>
-                    <LockableButton locked={[inGame, setIngame]} onClick={logout} sx={{ color: '#fff' }}>Logout</LockableButton>                    
-                </>
-            }
           </Box>
         </Toolbar>
       </AppBar>
