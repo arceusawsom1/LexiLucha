@@ -33,7 +33,7 @@ function App() {
     return (
         <>
             <Suspense><TopNav inGame={[ingame, setIngame]} me={[me, setMe]} isMobile={isMobile}/></Suspense>
-            <Container sx={{backgroundColor:"white",p:2,mt:12,textAlign:"center",maxWidth:"1200px"}}>
+            <Container sx={{backgroundColor:"white",p:2,mt:12,mb:12,textAlign:"center",maxWidth:"1200px"}}>
                 <Routes>
                     <Route path="" element={<LandingPage />}/>
                     <Route path="shop" element={<Suspense><Shop  apiPath="items" title="Full Shop" me={me}/></Suspense>}/>
