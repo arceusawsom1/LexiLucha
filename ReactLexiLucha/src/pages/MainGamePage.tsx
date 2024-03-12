@@ -35,7 +35,7 @@ const MainGamePage = (props: IProps) => {
     const [phase, setPhase] = useState(0);
     const [gamestate, setGamestate] = useState<IGamestate>();
     const setupSockets = () => {
-      console.debug("Connecting to socket server")
+      console.debug("Setting up socket events")
   
       socket.off("connect")
       socket.off("disconnect")
@@ -85,8 +85,10 @@ const MainGamePage = (props: IProps) => {
       return () => clearInterval(intervalId);
     }, [ timer, timerActive ]);
 
-    useEffect(()=>{
+    useEffect(() => {
+      socket.connect()
       setupSockets();
+      return ():void => {socket.disconnect()}
     },[])
   
     useEffect(()=>{
