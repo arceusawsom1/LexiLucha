@@ -13,7 +13,7 @@ const navItems : Array<MenuItem> = [
     {
         label:"Home",
         destination:"/",
-        mode:"loggedIn",
+        mode:"always",
     },
     {
         label:"About me",
