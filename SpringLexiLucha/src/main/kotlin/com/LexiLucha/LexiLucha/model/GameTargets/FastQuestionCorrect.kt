@@ -4,8 +4,8 @@ import com.LexiLucha.LexiLucha.model.GameState
 import com.LexiLucha.LexiLucha.model.GameTarget
 
 class FastQuestionCorrect : GameTarget {
-    final val POINTS_PER = 2
-    final val MAX_TIME_THRESHOLD = 3500
+    private final val POINTS_PER = 2
+    private final val MAX_TIME_THRESHOLD = 3500
 
 
     override fun getName(gameState: GameState, playerId: Int): String {

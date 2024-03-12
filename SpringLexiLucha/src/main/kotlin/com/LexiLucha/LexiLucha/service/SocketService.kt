@@ -179,7 +179,8 @@ class SocketService @Autowired constructor(
             CompletedGame(),
             TenPeopleInGame(),
             PlaceHighInBigLeaderboard(),
-            TopOfLeaderboard())
+            TopOfLeaderboard(),
+            FastQuestionCorrect())
         var total : Int = 0;
         possibleTargets.forEach {
             if (it.isQualified(gamestate, player.id)){

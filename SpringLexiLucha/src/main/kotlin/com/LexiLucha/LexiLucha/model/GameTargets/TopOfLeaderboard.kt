@@ -29,7 +29,7 @@ class TopOfLeaderboard : GameTarget {
         println(allScores)
 
         println("end of Calculating top of leaderboard")
-        return currentScore > allScores.max() //Ties do not count
+        return allScores.size > 0 && currentScore > allScores.max() //Ties do not count
 
     }
 }
