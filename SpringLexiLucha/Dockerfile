@@ -32,10 +32,14 @@ WORKDIR /app
 # ENV MYSQL_HOST = localhost
 
 COPY --from=build /usr/src/app/target/LexiLucha-0.0.1-SNAPSHOT.jar /app/
+RUN mkdir -p /usr/local/newrelic
+ADD ./newrelic/newrelic.jar /usr/local/newrelic/newrelic.jar
+ADD ./newrelic/newrelic.yml /usr/local/newrelic/newrelic.yml
+
 #Expose the web port (Just for ping test)
 EXPOSE 8080
 
 #Expose SocketIo port
 EXPOSE 5000
 
-CMD ["java", "-jar", "LexiLucha-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-javaagent:/usr/local/newrelic/newrelic.jar", "-jar", "LexiLucha-0.0.1-SNAPSHOT.jar"]
