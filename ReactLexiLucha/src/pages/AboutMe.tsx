@@ -9,7 +9,7 @@ const AboutMe = () => {
             <Typography variant="h2">Why did I make it</Typography>
             <Typography sx={{my:2}}>{newPara}</Typography>
             <Typography variant="h2">The timeline of the project</Typography>
-            <Typography variant="h3">The beggining</Typography>
+            <Typography variant="h3">The beginning</Typography>
             <Typography sx={{m:2}}>{para2}</Typography>
             <img src="images/readme1.png" style={{width:"100%",...shadowProp}}/>
             <Typography sx={{my:2}}>{para3}</Typography>
