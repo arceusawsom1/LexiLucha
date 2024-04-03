@@ -19,7 +19,7 @@ jobs:
       #   with:
       #     compose-file: docker-compose.yml
       - id: string
-        uses: Entepotenz/change-string-case-action-min-dependencies@v1.1.0
+        uses: ASzc/change-string-case-action@v6
         with:
           string: ${{ github.event.repository.name }}
       - name: Stop and remove existing containers
