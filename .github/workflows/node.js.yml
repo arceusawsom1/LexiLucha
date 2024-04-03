@@ -20,7 +20,7 @@ jobs:
       #     compose-file: docker-compose.yml
 
       - name: Stop and remove existing containers
-        run: echo "docker compose -p ${{ github.event.repository.name }} down"
+        run: echo "docker compose -p ${{ github.event.repository.name.lowercase }} down"
 
       - name: Build and run Docker Compose
-        run: docker compose -p ${{ github.event.repository.name }} up --build -d
+        run: docker compose -p ${{ github.event.repository.name.lowercase }} up --build -d
