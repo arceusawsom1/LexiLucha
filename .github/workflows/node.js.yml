@@ -1,5 +1,6 @@
 name: Build and Run Docker Compose
-
+env:
+      PROJECT_NAME: lexi-lucha
 on:
   push:
     branches:
@@ -21,12 +22,7 @@ jobs:
       #     compose-file: docker-compose.yml
 
       - name: Stop and remove existing containers
-        run: |
-          $CONTAINER_IDS = @(docker ps -q -f "name=react-ts" -f "name=spring-kotlin" -f "name=mysql")
-          if ($CONTAINER_IDS.Count -gt 0) {
-            docker stop $CONTAINER_IDS
-            docker rm $CONTAINER_IDS
-          }
+        run: docker compose -p $PROJECT_NAME down
 
       - name: Build and run Docker Compose
-        run: docker compose up --build -d
+        run: docker compose up --build -d -p $PROJECT_NAME
