@@ -1,11 +1,11 @@
 name: Build and Run Docker Compose
-env:
-      PROJECT_NAME: lexi-lucha
+
 on:
   push:
     branches:
       - main
-
+env:
+      PROJECT_NAME: lexi-lucha
 jobs:
   build-and-run:
     runs-on: self-hosted
