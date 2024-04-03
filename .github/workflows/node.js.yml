@@ -18,9 +18,12 @@ jobs:
       #   uses: docker/compose-cli@v0.1.1
       #   with:
       #     compose-file: docker-compose.yml
-
+      - id: string
+        uses: Entepotenz/change-string-case-action@v1
+        with:
+          string: ${{ github.event.repository.name }}
       - name: Stop and remove existing containers
-        run: echo "docker compose -p ${{ github.event.repository.name.lowercase }} down"
+        run: echo "docker compose -p ${{ steps.string.outputs.lowercase }} down"
 
       - name: Build and run Docker Compose
-        run: docker compose -p ${{ github.event.repository.name.lowercase }} up --build -d
+        run: docker compose -p ${{ steps.string.outputs.lowercase }} up --build -d
