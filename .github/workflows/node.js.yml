@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-env:
-      PROJECT_NAME: lexi-lucha
 jobs:
   build-and-run:
     runs-on: self-hosted
+    env:
+      PROJECT_NAME: lexi-lucha
     defaults:
       run:
         working-directory: ./
