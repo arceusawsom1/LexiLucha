@@ -22,7 +22,7 @@ jobs:
       #     compose-file: docker-compose.yml
 
       - name: Stop and remove existing containers
-        run: echo "docker compose -p $PROJECT_NAME down"
+        run: echo "docker compose -p $PROJECT_NAME down $FAKE"
 
       - name: Build and run Docker Compose
         run: docker compose -p $PROJECT_NAME up --build -d
