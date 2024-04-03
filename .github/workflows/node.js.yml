@@ -7,8 +7,6 @@ on:
 jobs:
   build-and-run:
     runs-on: self-hosted
-    env:
-      PROJECT_NAME: lexi-lucha
     defaults:
       run:
         working-directory: ./
@@ -25,4 +23,4 @@ jobs:
         run: echo "docker compose -p ${{ github.event.repository.name }} down"
 
       - name: Build and run Docker Compose
-        run: docker compose -p $PROJECT_NAME up --build -d
+        run: docker compose -p ${{ github.event.repository.name }} up --build -d
